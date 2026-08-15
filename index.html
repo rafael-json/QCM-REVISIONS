@@ -1,348 +1,144 @@
-<!doctype html>
+<!DOCTYPE html>
 <html lang="fr">
 <head>
-  <meta charset="utf-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>QCM - Architecture des ordinateurs</title>
-  <style>
-    :root { --ink:#152033; --muted:#68758a; --surface:#fff; --bg:#f2f5f9; --brand:#2457d6; --ok:#177b4b; --bad:#bb3345; --line:#dce3ed; }
-    * { box-sizing:border-box; }
-    body { margin:0; min-height:100vh; color:var(--ink); background:linear-gradient(135deg,#edf3ff 0%,var(--bg) 45%,#f9fafc 100%); font:16px/1.5 -apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif; }
-    main { width:min(820px,calc(100% - 32px)); margin:0 auto; padding:48px 0; }
-    header { margin-bottom:24px; }
-    h1 { margin:0 0 5px; font-size:clamp(1.65rem,4vw,2.35rem); letter-spacing:-.04em; }
-    .subtitle { margin:0; color:var(--muted); }
-    .card { background:var(--surface); border:1px solid rgba(220,227,237,.9); box-shadow:0 16px 45px rgba(38,58,95,.10); border-radius:20px; padding:clamp(22px,5vw,42px); }
-    #quiz { display:none; }
-    .home-intro { max-width:650px; margin:0 0 27px; color:var(--muted); }
-    .module-grid { display:grid; grid-template-columns:repeat(auto-fit,minmax(230px,1fr)); gap:13px; }
-    .module { min-height:168px; display:flex; flex-direction:column; align-items:flex-start; padding:18px; color:var(--ink); background:#fff; border:1px solid var(--line); border-radius:14px; text-align:left; }
-    .module:hover { transform:translateY(-2px); border-color:#8faef4; box-shadow:0 8px 20px rgba(38,58,95,.09); }
-    .module-number { color:var(--brand); font-size:.78rem; font-weight:800; text-transform:uppercase; letter-spacing:.05em; }
-    .module h2 { margin:5px 0 7px; font-size:1.05rem; }
-    .module p { margin:0; color:var(--muted); font-size:.86rem; line-height:1.38; }
-    .meta { display:flex; align-items:center; justify-content:space-between; gap:16px; color:var(--muted); font-size:.93rem; margin-bottom:12px; }
-    .quiz-nav { display:flex; justify-content:space-between; align-items:center; gap:12px; margin-bottom:18px; }
-    .back { padding:8px 11px; color:var(--brand); background:#eef3ff; border:0; border-radius:8px; font-size:.87rem; font-weight:700; }
-    .module-label { color:var(--muted); font-size:.86rem; font-weight:600; text-align:right; }
-    .bar { height:9px; background:#e9eef5; border-radius:99px; overflow:hidden; margin-bottom:31px; }
-    .bar span { display:block; height:100%; width:0; background:linear-gradient(90deg,#2457d6,#5b8dff); border-radius:inherit; transition:width .25s ease; }
-    .tag { display:inline-block; margin:0 0 13px; padding:4px 9px; border-radius:999px; color:#2457d6; background:#ebf1ff; font-size:.79rem; font-weight:700; }
-    h2 { font-size:clamp(1.18rem,3vw,1.5rem); line-height:1.35; margin:0 0 22px; }
-    .answers { display:grid; gap:11px; }
-    button { font:inherit; cursor:pointer; }
-    .answer { width:100%; display:flex; align-items:flex-start; gap:12px; padding:15px 16px; text-align:left; color:var(--ink); background:#fff; border:1px solid var(--line); border-radius:12px; transition:transform .15s, border-color .15s, background .15s; }
-    .answer:not(:disabled):hover { transform:translateY(-1px); border-color:#8faef4; background:#f7faff; }
-    .answer:disabled { cursor:default; }
-    .letter { flex:0 0 25px; width:25px; height:25px; display:grid; place-items:center; color:#345; background:#edf1f6; border-radius:50%; font-size:.8rem; font-weight:700; }
-    .answer.good { color:#0d5c35; border-color:#4ab87b; background:#edfff4; }
-    .answer.good .letter { color:#fff; background:var(--ok); }
-    .answer.bad { color:#8f2633; border-color:#ec8793; background:#fff1f3; }
-    .answer.bad .letter { color:#fff; background:var(--bad); }
-    .feedback { display:none; margin:23px 0 0; padding:16px 18px; border-left:4px solid var(--brand); border-radius:0 10px 10px 0; background:#f4f7fc; }
-    .feedback.show { display:block; }
-    .feedback.good { border-color:var(--ok); background:#edfff4; }
-    .feedback.bad { border-color:var(--bad); background:#fff1f3; }
-    .feedback strong { display:block; margin-bottom:4px; }
-    .actions { display:flex; justify-content:flex-end; margin-top:22px; }
-    .next { display:none; padding:12px 17px; color:#fff; background:var(--brand); border:0; border-radius:10px; font-weight:700; }
-    .next.show { display:block; }
-    .next:hover { background:#1748bd; }
-    .result { display:none; text-align:center; }
-    .result.show { display:block; }
-    .score { margin:18px 0 5px; font-size:3.4rem; font-weight:800; letter-spacing:-.07em; color:var(--brand); }
-    .result p { color:var(--muted); }
-    .restart { margin-top:15px; padding:13px 18px; color:#fff; background:var(--brand); border:0; border-radius:10px; font-weight:700; }
-    .home-button { margin:15px 0 0 8px; padding:12px 17px; color:var(--brand); background:#eef3ff; border:0; border-radius:10px; font-weight:700; }
-    .review-title { margin:30px 0 8px; font-size:1.08rem; }
-    .review-list { display:grid; gap:9px; margin:14px 0 0; text-align:left; }
-    .review-item { width:100%; display:flex; align-items:center; justify-content:space-between; gap:12px; padding:13px 14px; color:var(--ink); background:#f7f9fc; border:1px solid var(--line); border-radius:11px; text-align:left; }
-    .review-item:hover { border-color:#8faef4; background:#f1f5ff; }
-    .review-item span { color:var(--muted); font-size:.88rem; white-space:nowrap; }
-    .review-empty { margin:14px 0 0; padding:13px; color:var(--ok); background:#edfff4; border-radius:10px; }
-    footer { margin-top:20px; color:var(--muted); font-size:.82rem; text-align:center; }
-    @media (max-width:520px) { main { width:min(100% - 20px,820px); padding:22px 0; } .card { border-radius:15px; } }
-  </style>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Révisions QCM</title>
+<style>
+  :root{
+    --bg:#0b0f0d;
+    --panel:#11171410;
+    --line:#1f2b26;
+    --text:#e8f0ec;
+    --muted:#7d9089;
+    --accent:#5eead4;
+    --accent-dim:#2d6b60;
+  }
+  *{box-sizing:border-box; margin:0; padding:0;}
+  body{
+    background:
+      radial-gradient(circle at 15% 10%, rgba(94,234,212,0.06), transparent 40%),
+      var(--bg);
+    color:var(--text);
+    font-family:-apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+    min-height:100vh;
+    display:flex;
+    flex-direction:column;
+    align-items:center;
+    padding:8vh 20px 6vh;
+  }
+  .eyebrow{
+    font-family:"SF Mono", "Menlo", monospace;
+    font-size:0.75rem;
+    letter-spacing:0.18em;
+    text-transform:uppercase;
+    color:var(--accent);
+    margin-bottom:14px;
+  }
+  h1{
+    font-family:"SF Mono", "Menlo", monospace;
+    font-size:clamp(1.6rem, 5vw, 2.4rem);
+    font-weight:600;
+    letter-spacing:-0.01em;
+    margin-bottom:8px;
+    text-align:center;
+  }
+  .sub{
+    color:var(--muted);
+    font-size:0.95rem;
+    text-align:center;
+    max-width:420px;
+    margin-bottom:56px;
+    line-height:1.5;
+  }
+  .stack{
+    width:100%;
+    max-width:480px;
+    display:flex;
+    flex-direction:column;
+    gap:14px;
+  }
+  a.card{
+    position:relative;
+    display:flex;
+    align-items:center;
+    justify-content:space-between;
+    gap:16px;
+    text-decoration:none;
+    color:var(--text);
+    border:1px solid var(--line);
+    border-radius:10px;
+    padding:22px 24px;
+    background:linear-gradient(180deg, rgba(255,255,255,0.015), transparent);
+    transition:border-color 0.2s ease, transform 0.2s ease, background 0.2s ease;
+  }
+  a.card:hover, a.card:focus-visible{
+    border-color:var(--accent-dim);
+    background:linear-gradient(180deg, rgba(94,234,212,0.06), transparent);
+    transform:translateY(-1px);
+  }
+  a.card:focus-visible{
+    outline:2px solid var(--accent);
+    outline-offset:2px;
+  }
+  .card-left{
+    display:flex;
+    flex-direction:column;
+    gap:4px;
+  }
+  .card-title{
+    font-size:1.05rem;
+    font-weight:600;
+  }
+  .card-meta{
+    font-family:"SF Mono", "Menlo", monospace;
+    font-size:0.75rem;
+    color:var(--muted);
+    letter-spacing:0.02em;
+  }
+  .arrow{
+    font-family:"SF Mono", "Menlo", monospace;
+    color:var(--accent);
+    font-size:1.1rem;
+    flex-shrink:0;
+  }
+  footer{
+    margin-top:64px;
+    font-size:0.72rem;
+    color:var(--muted);
+    font-family:"SF Mono", "Menlo", monospace;
+    letter-spacing:0.04em;
+  }
+  @media (prefers-reduced-motion: reduce){
+    a.card{transition:none;}
+  }
+</style>
 </head>
 <body>
-  <main>
-    <header><h1>Architecture des ordinateurs</h1><p class="subtitle">Révisions interactives par module</p></header>
-    <section class="card" id="home"><h2>Choisis un module</h2><p class="home-intro">Chaque module propose les questions liées à ses notions. La synthèse générale sélectionne 50 questions mélangées dans toute la banque.</p><div class="module-grid" id="moduleGrid"></div></section>
-    <section class="card" id="quiz" aria-live="polite">
-      <div class="quiz-nav"><button class="back" id="backToHome">← Retour aux modules</button><span class="module-label" id="moduleLabel"></span></div>
-      <div class="meta"><span id="count"></span><span>Progression du module</span></div>
-      <div class="bar"><span id="bar"></span></div>
-      <p class="tag" id="theme"></p><h2 id="question"></h2><div class="answers" id="answers"></div>
-      <div class="feedback" id="feedback"></div><div class="actions"><button class="next" id="next">Question suivante</button></div>
-    </section>
-    <section class="card result" id="result"><h2 id="resultTitle">Résultat du module</h2><div class="score" id="finalScore"></div><p id="finalText"></p><h3 class="review-title">Révision ciblée</h3><p id="reviewIntro"></p><div class="review-list" id="reviewList"></div><button class="restart" id="restart">Nouvelle session du même module</button><button class="home-button" id="homeButton">Retour aux modules</button></section>
-    <footer>Fonctionne hors ligne dans Safari, Chrome ou Firefox. Les questions et réponses sont mélangées à chaque session.</footer>
-  </main>
-  <script>
-  const Q = [
-    ['Fondamentaux','Le mot « informatique » résulte de la contraction de…',['information + automatique','internet + mathématique','instruction + mémoire','image + technique'],'information + automatique','Le cours définit l’informatique comme le traitement automatique de l’information.'],
-    ['Fondamentaux','Le hardware désigne…',['les programmes installés','la partie matérielle de l’ordinateur','uniquement le processeur','les données en ligne'],'la partie matérielle de l’ordinateur','Hardware signifie matériel : les éléments physiques de la machine.'],
-    ['Fondamentaux','Le software désigne…',['les composants électroniques','les logiciels et programmes','le boîtier de l’ordinateur','les connecteurs externes'],'les logiciels et programmes','Software signifie logiciel : système d’exploitation, applications et programmes.'],
-    ['Fondamentaux','Quelle unité recueille l’information dans un système informatique ?',['L’unité d’entrée','L’unité de sortie','L’unité de stockage','L’unité graphique'],'L’unité d’entrée','L’unité d’entrée (input) recueille les informations.'],
-    ['Fondamentaux','Quelle unité présente le résultat d’un traitement ?',['L’unité de sortie','L’unité d’entrée','Le chipset','Le socket'],'L’unité de sortie','L’unité de sortie (output) restitue le résultat : écran, imprimante, haut-parleurs, etc.'],
-    ['Signaux','Un signal analogique varie…',['de manière continue','uniquement entre 0 et 1','par valeurs discrètes','uniquement en carré'],'de manière continue','Les grandeurs analogiques, telles que la température ou une tension, varient de façon continue.'],
-    ['Signaux','Un signal numérique est représenté par…',['des valeurs distinctes','une courbe nécessairement continue','une seule valeur','des couleurs uniquement'],'des valeurs distinctes','Un signal numérique utilise des valeurs discrètes, donc séparées et distinctes.'],
-    ['Signaux','Pourquoi un signal numérique est-il plus facile à reproduire qu’un signal analogique ?',['Ses états sont définis et discrets','Il ne contient aucune information','Il est toujours plus lent','Il est uniquement sonore'],'Ses états sont définis et discrets','La copie d’un signal numérique peut retrouver les états définis, contrairement aux nuances continues d’un analogique.'],
-    ['Signaux','Augmenter le taux d’échantillonnage permet généralement…',['de mieux conserver les nuances du signal','de supprimer tout signal numérique','de diminuer le nombre de valeurs','de transformer un SSD en HDD'],'de mieux conserver les nuances du signal','Plus le taux d’échantillonnage est important, meilleure est la qualité du signal numérisé.'],
-    ['Binaire','Un bit peut prendre…',['2 valeurs : 0 ou 1','8 valeurs','10 valeurs','256 valeurs'],'2 valeurs : 0 ou 1','Le bit (binary digit) est la plus petite unité d’information binaire.'],
-    ['Binaire','Un octet contient…',['8 bits','2 bits','16 bits','1024 bits'],'8 bits','Un octet est une combinaison de huit bits.'],
-    ['Binaire','Combien de valeurs différentes peut représenter un octet ?',['256','8','128','1024'],'256','Avec 8 bits, il existe 2⁸ = 256 combinaisons, de 0 à 255.'],
-    ['Binaire','Quelle est la valeur décimale de 11111111 en binaire ?',['255','128','127','256'],'255','Les huit positions à 1 donnent 128+64+32+16+8+4+2+1 = 255.'],
-    ['Binaire','Depuis 1998, 1 Ko vaut…',['1000 octets','1024 octets','100 octets','1024 bits'],'1000 octets','La norme décimale définit 1 kilooctet (Ko) comme 1000 octets.'],
-    ['Binaire','1024 octets correspondent à…',['1 Kio','1 Ko','1 Mio','1 bit'],'1 Kio','Le kibioctet (Kio) utilise la base binaire : 1024 octets.'],
-    ['Unité centrale','Le PC est l’abréviation de…',['Personal Computer','Processing Core','Peripheral Connector','Program Control'],'Personal Computer','PC signifie Personal Computer.'],
-    ['Unité centrale','Les plates-formes se différencient principalement par…',['leur processeur et leur système d’exploitation','la couleur du boîtier','la taille de l’écran uniquement','le nombre de câbles USB'],'leur processeur et leur système d’exploitation','Le cours distingue les plates-formes notamment selon le processeur et le système d’exploitation.'],
-    ['Unité centrale','La taille d’un boîtier conditionne notamment…',['le nombre d’emplacements disponibles','la valeur d’un bit','le protocole HTTP','la résolution native de l’écran'],'le nombre d’emplacements disponibles','Elle conditionne les emplacements de lecteurs en façade et de disques en interne.'],
-    ['Unité centrale','Un serveur lame se caractérise surtout par…',['un très faible encombrement et des composants mutualisés','un écran intégré obligatoire','un seul port USB','un fonctionnement sans réseau'],'un très faible encombrement et des composants mutualisés','Le châssis mutualise notamment alimentation, refroidissement et réseau pour plusieurs lames.'],
-    ['Unité centrale','Un serveur en rack est aussi désigné 1U, 2U, etc., car…',['il occupe une unité dans une baie','il possède un unique processeur','il utilise une seule mémoire','il ne fonctionne qu’avec UEFI'],'il occupe une unité dans une baie','U signifie unité de hauteur dans une baie ou une armoire informatique.'],
-    ['Alimentation','Le bloc d’alimentation d’un PC sert principalement à…',['convertir le secteur en tensions continues adaptées','stocker les documents','afficher les images','refroidir le processeur'],'convertir le secteur en tensions continues adaptées','Il fournit aux composants des tensions continues de très basse tension compatibles avec l’électronique.'],
-    ['Alimentation','Quel format est le standard classique d’alimentation de PC ?',['ATX','BTX','VGA','SATA'],'ATX','Le cours retient ATX comme le format classique ; il est le standard des cartes mères ATX et micro-ATX.'],
-    ['Alimentation','Dans un connecteur d’alimentation, le fil jaune correspond à…',['+12 V','la masse','+5 V','la donnée D+'],'+12 V','Le code rappelé dans le cours est : jaune +12 V, noir masse, rouge +5 V.'],
-    ['Carte mère','La carte mère est…',['l’élément central reliant les composants','un type de RAM','un câble réseau','un écran LCD'],'l’élément central reliant les composants','Elle rassemble les connecteurs, composants, bus et extensions de l’ordinateur.'],
-    ['Carte mère','Le chipset de la carte mère sert à…',['gérer les transferts de données entre composants','faire tourner les plateaux d’un disque','imprimer les documents','alimenter les haut-parleurs'],'gérer les transferts de données entre composants','Le chipset organise les flux entre processeur, mémoire et périphériques.'],
-    ['Carte mère','Un bus informatique est…',['un canal de communication interne','un boîtier externe','un type de disque optique','une pile de BIOS'],'un canal de communication interne','Les bus relient par exemple processeur, chipset, mémoire et entrées/sorties.'],
-    ['Processeur','CPU signifie…',['Central Processing Unit','Computer Peripheral Unit','Control Power Unit','Central Program Utility'],'Central Processing Unit','CPU est l’abréviation anglaise désignant le processeur.'],
-    ['Processeur','Le rôle principal du processeur est de…',['traiter les informations et exécuter les instructions','conserver définitivement les fichiers','produire le courant secteur','connecter un écran VGA'],'traiter les informations et exécuter les instructions','Le CPU est le cœur de calcul de l’ordinateur.'],
-    ['Processeur','La fréquence d’un processeur est notamment exprimée en…',['GHz','dpi','ppm','To'],'GHz','L’horloge du processeur donne une fréquence de référence exprimée en GHz.'],
-    ['Processeur','Le triangle doré du processeur sert de…',['détrompeur d’insertion','capteur de température','antenne réseau','indicateur de RAM'],'détrompeur d’insertion','Il permet de positionner le processeur correctement sans endommager les contacts.'],
-    ['Socket','Le socket établit le contact entre…',['la carte mère et le processeur','le SSD et le boîtier','l’écran et la carte graphique','la RAM et l’imprimante'],'la carte mère et le processeur','Le socket est le connecteur du processeur sur la carte mère.'],
-    ['Mémoire','La RAM est une mémoire…',['volatile','non volatile','optique','mécanique'],'volatile','La RAM perd son contenu lorsque l’alimentation est coupée.'],
-    ['Mémoire','La ROM est une mémoire…',['non volatile','effacée à chaque arrêt','réservée aux images','uniquement externe'],'non volatile','La ROM ne perd pas ses données à l’extinction et peut contenir un micrologiciel.'],
-    ['Mémoire','La RAM contient principalement…',['les données et programmes utilisés temporairement','uniquement le BIOS','les plateaux du disque dur','le signal réseau RJ45'],'les données et programmes utilisés temporairement','La mémoire vive est utilisée pendant l’exécution des programmes.'],
-    ['Mémoire','Quel format de RAM est courant pour les ordinateurs portables ?',['SO-DIMM','DIMM uniquement','SATA','PCIe'],'SO-DIMM','Les PC fixes utilisent couramment DIMM ; les portables utilisent SO-DIMM.'],
-    ['Chipset','Le Northbridge gère historiquement les échanges rapides avec…',['CPU, RAM et PCI Express/AGP','uniquement l’imprimante','les bandes magnétiques','le câble secteur'],'CPU, RAM et PCI Express/AGP','Le northbridge s’occupe des communications rapides avec le processeur, la RAM et les ports graphiques.'],
-    ['Chipset','Le Southbridge prend notamment en charge…',['USB, PCI, ports série et stockage','le calcul des pixels uniquement','les plateaux du HDD','la pile CMOS seule'],'USB, PCI, ports série et stockage','Il gère les bus et dispositifs qui ne relèvent pas du northbridge.'],
-    ['Connectique','VGA transporte historiquement un signal vidéo…',['analogique','numérique uniquement','audio uniquement','réseau'],'analogique','Le VGA est un connecteur DE-15 analogique destiné aux moniteurs.'],
-    ['Connectique','DVI-D transmet…',['uniquement un signal numérique','uniquement un signal analogique','de l’alimentation secteur','un signal téléphonique'],'uniquement un signal numérique','DVI-D signifie Digital : il transporte seulement le signal numérique.'],
-    ['Connectique','Quel connecteur peut transporter image et son numériques ?',['HDMI','VGA','PS/2','RJ11'],'HDMI','HDMI est une interface audio/vidéo numérique.'],
-    ['Connectique','USB signifie…',['Universal Serial Bus','Unified Storage Base','Universal Screen Bridge','Unit Serial Board'],'Universal Serial Bus','USB est l’abréviation de Universal Serial Bus.'],
-    ['Connectique','Une particularité de l’USB est de…',['pouvoir alimenter les périphériques reliés','ne transporter aucune donnée','être forcément analogique','ne fonctionner qu’avec une souris'],'pouvoir alimenter les périphériques reliés','L’USB fournit aussi l’alimentation électrique aux périphériques.'],
-    ['Connectique','Un RJ45 de catégorie 5e peut atteindre, selon le cours…',['1 Gbit/s sur 100 m','1 Gbit/s sur 1 km','10 Gbit/s sur 1 km','56 Gbit/s sur 100 m'],'1 Gbit/s sur 100 m','La catégorie 5e comprend 4 paires et atteint jusqu’à 1 Gbit/s sur 100 mètres.'],
-    ['Connectique','RJ11 est une prise principalement…',['téléphonique','d’écran','de stockage SATA','d’alimentation ATX'],'téléphonique','RJ11 est associé aux liaisons téléphoniques, RTC ou ADSL.'],
-    ['Connectique','SATA a remplacé principalement…',['IDE / Parallel ATA','HDMI','VGA','PCI Express'],'IDE / Parallel ATA','Serial ATA est le successeur de l’IDE, aussi appelé Parallel ATA.'],
-    ['Connectique','Quel avantage du SATA évite le réglage maître/esclave ?',['un périphérique par câble','une prise vidéo numérique','un seul bit par octet','une alimentation à pile'],'un périphérique par câble','Le SATA relie un périphérique par câble et supprime la gestion master/slave de l’IDE.'],
-    ['Extensions','Le format de slot d’extension actuel mis en avant dans le cours est…',['PCI Express','AGP','ISA','EISA'],'PCI Express','PCI Express (PCIe) a remplacé progressivement les anciens formats comme AGP.'],
-    ['Extensions','Une carte fille est…',['une carte ajoutée dans un port d’extension','une ROM de démarrage','un câble USB','une mémoire flash'],'une carte ajoutée dans un port d’extension','Les cartes d’extension, aussi appelées cartes filles, augmentent les fonctions de la carte mère.'],
-    ['Écran','La définition d’un écran correspond à…',['son nombre de pixels affichables','sa diagonale en pouces','son poids','son type de câble secteur'],'son nombre de pixels affichables','Par exemple 1920 × 1080 indique le nombre de points/pixels en largeur et hauteur.'],
-    ['Écran','La résolution d’un écran désigne…',['la densité de pixels par unité de surface','le nombre total de ports USB','la taille de la diagonale','la fréquence du CPU'],'la densité de pixels par unité de surface','Elle s’exprime notamment en dpi (points par pouce).'],
-    ['Écran','La taille d’un moniteur se mesure généralement selon…',['sa diagonale en pouces','son nombre de bits','sa fréquence en GHz','son débit en ppm'],'sa diagonale en pouces','La diagonale est exprimée en pouces ; 1 pouce vaut 2,54 cm.'],
-    ['Carte graphique','Le GPU est…',['le processeur graphique','la mémoire vive','le contrôleur de disque','le firmware du BIOS'],'le processeur graphique','GPU signifie Graphics Processing Unit : il assure les calculs graphiques.'],
-    ['Carte graphique','Le RAMDAC est nécessaire surtout pour une sortie…',['VGA analogique','HDMI numérique','DisplayPort numérique','SATA'],'VGA analogique','Le RAMDAC convertit le numérique en analogique pour la sortie VGA.'],
-    ['Carte graphique','Un circuit graphique intégré convient généralement à…',['la bureautique sans gros besoin graphique','un serveur de bandes uniquement','une impression thermique','un disque RAID 5'],'la bureautique sans gros besoin graphique','Un IGP est adapté quand de fortes performances graphiques ne sont pas nécessaires.'],
-    ['Périphériques','En France, la disposition de clavier habituelle est…',['AZERTY','QWERTY','DVORAK uniquement','ABCDXY'],'AZERTY','AZERTY correspond aux premières lettres de la rangée supérieure des claviers français.'],
-    ['Périphériques','Une souris optique utilise notamment…',['une LED et des images de la surface','une bande magnétique','un toner','un plateau tournant'],'une LED et des images de la surface','Elle prend des milliers d’images de la surface chaque seconde pour détecter le mouvement.'],
-    ['Imprimantes','Une imprimante laser utilise comme consommable…',['du toner en poudre','de l’encre liquide uniquement','un ruban VHS','une pile CMOS'],'du toner en poudre','Le toner est une poudre ; le laser forme le motif sur un tambour photosensible.'],
-    ['Imprimantes','Une imprimante jet d’encre dépose…',['des gouttelettes d’encre liquide','de la poudre de toner','des bits magnétiques','des rayons UV sur une résine'],'des gouttelettes d’encre liquide','L’encre liquide est expulsée par des buses de la tête d’impression.'],
-    ['Imprimantes','La résolution d’une imprimante est couramment exprimée en…',['dpi ou ppp','GHz','rpm','Go'],'dpi ou ppp','dpi signifie dots per inch ; ppp signifie points par pouce.'],
-    ['Scanner','Un scanner sert à…',['transformer un document papier en image numérique','imprimer une image numérique','alimenter une carte mère','refroidir un disque'],'transformer un document papier en image numérique','Un scanner, ou numériseur, est un périphérique d’acquisition.'],
-    ['Périphériques','Un modem est un acronyme de…',['modulateur/démodulateur','moniteur de mémoire','module de disque','moteur numérique'],'modulateur/démodulateur','Le modem convertit pour la transmission sur une ligne téléphonique.'],
-    ['Stockage','Une mémoire de masse est notamment…',['non volatile et de grande capacité','toujours volatile','uniquement une RAM','un signal analogique'],'non volatile et de grande capacité','Les mémoires de masse sont lues/écrites par l’ordinateur et conservent les données sans alimentation.'],
-    ['Disque dur','Un disque dur classique stocke les données grâce à…',['des plateaux magnétiques et des têtes','des cellules OLED','un ruban encreur','une lumière UV'],'des plateaux magnétiques et des têtes','Le HDD contient des plateaux qui tournent et des têtes de lecture/écriture mobiles.'],
-    ['Disque dur','La plus petite quantité d’information gérée en lecture/écriture par un disque est…',['le secteur','le cylindre','le plateau','le boîtier'],'le secteur','Une piste est divisée en secteurs (ou blocs) contenant les données.'],
-    ['Disque dur','Un cylindre correspond à…',['l’empilement des pistes au même rayon sur les plateaux','une seule tête de lecture','le câble SATA','la mémoire cache du CPU'],'l’empilement des pistes au même rayon sur les plateaux','Les pistes à la même distance de l’axe, sur les différents plateaux, forment un cylindre.'],
-    ['Disque dur','L’adressage LBA attribue…',['un numéro unique à chaque secteur','une couleur à chaque plateau','une lettre à chaque câble','un mot de passe à la RAM'],'un numéro unique à chaque secteur','LBA remplace l’adressage CHS par une numérotation logique des blocs.'],
-    ['Disque dur','Les formats courants de HDD sont notamment…',['3,5 pouces pour bureau et 2,5 pouces pour portable','8 pouces pour portable et 1 pouce pour bureau','uniquement 5,25 pouces','uniquement 19 pouces'],'3,5 pouces pour bureau et 2,5 pouces pour portable','Le cours retient 3,5 pouces pour les postes fixes/serveurs et 2,5 pouces pour les portables.'],
-    ['Partitions','Le MBR contient au maximum…',['4 partitions primaires','128 partitions primaires','2 partitions primaires','aucune partition'],'4 partitions primaires','La table MBR contient quatre descripteurs de partitions principales.'],
-    ['Partitions','GPT est associé notamment à…',['UEFI et aux systèmes récents','VGA et aux écrans analogiques','IDE exclusivement','une mémoire volatile'],'UEFI et aux systèmes récents','GPT dépasse les limites du MBR et fait partie de l’environnement UEFI.'],
-    ['Partitions','Quelle limite du MBR est citée dans le cours ?',['4 partitions principales et 2,2 To','128 partitions et 9,4 Zo','1 seule partition de 1 Go','aucune limite de taille'],'4 partitions principales et 2,2 To','GPT permet jusqu’à 128 partitions et des capacités bien supérieures.'],
-    ['RAID','Le RAID 0 privilégie…',['les performances sans tolérance à la panne','la duplication intégrale','la parité sur trois disques','la sauvegarde automatique externe'],'les performances sans tolérance à la panne','RAID 0 répartit les données : si un disque tombe en panne, toutes les données de la grappe sont perdues.'],
-    ['RAID','Le RAID 1 consiste à…',['dupliquer les données sur deux disques','répartir les données sans copie','utiliser obligatoirement trois disques','chiffrer un seul disque'],'dupliquer les données sur deux disques','RAID 1 réalise un miroir : il tolère la perte d’un disque, mais offre la capacité d’un seul.'],
-    ['RAID','Le RAID 5 nécessite au minimum…',['3 disques','1 disque','2 disques','5 disques'],'3 disques','RAID 5 répartit données et parité et requiert au moins trois disques.'],
-    ['RAID','Le RAID remplace-t-il une stratégie de sauvegarde ?',['Non','Oui, toujours','Oui, seulement en RAID 0','Seulement avec un SSD'],'Non','Le RAID améliore la disponibilité, mais ne constitue pas une sauvegarde des données.'],
-    ['SSD','Un SSD se distingue d’un HDD surtout par…',['l’absence de pièces mécaniques mobiles','l’usage obligatoire de plateaux','un fonctionnement analogique','un câble RJ11'],'l’absence de pièces mécaniques mobiles','SSD signifie Solid State Drive : il repose sur des semi-conducteurs, sans mécanique mobile.'],
-    ['SSD','Un avantage important du SSD est…',['son temps d’accès très faible et sa résistance aux chocs','une rotation à 15 000 rpm','la présence d’un ruban encreur','l’usage obligatoire de RAID'],'son temps d’accès très faible et sa résistance aux chocs','Sans pièce mobile, le SSD est silencieux, robuste et très rapide à l’accès.'],
-    ['Flash','La mémoire flash conserve-t-elle ses données sans alimentation ?',['Oui','Non, comme la RAM','Seulement avec une pile CMOS','Seulement en RAID'],'Oui','La flash est une mémoire réinscriptible non volatile : ses données subsistent hors tension.'],
-    ['Flash','Quelle famille de flash est indiquée comme plus rapide et avec une meilleure durée de vie ?',['NAND','NOR','ROM','PROM'],'NAND','Le cours indique que la NAND est plus rapide et présente une meilleure durée de vie que la NOR.'],
-    ['Optique','Un disque Blu-ray est un support…',['optique','magnétique à plateaux','uniquement volatile','à ruban papier'],'optique','CD, DVD et Blu-ray sont des supports optiques.'],
-    ['Bandes','Les bandes magnétiques sont particulièrement adaptées à…',['l’archivage long terme de gros volumes','l’affichage 3D','le démarrage du BIOS','la connexion VGA'],'l’archivage long terme de gros volumes','Elles offrent un faible coût par téraoctet et une bonne conservation, mais un accès plus lent.'],
-    ['BIOS/UEFI','BIOS signifie…',['Basic Input Output System','Binary Internal Operating System','Basic Internet Output Service','Boot Integrated Optical System'],'Basic Input Output System','Le BIOS est le système élémentaire de gestion des entrées/sorties, un micrologiciel.'],
-    ['BIOS/UEFI','Le BIOS intervient…',['au démarrage, avant de passer la main au système d’exploitation','uniquement après l’arrêt du PC','uniquement lors de l’impression','uniquement pour le Wi-Fi'],'au démarrage, avant de passer la main au système d’exploitation','Il initialise et vérifie les composants puis lance le processus de démarrage.'],
-    ['BIOS/UEFI','Flasher le BIOS signifie…',['mettre à jour sa partie réinscriptible','effacer définitivement la RAM','brancher un câble VGA','installer une carte graphique'],'mettre à jour sa partie réinscriptible','Les mémoires EEPROM permettent une mise à jour du BIOS, appelée flashage.'],
-    ['BIOS/UEFI','POST signifie…',['Power-On Self Test','Peripheral Output System Test','Primary Operating Storage Table','Power Optical Signal Transfer'],'Power-On Self Test','Le POST est la séquence de tests matériels effectuée au démarrage.'],
-    ['BIOS/UEFI','Trois bips longs sur un BIOS AMI indiquent généralement…',['un problème de RAM','un écran en haute définition','un RAID 5 actif','un câble USB débranché'],'un problème de RAM','Le tableau du cours associe trois bips longs à un problème de mémoire vive.'],
-    ['BIOS/UEFI','Une pile CMOS usagée peut entraîner…',['la perte des paramètres BIOS à chaque redémarrage','la destruction immédiate du SSD','la disparition du CPU','une hausse de la résolution écran'],'la perte des paramètres BIOS à chaque redémarrage','La pile maintient les réglages du BIOS ; lorsqu’elle est usée, ils ne sont plus conservés.'],
-    ['BIOS/UEFI','L’UEFI est conçu pour remplacer progressivement…',['le BIOS','le SATA','le PCI Express','la RAM'],'le BIOS','UEFI est le micrologiciel moderne qui supplante le BIOS, limité par sa conception ancienne.'],
-    ['BIOS/UEFI','L’UEFI permet notamment de s’affranchir de la limite de disques de…',['2,2 To','2,2 Go','22 To','200 Go'],'2,2 To','Le cours cite l’affranchissement de la limite des disques à 2,2 To parmi les apports d’UEFI.'],
-    ['BIOS/UEFI','Avec UEFI, les applications de démarrage sont stockées dans…',['l’EFI System Partition','la mémoire RAM uniquement','le câble SATA','le Northbridge'],'l’EFI System Partition','L’UEFI lance des applications stockées dans une partition spéciale : EFI System Partition.'],
 
-    ['Fondamentaux','Le traitement automatique de données peut notamment inclure…',['la collecte, la conservation et la destruction de données','uniquement l’affichage à l’écran','uniquement des calculs en binaire','uniquement la connexion à Internet'],'la collecte, la conservation et la destruction de données','Le cours inclut notamment collecte, enregistrement, modification, conservation, destruction et exploitation des données.'],
-    ['Fondamentaux','Un clavier est principalement un périphérique…',['d’entrée','de sortie','de stockage permanent','de traitement'],'d’entrée','Le clavier permet de faire entrer des informations dans l’ordinateur.'],
-    ['Fondamentaux','Une imprimante est principalement un périphérique…',['de sortie','d’entrée','de traitement','de mémoire vive'],'de sortie','Elle restitue sur papier une information traitée par l’ordinateur.'],
-    ['Fondamentaux','Un SSD correspond surtout à l’unité de…',['stockage','sortie','traitement','entrée'],'stockage','Il conserve durablement les données : il appartient à l’unité de stockage.'],
-    ['Fondamentaux','Le processeur appartient principalement à l’unité de…',['traitement','sortie','entrée','archivage papier'],'traitement','C’est le composant qui exécute les instructions et traite les données.'],
-    ['Fondamentaux','La chaîne minimale de traitement de l’information comprend…',['entrée, stockage, traitement et sortie','écran, souris, câble et imprimante','BIOS, RAM, pile et écran','clavier, USB, HDMI et RJ45'],'entrée, stockage, traitement et sortie','Le cours présente ces quatre unités comme les éléments minimaux d’un système de traitement de l’information.'],
-    ['Fondamentaux','La webcam est principalement classée comme périphérique…',['d’entrée','de sortie','de stockage','d’alimentation'],'d’entrée','Elle capture une image ou une vidéo pour l’envoyer à l’ordinateur.'],
+  <div class="eyebrow">Révisions · QCM</div>
+  <h1>Choisis ton module</h1>
+  <p class="sub">Deux séries de questions pour réviser. Sélectionne un thème pour démarrer.</p>
 
-    ['Binaire','Le système binaire est une base…',['2','8','10','16'],'2','Le binaire utilise seulement deux chiffres : 0 et 1.'],
-    ['Binaire','Le système décimal utilisé couramment par les humains est une base…',['10','2','8','16'],'10','Le système décimal comporte dix chiffres, de 0 à 9.'],
-    ['Binaire','Avec deux bits, combien d’états différents peut-on représenter ?',['4','2','8','16'],'4','Deux bits donnent 2², soit quatre combinaisons possibles.'],
-    ['Binaire','Avec trois bits, combien d’états différents peut-on représenter ?',['8','3','6','16'],'8','Trois bits donnent 2³, soit huit combinaisons.'],
-    ['Binaire','Le nombre binaire 00010000 correspond en décimal à…',['16','8','10','32'],'16','Seule la position de poids 16 est à 1.'],
-    ['Binaire','Le nombre binaire 01100100 correspond en décimal à…',['100','64','96','128'],'100','64 + 32 + 4 donnent 100.'],
-    ['Binaire','Dans un circuit électrique utilisé comme image du binaire, un bit à 1 correspond à…',['un circuit fermé et une lampe allumée','un circuit ouvert et une lampe éteinte','une absence de tension permanente','un disque dur en panne'],'un circuit fermé et une lampe allumée','Le cours utilise le passage du courant pour représenter le vrai ou le bit à 1.'],
-    ['Binaire','Dans un octet, la position de gauche a un poids de…',['128','1','8','64'],'128','Les poids des huit bits vont de 128 à gauche à 1 à droite.'],
-    ['Binaire','Mio signifie…',['mébioctet','mégaoctet','microoctet','mémoire d’entrée/sortie'],'mébioctet','Le préfixe binaire correspondant à 1 048 576 octets est mébioctet (Mio).'],
+  <div class="stack">
+    <a class="card" href="architecture.html">
+      <div class="card-left">
+        <span class="card-title">Architecture des ordinateurs</span>
+        <span class="card-meta">10 modules</span>
+      </div>
+      <span class="arrow">→</span>
+    </a>
 
-    ['Carte mère','L’horloge système de la carte mère sert à…',['cadencer la vitesse d’exécution des instructions','conserver les fichiers à long terme','alimenter les cartes graphiques','convertir le signal HDMI'],'cadencer la vitesse d’exécution des instructions','L’horloge donne le rythme de référence au processeur et aux périphériques internes.'],
-    ['Carte mère','Le BIOS de la carte mère est stocké dans…',['une ROM ou une EPROM','une cartouche d’encre','un disque optique','un câble RJ45'],'une ROM ou une EPROM','Le cours présente le BIOS comme un logiciel contenu dans une ROM ou EPROM.'],
-    ['Carte mère','Quel bus relie la mémoire au chipset ?',['le bus mémoire','le bus USB','le bus SATA','le bus VGA'],'le bus mémoire','Le bus mémoire assure la communication entre la mémoire et le chipset.'],
-    ['Carte mère','Le bus système relie principalement…',['le microprocesseur et le chipset','l’imprimante et le scanner','l’écran et le clavier','le disque optique et le modem'],'le microprocesseur et le chipset','C’est le canal de communication interne entre CPU et chipset.'],
-    ['Carte mère','Un emplacement de RAM sur la carte mère est aussi appelé…',['slot mémoire','socket vidéo','port RJ11','baie 5,25 pouces'],'slot mémoire','Les barrettes de RAM se placent dans des slots mémoire.'],
-    ['Carte mère','Le connecteur destiné au processeur sur une carte mère est le…',['socket','slot PCIe','port SATA','port VGA'],'socket','Le socket assure le contact physique et électrique entre la carte mère et le CPU.'],
-    ['Carte mère','Une carte mère peut proposer des connecteurs d’extension tels que…',['PCI et PCI Express','RCA et HDMI uniquement','ROM et RAM','HDD et SSD'],'PCI et PCI Express','Les ports PCI/PCIe permettent d’ajouter des cartes d’extension.'],
-    ['Carte mère','Quel élément de la carte mère détermine en partie le type de processeur et de RAM utilisables ?',['le chipset','le clavier','le boîtier','la souris'],'le chipset','Le chipset conditionne des fonctionnalités, processeurs et mémoires pris en charge.'],
-    ['Carte mère','Le port RJ45 de la carte mère sert principalement à…',['la connexion réseau','la sortie vidéo analogique','l’alimentation ATX','la connexion d’un disque SATA'],'la connexion réseau','RJ45 est la prise réseau Ethernet.'],
-    ['Carte mère','Une connexion Serial ATA sur la carte mère sert surtout à relier…',['un périphérique de stockage','un écran','un clavier PS/2','un microphone jack'],'un périphérique de stockage','SATA relie notamment disques durs et SSD à la carte mère.'],
-    ['Carte mère','Le rôle central de la carte mère est de…',['relier et permettre la communication entre les composants','remplacer le système d’exploitation','imprimer les documents','faire tourner mécaniquement les plateaux'],'relier et permettre la communication entre les composants','Elle accueille composants, connecteurs et bus qui permettent leur coopération.'],
-    ['Carte mère','Le chipset est généralement…',['intégré à la carte mère','placé dans le câble secteur','contenu dans l’écran','installé dans une cartouche toner'],'intégré à la carte mère','Le chipset d’un micro-ordinateur se situe sur la carte mère.'],
+    <a class="card" href="reseaux.html">
+      <div class="card-left">
+        <span class="card-title">Architecture réseaux</span>
+        <span class="card-meta">7 modules</span>
+      </div>
+      <span class="arrow">→</span>
+    </a>
+  </div>
 
-    ['Processeur','Le processeur communique avec le reste de l’ordinateur exclusivement en langage…',['binaire','hexadécimal','analogique','papier'],'binaire','Le CPU traite et échange les informations sous forme binaire.'],
-    ['Processeur','À chaque impulsion d’horloge, le processeur commence par…',['lire une instruction','éteindre la RAM','formater le disque','imprimer une page'],'lire une instruction','Le cours décrit la lecture de l’instruction avant son exécution à chaque impulsion.'],
-    ['Processeur','Le registre d’instruction est…',['une petite mémoire très rapide du processeur','un disque dur externe','un type de câble réseau','une prise d’alimentation'],'une petite mémoire très rapide du processeur','Il contient l’instruction que le processeur doit lire et exécuter.'],
-    ['Processeur','Dans une même gamme et à architecture comparable, un processeur plus cadencé est en principe…',['plus rapide pour traiter les instructions','moins capable de lire des données','incapable de fonctionner avec la RAM','forcément plus économe'],'plus rapide pour traiter les instructions','Une fréquence plus élevée permet de traiter davantage d’instructions dans le même temps.'],
-    ['Processeur','L’horloge d’un processeur est associée dans le cours à un…',['quartz','toner','plateau magnétique','ruban encreur'],'quartz','Le quartz rythme le processeur et fournit une fréquence de référence.'],
-    ['Processeur','Le premier microprocesseur commercialisé par Intel date de…',['1971','1945','1984','2004'],'1971','Le cours indique qu’Intel a commercialisé le premier microprocesseur en 1971.'],
-    ['Processeur','La performance d’un ordinateur dépend notamment de la rapidité avec laquelle le processeur…',['traite et fait circuler les données','imprime les feuilles','charge le toner','allume l’écran'],'traite et fait circuler les données','Le CPU assure le traitement et la circulation des informations.'],
-    ['Processeur','Le cycle décrit dans le cours est le plus proche de…',['lire une instruction puis l’exécuter','effacer la RAM puis arrêter le PC','écrire le BIOS puis formater le disque','lire une image puis imprimer'],'lire une instruction puis l’exécuter','À chaque impulsion, le CPU lit l’instruction dans le registre puis l’exécute.'],
-    ['Processeur','Le processeur est aussi appelé…',['microprocesseur','microcontrôleur CMOS','mémoire morte','contrôleur SATA'],'microprocesseur','CPU et microprocesseur désignent ici le composant de traitement central.'],
-    ['Processeur','Le triangle doré du processeur doit être aligné car il…',['indique l’orientation d’insertion','mesure la fréquence','stocke le BIOS','alimente la RAM'],'indique l’orientation d’insertion','Ce détrompeur évite une mauvaise insertion du processeur.'],
-    ['Processeur','Une instruction est exécutée par…',['le processeur','la souris','le boîtier','le port HDMI'],'le processeur','L’exécution des instructions est la fonction essentielle du CPU.'],
-    ['Processeur','Une fréquence exprimée en GHz mesure…',['le rythme de l’horloge du processeur','la capacité du disque','la résolution de l’écran','la vitesse d’impression'],'le rythme de l’horloge du processeur','GHz est l’unité de fréquence utilisée pour le processeur.'],
+  <footer>Ajoute cette page à ton écran d'accueil pour y accéder en un tap</footer>
 
-    ['Mémoire','Quelle mémoire permet d’augmenter la quantité d’espace temporaire disponible ?',['la RAM','la ROM','le BIOS','la bande magnétique'],'la RAM','On augmente la mémoire vive en ajoutant des barrettes de RAM.'],
-    ['Mémoire','Par rapport à un disque dur, l’accès à la RAM est…',['beaucoup plus rapide','beaucoup plus lent','identique en toute situation','impossible'],'beaucoup plus rapide','La RAM est utilisée pour les données temporaires car son accès est très rapide.'],
-    ['Mémoire','Un ordinateur éteint perd normalement le contenu de…',['la RAM','la ROM','la mémoire flash','un SSD'],'la RAM','La mémoire vive ne conserve pas les données hors tension.'],
-    ['Mémoire','Le micrologiciel d’un équipement est typiquement conservé dans…',['une ROM','une RAM','une mémoire cache volatile uniquement','une imprimante'],'une ROM','La ROM non volatile peut contenir le firmware nécessaire à l’équipement.'],
-    ['Mémoire','PROM désigne une mémoire…',['programmable une seule fois','effaçable par UV','effaçable électriquement à volonté','volatile'],'programmable une seule fois','PROM peut être programmée par l’utilisateur, mais une unique fois.'],
-    ['Mémoire','EPROM peut être effacée grâce à…',['des rayons ultraviolets','une connexion RJ45','une impulsion SATA','une pile CMOS'],'des rayons ultraviolets','La fenêtre transparente d’une EPROM permet l’effacement par UV.'],
-    ['Mémoire','Une EEPROM se distingue d’une EPROM car elle est effaçable…',['électriquement','seulement par UV','uniquement par formatage bas niveau','par retrait de la pile'],'électriquement','EEPROM signifie Electrically Erasable Programmable Read Only Memory.'],
-    ['Mémoire','Flasher une EEPROM consiste à…',['la reprogrammer','la rendre volatile','la connecter au réseau','la convertir en RAM'],'la reprogrammer','Le flashage est l’action de reprogrammer une EEPROM.'],
-    ['Mémoire','La mémoire flash est effacée généralement…',['par pages','bit par bit uniquement','par exposition aux UV','en retirant le processeur'],'par pages','Le cours oppose l’EEPROM, écrite/lue mot par mot, à la flash effacée par pages.'],
-    ['Mémoire','La mémoire cache d’un disque dur sert à…',['conserver les données fréquemment demandées','remplacer tous les plateaux','conserver les paramètres BIOS','afficher une image VGA'],'conserver les données fréquemment demandées','Elle améliore les performances d’accès en gardant des données souvent utilisées.'],
-    ['Mémoire','La ROM standard a comme avantage que ses données…',['ne peuvent pas être effacées par l’utilisateur','s’effacent à chaque arrêt','sont toujours modifiables par USB','sont stockées sur des plateaux'],'ne peuvent pas être effacées par l’utilisateur','Les premières ROM conservent de manière fixe les données nécessaires.'],
-    ['Mémoire','Une EEPROM peut être modifiée même lorsqu’elle est…',['en place dans l’ordinateur','exposée aux UV','déconnectée de toute alimentation','placée dans un lecteur DVD'],'en place dans l’ordinateur','Elle est effaçable électriquement sans devoir être retirée pour un programmateur.'],
-
-    ['Disque dur','Les données d’un HDD sont écrites à partir…',['de la périphérie vers le centre','du centre vers la périphérie uniquement','des deux côtés au hasard','de la RAM vers le BIOS'],'de la périphérie vers le centre','Le cours précise que les têtes commencent par la piste extérieure, piste 0.'],
-    ['Disque dur','Les têtes de lecture/écriture d’un HDD sont des…',['électroaimants','diodes LED','cartouches de toner','fibres optiques'],'électroaimants','Elles génèrent un champ magnétique pour lire et écrire les données.'],
-    ['Disque dur','CHS signifie…',['Cylinder, Head, Sector','Cache, Hardware, Storage','Core, Host, Signal','Control, Heat, Speed'],'Cylinder, Head, Sector','CHS est l’ancien adressage basé sur cylindre, tête et secteur.'],
-    ['Disque dur','LBA est aujourd’hui utilisé car il…',['numérote logiquement les secteurs','augmente le nombre de plateaux','remplace la RAM','convertit les signaux analogiques'],'numérote logiquement les secteurs','LBA attribue une adresse logique unique à chaque secteur.'],
-    ['Disque dur','NCQ améliore les performances en…',['réorganisant les requêtes pour limiter les déplacements','augmentant le nombre de câbles SATA','doublant la mémoire RAM','remplaçant le BIOS'],'réorganisant les requêtes pour limiter les déplacements','Native Command Queuing choisit un ordre de requêtes plus efficace pour le disque.'],
-    ['Disque dur','AHCI permet notamment avec SATA…',['le branchement à chaud et le NCQ','la sortie HDMI','la programmation d’une EPROM','la connexion RJ11'],'le branchement à chaud et le NCQ','AHCI apporte des fonctions absentes des contrôleurs ATA standards, comme hot-plug et NCQ.'],
-    ['Disque dur','Le temps d’accès moyen d’un HDD associe…',['temps de recherche et temps de latence','fréquence et résolution','capacité et format','cache et RAM'],'temps de recherche et temps de latence','Le seek time global correspond à la recherche de la piste et l’attente de rotation.'],
-    ['Disque dur','La vitesse de rotation d’un disque dur s’exprime en…',['tours par minute','gigaoctets','dpi','volts'],'tours par minute','On utilise rpm ou trs/min pour la vitesse des plateaux.'],
-    ['SSD','Un SSD utilise principalement…',['de la mémoire flash','des plateaux magnétiques','un ruban encreur','des secteurs optiques'],'de la mémoire flash','Le SSD repose sur des semi-conducteurs et de la mémoire flash.'],
-    ['SSD','Par rapport à un HDD, un SSD est généralement…',['silencieux','bruyant à cause des plateaux','plus sensible aux chocs mécaniques','obligatoirement plus volumineux'],'silencieux','L’absence de pièces mobiles rend le SSD silencieux et plus résistant aux chocs.'],
-
-    ['Périphériques','Un écran est aussi appelé…',['moniteur','modem','microprocesseur','contrôleur SATA'],'moniteur','L’écran est le périphérique d’affichage de l’ordinateur.'],
-    ['Périphériques','La technologie LCD fonctionne grâce à…',['un rétroéclairage et des cristaux liquides','des plateaux magnétiques','un laser et un toner','une bande magnétique'],'un rétroéclairage et des cristaux liquides','LCD signifie Liquid Crystal Display et utilise des cristaux liquides polarisant la lumière.'],
-    ['Périphériques','Les écrans LED se distinguent notamment par…',['un rétroéclairage à diodes électroluminescentes','une tête d’impression thermique','une connexion exclusivement VGA','une mémoire volatile'],'un rétroéclairage à diodes électroluminescentes','Les LED servent au rétroéclairage des écrans LED.'],
-    ['Périphériques','Un écran OLED offre généralement…',['un très bon contraste','des plateaux plus rapides','une meilleure vitesse SATA','une mémoire non volatile'],'un très bon contraste','Le cours indique que l’OLED offre généralement le meilleur contraste.'],
-    ['Périphériques','Un clavier peut être relié sans fil notamment par…',['Bluetooth','SATA','VGA','IDE'],'Bluetooth','Les claviers sans fil utilisent une liaison radio propriétaire ou Bluetooth.'],
-    ['Périphériques','Un pavé tactile d’ordinateur portable est aussi nommé…',['touchpad ou trackpad','chipset','northbridge','toner'],'touchpad ou trackpad','Touchpad est le terme courant ; Apple emploie Trackpad.'],
-    ['Périphériques','Une imprimante thermique est notamment utilisée pour…',['des tickets et étiquettes','des disques durs','des barrettes RAM','des ports RJ45'],'des tickets et étiquettes','Sa tête chauffe un film d’encrage sensible à la chaleur.'],
-    ['Périphériques','La vitesse d’impression est habituellement exprimée en…',['pages par minute','gigahertz','tours par minute','gigaoctets'],'pages par minute','Les imprimantes indiquent leur vitesse en ppm.'],
-
-    ['Connectique','DisplayPort est un connecteur…',['numérique audio/vidéo','analogique téléphonique','d’alimentation','de stockage magnétique'],'numérique audio/vidéo','DisplayPort transporte son et image haute définition.'],
-    ['Connectique','RCA est surtout associé au monde…',['audio/vidéo ancien','réseau Ethernet','stockage SATA','alimentation ATX'],'audio/vidéo ancien','RCA transporte des signaux audio ou vidéo, mais de qualité inférieure aux connecteurs modernes.'],
-    ['Connectique','Un câble USB 3.0 possède, selon le cours…',['8 fils','2 fils','4 fils','15 fils'],'8 fils','USB 3.0 utilise deux fils de puissance, deux pour les données classiques et quatre SuperSpeed.'],
-    ['Connectique','USB-C a été retenu par l’Union européenne pour…',['uniformiser le connecteur principal des appareils électroniques','remplacer le BIOS','faire tourner les disques durs','gérer les partitions GPT'],'uniformiser le connecteur principal des appareils électroniques','Le cours présente USB-C comme le choix d’uniformisation des connecteurs grand public.'],
-    ['Connectique','Une prise RJ45 comporte…',['8 contacts formant 4 paires','6 contacts formant 2 paires','15 broches vidéo','7 fils SATA'],'8 contacts formant 4 paires','RJ45 utilise huit connecteurs, organisés en quatre paires.'],
-    ['Connectique','La catégorie 6a peut théoriquement atteindre…',['10 Gbit/s jusqu’à 56 m','1 Gbit/s jusqu’à 1 km','100 Mbit/s jusqu’à 10 m','600 Mio/s jusqu’à 100 m'],'10 Gbit/s jusqu’à 56 m','Le cours donne 10 Gbit/s et 500 MHz jusqu’à 56 mètres pour la catégorie 6a.'],
-    ['Connectique','IDE est une technologie devenue…',['obsolète au profit du SATA','indispensable aux SSD NVMe','une norme vidéo actuelle','un format de mémoire vive'],'obsolète au profit du SATA','Parallel ATA/IDE a été remplacé par Serial ATA.'],
-    ['Connectique','SATA III permet en pratique un débit utile d’environ…',['600 Mio/s','150 Mio/s','1 Gbit/s','16 Mio/s'],'600 Mio/s','SATA III (SATA 600) atteint 600 Mio/s utiles dans le cours.'],
-    ['Extensions','PCI Express présente notamment l’avantage de…',['permettre le branchement à chaud de composants','transporter du courant secteur','remplacer le BIOS','être compatible avec tous les ports PCI anciens'],'permettre le branchement à chaud de composants','Le cours cite la possibilité de brancher ou débrancher à chaud des composants PCIe.'],
-    ['Extensions','Une carte réseau ajoutée dans un PC peut permettre…',['d’optimiser ou multiplier les accès réseau','d’augmenter la diagonale de l’écran','de remplacer le processeur','de créer une ROM'],'d’optimiser ou multiplier les accès réseau','Une carte réseau peut améliorer le réseau ou ajouter plusieurs interfaces.'],
-    ['Extensions','Une carte d’acquisition vidéo sert notamment à…',['numériser des films analogiques','augmenter la RAM','remplacer un disque SATA','réinitialiser le BIOS'],'numériser des films analogiques','Elle permet de convertir des vidéos issues par exemple d’un ancien caméscope VHS.'],
-
-    ['BIOS/UEFI','Quand on appuie sur le bouton marche, le premier signal est envoyé à…',['la carte mère','l’imprimante','l’écran','la souris'],'la carte mère','Le bouton d’alimentation envoie un signal à la carte mère, qui pilote ensuite l’alimentation.'],
-    ['BIOS/UEFI','Le BIOS est parfois appelé…',['firmware ou micrologiciel','navigateur','système de fichiers','pilote graphique'],'firmware ou micrologiciel','Le BIOS est un programme embarqué qui gère les composants au démarrage.'],
-    ['BIOS/UEFI','Les réglages du BIOS sont conservés hors tension grâce notamment à…',['une pile','la mémoire vive','un port USB','un disque optique'],'une pile','La pile maintient l’alimentation de la mémoire de réglages lorsque le PC est éteint.'],
-    ['BIOS/UEFI','Une touche possible pour entrer dans le setup BIOS est…',['F2','F12 uniquement','Échap uniquement','la barre espace uniquement'],'F2','Selon le fabricant, le setup peut être accessible avec F2, F10, Suppr ou une combinaison.'],
-    ['BIOS/UEFI','Lors du POST, le BIOS vérifie notamment…',['l’initialisation du processeur et la mémoire vive','le niveau de toner de l’imprimante','la disposition AZERTY','la taille des fichiers utilisateur'],'l’initialisation du processeur et la mémoire vive','Le POST effectue des tests matériels essentiels avant le chargement du système.'],
-    ['BIOS/UEFI','Un bip court unique sur un BIOS AMI signifie généralement…',['que tout est correct','un problème de RAM','un défaut d’affichage','une panne de ventilateur'],'que tout est correct','Le tableau du cours indique « 1 bip court : tout est OK ».'],
-    ['BIOS/UEFI','Cinq bips longs avec un BIOS AMI signalent généralement…',['un problème d’affichage','un problème de RAM','un SSD absent','un câble RJ45 débranché'],'un problème d’affichage','Le tableau associe cinq bips longs à un problème de carte graphique ou d’affichage.'],
-    ['BIOS/UEFI','Réinitialiser le BIOS peut notamment permettre de…',['supprimer un mot de passe BIOS','augmenter la RAM physique','réparer un plateau de HDD','transformer un port VGA en HDMI'],'supprimer un mot de passe BIOS','Le cours souligne que la réinitialisation peut supprimer le mot de passe du BIOS.'],
-    ['BIOS/UEFI','L’UEFI offre par rapport au BIOS notamment…',['une interface graphique haute résolution','un fonctionnement sans mémoire','une absence totale de partition','un signal vidéo analogique'],'une interface graphique haute résolution','L’UEFI apporte entre autres une interface graphique haute résolution et des fonctions réseau.']
-  ].map(([theme,text,options,answer,explanation]) => ({theme,text,options,answer,explanation}));
-
-  const $ = id => document.getElementById(id);
-  const MODULES = [
-    {id:'m1', number:'Module 1', name:'Les bases de l’informatique', description:'Définition, hardware/software, fonctionnement général et chaîne de traitement.', themes:['Fondamentaux','Signaux']},
-    {id:'m2', number:'Module 2', name:'Représentation de l’information', description:'Bit, octet, unités, binaire et codage.', themes:['Binaire','Signaux']},
-    {id:'m3', number:'Module 3', name:'Carte mère', description:'Carte mère, bus, chipset, horloge, socket et connecteurs.', themes:['Carte mère','Chipset','Socket','Alimentation']},
-    {id:'m4', number:'Module 4', name:'Processeur (CPU)', description:'Architecture, fréquence, registres et cycle d’instruction.', themes:['Processeur']},
-    {id:'m5', number:'Module 5', name:'Les mémoires', description:'RAM, ROM, cache, EEPROM et mémoire flash.', themes:['Mémoire','Flash']},
-    {id:'m6', number:'Module 6', name:'Stockage', description:'HDD, SSD, SATA, partitions, RAID et supports de stockage.', themes:['Stockage','Disque dur','Partitions','RAID','SSD','Flash','Optique','Bandes']},
-    {id:'m7', number:'Module 7', name:'Les périphériques', description:'Entrée, sortie, entrée/sortie et périphériques externes.', themes:['Écran','Carte graphique','Périphériques','Imprimantes','Scanner']},
-    {id:'m8', number:'Module 8', name:'Ports et connectiques', description:'USB, HDMI, DisplayPort, RJ45, SATA et PCI Express.', themes:['Connectique','Extensions']},
-    {id:'m9', number:'Module 9', name:'BIOS / UEFI', description:'Démarrage, POST, boot et configuration.', themes:['BIOS/UEFI']},
-    {id:'m10', number:'Module 10', name:'Synthèse générale', description:'Questions mélangées sur l’ensemble du cours.', themes:null, synthesis:true}
-  ];
-  let session = [], index = 0, score = 0, locked = false, themeStats = {}, currentTopic = null, currentModule = null;
-  const shuffle = list => [...list].sort(() => Math.random() - .5);
-  const moduleQuestions = module => module.synthesis ? Q : Q.filter(q => module.themes.includes(q.theme));
-  function renderHome() {
-    $('moduleGrid').replaceChildren(...MODULES.map(module => {
-      const b=document.createElement('button'); b.className='module';
-      b.innerHTML=`<span class="module-number">${module.number}</span><h2>${module.name}</h2><p>${module.description}</p>`;
-      b.onclick=()=>startModule(module); return b;
-    }));
-  }
-  function startModule(module) {
-    currentModule=module; currentTopic=null;
-    const available=moduleQuestions(module);
-    session=shuffle(available).slice(0, Math.min(module.synthesis ? 50 : available.length, available.length));
-    index = 0; score = 0; themeStats = {};
-    $('home').style.display='none'; $('quiz').style.display='block'; $('result').classList.remove('show'); $('moduleLabel').textContent=module.name; render();
-  }
-  function startTopic(topic) {
-    currentTopic=topic; currentModule=null;
-    const available=Q.filter(q => q.theme === topic);
-    session=shuffle(available); index=0; score=0; themeStats={};
-    $('quiz').style.display='block'; $('result').classList.remove('show'); $('moduleLabel').textContent=`Révision ciblée : ${topic}`; render();
-  }
-  function render() {
-    locked=false; const q=session[index]; $('count').textContent=`Question ${index+1} / ${session.length}`; $('bar').style.width=`${(index/session.length)*100}%`;
-    $('theme').textContent=`${currentTopic ? 'Révision ciblée' : currentModule.name} · ${q.theme}`; $('question').textContent=q.text; $('feedback').className='feedback'; $('feedback').innerHTML=''; $('next').classList.remove('show');
-    const letters=['A','B','C','D']; $('answers').replaceChildren(...shuffle(q.options).map((option,i)=>{ const b=document.createElement('button'); b.className='answer'; b.innerHTML=`<span class="letter">${letters[i]}</span><span>${option}</span>`; b.onclick=()=>answer(option,b); return b; }));
-  }
-  function answer(choice,button) {
-    if(locked) return; locked=true; const q=session[index], correct=choice===q.answer; if(correct) score++;
-    themeStats[q.theme] ||= {total:0, correct:0}; themeStats[q.theme].total++; if(correct) themeStats[q.theme].correct++;
-    [...$('answers').children].forEach(b=>{ b.disabled=true; if(b.textContent.trim().slice(1).trim()===q.answer) b.classList.add('good'); });
-    if(!correct) button.classList.add('bad');
-    $('feedback').className=`feedback show ${correct?'good':'bad'}`; $('feedback').innerHTML=`<strong>${correct?'Bonne réponse !':'Réponse incorrecte.'}</strong>${q.explanation}`; $('next').classList.add('show');
-  }
-  $('next').onclick=()=>{ index++; if(index<session.length) render(); else finish(); };
-  function finish() {
-    $('quiz').style.display='none'; $('result').classList.add('show');
-    const rate=Math.round(score/session.length*100);
-    $('resultTitle').textContent=currentTopic ? `Résultat - Révision ciblée : ${currentTopic}` : `Résultat - ${currentModule.name}`;
-    $('finalScore').textContent=`${rate} %`;
-    const assessment = rate >= 90 ? 'Très bon niveau.' : rate >= 70 ? 'Bon niveau : quelques points sont à consolider.' : 'Révision recommandée avant une nouvelle session.';
-    $('finalText').textContent=`Réussite du module : ${score} bonne${score>1?'s':''} réponse${score>1?'s':''} sur ${session.length}. ${assessment}`;
-    const weaknesses = Object.entries(themeStats).map(([theme, stat]) => ({theme, ...stat, wrong:stat.total-stat.correct})).filter(s => s.wrong > 0).sort((a,b) => (b.wrong/b.total)-(a.wrong/a.total) || b.wrong-a.wrong);
-    $('reviewList').replaceChildren();
-    if (!weaknesses.length) {
-      $('reviewIntro').textContent='Aucun thème faible sur cette session.';
-      const message=document.createElement('div'); message.className='review-empty'; message.textContent='Parfait : tu n’as commis aucune erreur. Lance une nouvelle session pour varier les questions.'; $('reviewList').append(message);
-    } else {
-      $('reviewIntro').textContent='Choisis un thème où une erreur a été repérée :';
-      weaknesses.forEach(({theme,total,wrong}) => {
-        const b=document.createElement('button'); b.className='review-item'; b.innerHTML=`<strong>${theme}</strong><span>${wrong} erreur${wrong>1?'s':''} sur ${total}</span>`; b.onclick=()=>startTopic(theme); $('reviewList').append(b);
-      });
-    }
-  }
-  $('restart').onclick=()=> currentTopic ? startTopic(currentTopic) : startModule(currentModule);
-  function goHome() { $('quiz').style.display='none'; $('result').classList.remove('show'); $('home').style.display='block'; }
-  $('homeButton').onclick=goHome;
-  $('backToHome').onclick=goHome;
-  renderHome();
-  </script>
 </body>
 </html>
