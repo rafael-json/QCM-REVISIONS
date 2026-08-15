@@ -5,68 +5,71 @@
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <title>QCM - Architecture des ordinateurs</title>
   <style>
-    :root { --ink:#152033; --muted:#68758a; --surface:#fff; --bg:#f2f5f9; --brand:#2457d6; --ok:#177b4b; --bad:#bb3345; --line:#dce3ed; }
-    * { box-sizing:border-box; }
-    body { margin:0; min-height:100vh; color:var(--ink); background:linear-gradient(135deg,#edf3ff 0%,var(--bg) 45%,#f9fafc 100%); font:16px/1.5 -apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif; }
-    main { width:min(820px,calc(100% - 32px)); margin:0 auto; padding:48px 0; }
-    header { margin-bottom:24px; }
-    h1 { margin:0 0 5px; font-size:clamp(1.65rem,4vw,2.35rem); letter-spacing:-.04em; }
-    .subtitle { margin:0; color:var(--muted); }
-    .card { background:var(--surface); border:1px solid rgba(220,227,237,.9); box-shadow:0 16px 45px rgba(38,58,95,.10); border-radius:20px; padding:clamp(22px,5vw,42px); }
-    #quiz { display:none; }
-    .home-intro { max-width:650px; margin:0 0 27px; color:var(--muted); }
-    .module-grid { display:grid; grid-template-columns:repeat(auto-fit,minmax(230px,1fr)); gap:13px; }
-    .module { min-height:168px; display:flex; flex-direction:column; align-items:flex-start; padding:18px; color:var(--ink); background:#fff; border:1px solid var(--line); border-radius:14px; text-align:left; }
-    .module:hover { transform:translateY(-2px); border-color:#8faef4; box-shadow:0 8px 20px rgba(38,58,95,.09); }
-    .module-number { color:var(--brand); font-size:.78rem; font-weight:800; text-transform:uppercase; letter-spacing:.05em; }
-    .module h2 { margin:5px 0 7px; font-size:1.05rem; }
-    .module p { margin:0; color:var(--muted); font-size:.86rem; line-height:1.38; }
-    .meta { display:flex; align-items:center; justify-content:space-between; gap:16px; color:var(--muted); font-size:.93rem; margin-bottom:12px; }
-    .quiz-nav { display:flex; justify-content:space-between; align-items:center; gap:12px; margin-bottom:18px; }
-    .back { padding:8px 11px; color:var(--brand); background:#eef3ff; border:0; border-radius:8px; font-size:.87rem; font-weight:700; }
-    .module-label { color:var(--muted); font-size:.86rem; font-weight:600; text-align:right; }
-    .bar { height:9px; background:#e9eef5; border-radius:99px; overflow:hidden; margin-bottom:31px; }
-    .bar span { display:block; height:100%; width:0; background:linear-gradient(90deg,#2457d6,#5b8dff); border-radius:inherit; transition:width .25s ease; }
-    .tag { display:inline-block; margin:0 0 13px; padding:4px 9px; border-radius:999px; color:#2457d6; background:#ebf1ff; font-size:.79rem; font-weight:700; }
-    h2 { font-size:clamp(1.18rem,3vw,1.5rem); line-height:1.35; margin:0 0 22px; }
-    .answers { display:grid; gap:11px; }
-    button { font:inherit; cursor:pointer; }
-    .answer { width:100%; display:flex; align-items:flex-start; gap:12px; padding:15px 16px; text-align:left; color:var(--ink); background:#fff; border:1px solid var(--line); border-radius:12px; transition:transform .15s, border-color .15s, background .15s; }
-    .answer:not(:disabled):hover { transform:translateY(-1px); border-color:#8faef4; background:#f7faff; }
-    .answer:disabled { cursor:default; }
-    .letter { flex:0 0 25px; width:25px; height:25px; display:grid; place-items:center; color:#345; background:#edf1f6; border-radius:50%; font-size:.8rem; font-weight:700; }
-    .answer.good { color:#0d5c35; border-color:#4ab87b; background:#edfff4; }
-    .answer.good .letter { color:#fff; background:var(--ok); }
-    .answer.bad { color:#8f2633; border-color:#ec8793; background:#fff1f3; }
-    .answer.bad .letter { color:#fff; background:var(--bad); }
-    .feedback { display:none; margin:23px 0 0; padding:16px 18px; border-left:4px solid var(--brand); border-radius:0 10px 10px 0; background:#f4f7fc; }
-    .feedback.show { display:block; }
-    .feedback.good { border-color:var(--ok); background:#edfff4; }
-    .feedback.bad { border-color:var(--bad); background:#fff1f3; }
-    .feedback strong { display:block; margin-bottom:4px; }
-    .actions { display:flex; justify-content:flex-end; margin-top:22px; }
-    .next { display:none; padding:12px 17px; color:#fff; background:var(--brand); border:0; border-radius:10px; font-weight:700; }
-    .next.show { display:block; }
-    .next:hover { background:#1748bd; }
-    .result { display:none; text-align:center; }
-    .result.show { display:block; }
-    .score { margin:18px 0 5px; font-size:3.4rem; font-weight:800; letter-spacing:-.07em; color:var(--brand); }
-    .result p { color:var(--muted); }
-    .restart { margin-top:15px; padding:13px 18px; color:#fff; background:var(--brand); border:0; border-radius:10px; font-weight:700; }
-    .home-button { margin:15px 0 0 8px; padding:12px 17px; color:var(--brand); background:#eef3ff; border:0; border-radius:10px; font-weight:700; }
-    .review-title { margin:30px 0 8px; font-size:1.08rem; }
-    .review-list { display:grid; gap:9px; margin:14px 0 0; text-align:left; }
-    .review-item { width:100%; display:flex; align-items:center; justify-content:space-between; gap:12px; padding:13px 14px; color:var(--ink); background:#f7f9fc; border:1px solid var(--line); border-radius:11px; text-align:left; }
-    .review-item:hover { border-color:#8faef4; background:#f1f5ff; }
-    .review-item span { color:var(--muted); font-size:.88rem; white-space:nowrap; }
-    .review-empty { margin:14px 0 0; padding:13px; color:var(--ok); background:#edfff4; border-radius:10px; }
-    footer { margin-top:20px; color:var(--muted); font-size:.82rem; text-align:center; }
-    @media (max-width:520px) { main { width:min(100% - 20px,820px); padding:22px 0; } .card { border-radius:15px; } }
-  </style>
+:root{--bg:#0b0f0d;--surface:#121a17;--text:#e8f0ec;--muted:#7d9089;--accent:#5eead4;--accent-dim:#2d6b60;--line:#1f2b26;--ok:#34d399;--ok-dark:#062e1a;--bad:#f87171;--bad-dark:#450a0a}
+*{box-sizing:border-box}
+body{margin:0;min-height:100vh;color:var(--text);background:radial-gradient(circle at 15% 10%,rgba(94,234,212,.06),transparent 40%),var(--bg);font:16px/1.5 -apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif}
+main{width:min(850px,calc(100% - 32px));margin:0 auto;padding:48px 0}
+header{margin-bottom:24px}
+.home-link{display:inline-flex;align-items:center;gap:6px;margin-bottom:18px;padding:8px 12px;color:var(--accent);background:rgba(94,234,212,.08);border:1px solid var(--line);border-radius:8px;font-family:"SF Mono","Menlo",monospace;font-size:.78rem;font-weight:600;text-decoration:none;letter-spacing:.02em;transition:border-color .2s ease,background .2s ease}
+.home-link:hover{border-color:var(--accent-dim);background:rgba(94,234,212,.14)}
+h1{margin:0 0 5px;font-family:"SF Mono","Menlo",monospace;font-size:clamp(1.5rem,4vw,2.15rem);font-weight:600;letter-spacing:-.01em}
+.subtitle{margin:0;color:var(--muted)}
+.card{background:linear-gradient(180deg,rgba(255,255,255,.015),transparent),var(--surface);border:1px solid var(--line);box-shadow:0 16px 45px rgba(0,0,0,.35);border-radius:14px;padding:clamp(22px,5vw,42px)}
+#quiz{display:none}
+.result{display:none;text-align:center}
+.result.show{display:block}
+.home-intro{max-width:670px;margin:0 0 27px;color:var(--muted)}
+.module-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(230px,1fr));gap:13px}
+.module{min-height:160px;display:flex;flex-direction:column;align-items:flex-start;padding:18px;color:var(--text);background:rgba(255,255,255,.015);border:1px solid var(--line);border-radius:12px;text-align:left;font:inherit;cursor:pointer;transition:transform .2s ease,border-color .2s ease,background .2s ease}
+.module:hover{transform:translateY(-2px);border-color:var(--accent-dim);background:rgba(94,234,212,.05)}
+.module-number{color:var(--accent);font-size:.78rem;font-weight:800;text-transform:uppercase;letter-spacing:.05em}
+.module h2{margin:5px 0 7px;font-size:1.05rem;line-height:1.25}
+.module p{margin:0;color:var(--muted);font-size:.86rem;line-height:1.38}
+.meta{display:flex;justify-content:space-between;align-items:center;gap:16px;color:var(--muted);font-size:.93rem;margin-bottom:12px}
+.quiz-nav{display:flex;justify-content:space-between;align-items:center;gap:12px;margin-bottom:18px}
+.back,.home-button{padding:8px 11px;color:var(--accent);background:rgba(94,234,212,.08);border:1px solid var(--line);border-radius:8px;font-size:.87rem;font-weight:700;font:inherit;cursor:pointer;transition:border-color .2s ease,background .2s ease}
+.back:hover,.home-button:hover{border-color:var(--accent-dim);background:rgba(94,234,212,.14)}
+.module-label{color:var(--muted);font-size:.86rem;font-weight:600;text-align:right}
+.bar{height:9px;background:var(--line);border-radius:99px;overflow:hidden;margin-bottom:31px}
+.bar span{display:block;height:100%;width:0;background:linear-gradient(90deg,var(--accent-dim),var(--accent));border-radius:inherit;transition:width .25s ease}
+.tag{display:inline-block;margin:0 0 13px;padding:4px 9px;border-radius:999px;color:var(--accent);background:rgba(94,234,212,.08);font-size:.79rem;font-weight:700;text-transform:none;letter-spacing:0}
+h2{font-size:clamp(1.18rem,3vw,1.5rem);line-height:1.35;margin:0 0 22px}
+.answers{display:grid;gap:11px}
+button{font:inherit;cursor:pointer}
+.answer{width:100%;display:flex;align-items:flex-start;gap:12px;padding:15px 16px;text-align:left;color:var(--text);background:rgba(255,255,255,.015);border:1px solid var(--line);border-radius:10px;font:inherit;cursor:pointer;transition:transform .15s ease,border-color .15s ease,background .15s ease}
+.answer:not(:disabled):hover{transform:translateY(-1px);border-color:var(--accent-dim);background:rgba(94,234,212,.05)}
+.answer:disabled{cursor:default}
+.letter{flex:0 0 25px;width:25px;height:25px;display:grid;place-items:center;color:var(--text);background:var(--line);border-radius:50%;font-size:.8rem;font-weight:700}
+.answer.good{color:#bbf7d0;border-color:var(--ok);background:rgba(52,211,153,.08)}
+.answer.good .letter{color:var(--ok-dark);background:var(--ok)}
+.answer.bad{color:#fecdd3;border-color:var(--bad);background:rgba(248,113,113,.08)}
+.answer.bad .letter{color:var(--bad-dark);background:var(--bad)}
+.feedback{display:none;margin:23px 0 0;padding:16px 18px;border-left:4px solid var(--accent);border-radius:0 10px 10px 0;background:rgba(94,234,212,.06)}
+.feedback.show{display:block}
+.feedback.good{border-color:var(--ok);background:rgba(52,211,153,.08)}
+.feedback.bad{border-color:var(--bad);background:rgba(248,113,113,.08)}
+.feedback strong{display:block;margin-bottom:4px}
+.actions{display:flex;justify-content:flex-end;margin-top:22px}
+.next,.restart{display:none;padding:12px 17px;color:var(--ok-dark);background:var(--accent);border:0;border-radius:10px;font-weight:700;font:inherit;cursor:pointer;transition:background .2s ease}
+.next.show{display:block}
+.next:hover,.restart:hover{background:#7cf2df}
+.restart{display:inline-block;margin-top:15px}
+.score{margin:18px 0 5px;font-family:"SF Mono","Menlo",monospace;font-size:3.4rem;font-weight:700;letter-spacing:-.03em;color:var(--accent)}
+.result p{color:var(--muted)}
+.home-button{margin:15px 0 0 8px;padding:12px 17px}
+.review-title{margin:30px 0 8px;font-size:1.08rem}
+.review-list{display:grid;gap:9px;margin:14px 0 0;text-align:left}
+.review-item{width:100%;display:flex;align-items:center;justify-content:space-between;gap:12px;padding:13px 14px;color:var(--text);background:rgba(255,255,255,.015);border:1px solid var(--line);border-radius:10px;text-align:left;font:inherit;cursor:pointer;transition:border-color .2s ease,background .2s ease}
+.review-item:hover{border-color:var(--accent-dim);background:rgba(94,234,212,.05)}
+.review-item span{color:var(--muted);font-size:.88rem;white-space:nowrap}
+.review-empty{margin:14px 0 0;padding:13px;color:var(--ok);background:rgba(52,211,153,.08);border-radius:10px}
+footer{margin-top:20px;color:var(--muted);font-size:.82rem;text-align:center;font-family:"SF Mono","Menlo",monospace}
+@media(max-width:520px){main{width:min(100% - 20px,850px);padding:22px 0}.card{border-radius:12px}.module-label{max-width:50%}}
+</style>
 </head>
 <body>
   <main>
-    <header><h1>Architecture des ordinateurs</h1><p class="subtitle">Révisions interactives par module</p></header>
+    <header><a class="home-link" href="index.html">&larr; Accueil</a><h1>Architecture des ordinateurs</h1><p class="subtitle">Révisions interactives par module</p></header>
     <section class="card" id="home"><h2>Choisis un module</h2><p class="home-intro">Chaque module propose les questions liées à ses notions. La synthèse générale sélectionne 50 questions mélangées dans toute la banque.</p><div class="module-grid" id="moduleGrid"></div></section>
     <section class="card" id="quiz" aria-live="polite">
       <div class="quiz-nav"><button class="back" id="backToHome">← Retour aux modules</button><span class="module-label" id="moduleLabel"></span></div>
