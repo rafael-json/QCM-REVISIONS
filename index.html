@@ -4,124 +4,16 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Révisions QCM</title>
-<style>
-  :root{
-    --bg:#0b0f0d;
-    --panel:#11171410;
-    --line:#1f2b26;
-    --text:#e8f0ec;
-    --muted:#7d9089;
-    --accent:#5eead4;
-    --accent-dim:#2d6b60;
-  }
-  *{box-sizing:border-box; margin:0; padding:0;}
-  body{
-    background:
-      radial-gradient(circle at 15% 10%, rgba(94,234,212,0.06), transparent 40%),
-      var(--bg);
-    color:var(--text);
-    font-family:-apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
-    min-height:100vh;
-    display:flex;
-    flex-direction:column;
-    align-items:center;
-    padding:8vh 20px 6vh;
-  }
-  .eyebrow{
-    font-family:"SF Mono", "Menlo", monospace;
-    font-size:0.75rem;
-    letter-spacing:0.18em;
-    text-transform:uppercase;
-    color:var(--accent);
-    margin-bottom:14px;
-  }
-  h1{
-    font-family:"SF Mono", "Menlo", monospace;
-    font-size:clamp(1.6rem, 5vw, 2.4rem);
-    font-weight:600;
-    letter-spacing:-0.01em;
-    margin-bottom:8px;
-    text-align:center;
-  }
-  .sub{
-    color:var(--muted);
-    font-size:0.95rem;
-    text-align:center;
-    max-width:420px;
-    margin-bottom:56px;
-    line-height:1.5;
-  }
-  .stack{
-    width:100%;
-    max-width:480px;
-    display:flex;
-    flex-direction:column;
-    gap:14px;
-  }
-  a.card{
-    position:relative;
-    display:flex;
-    align-items:center;
-    justify-content:space-between;
-    gap:16px;
-    text-decoration:none;
-    color:var(--text);
-    border:1px solid var(--line);
-    border-radius:10px;
-    padding:22px 24px;
-    background:linear-gradient(180deg, rgba(255,255,255,0.015), transparent);
-    transition:border-color 0.2s ease, transform 0.2s ease, background 0.2s ease;
-  }
-  a.card:hover, a.card:focus-visible{
-    border-color:var(--accent-dim);
-    background:linear-gradient(180deg, rgba(94,234,212,0.06), transparent);
-    transform:translateY(-1px);
-  }
-  a.card:focus-visible{
-    outline:2px solid var(--accent);
-    outline-offset:2px;
-  }
-  .card-left{
-    display:flex;
-    flex-direction:column;
-    gap:4px;
-  }
-  .card-title{
-    font-size:1.05rem;
-    font-weight:600;
-  }
-  .card-meta{
-    font-family:"SF Mono", "Menlo", monospace;
-    font-size:0.75rem;
-    color:var(--muted);
-    letter-spacing:0.02em;
-  }
-  .arrow{
-    font-family:"SF Mono", "Menlo", monospace;
-    color:var(--accent);
-    font-size:1.1rem;
-    flex-shrink:0;
-  }
-  footer{
-    margin-top:64px;
-    font-size:0.72rem;
-    color:var(--muted);
-    font-family:"SF Mono", "Menlo", monospace;
-    letter-spacing:0.04em;
-  }
-  @media (prefers-reduced-motion: reduce){
-    a.card{transition:none;}
-  }
-</style>
+<link rel="stylesheet" href="style.css">
 </head>
-<body>
+<body class="landing">
 
   <div class="eyebrow">Révisions · QCM</div>
-  <h1>Choisis un module</h1>
-  <p class="sub">Séries de questions pour réviser. Sélectionne un thème pour démarrer.</p>
+  <h1>Choisis ton module</h1>
+  <p class="sub">Deux séries de questions pour réviser. Sélectionne un thème pour démarrer.</p>
 
   <div class="stack">
-    <a class="card" href="architecture.html">
+    <a class="nav-card" href="architecture.html">
       <div class="card-left">
         <span class="card-title">Architecture des ordinateurs</span>
         <span class="card-meta">10 modules</span>
@@ -129,7 +21,7 @@
       <span class="arrow">→</span>
     </a>
 
-    <a class="card" href="reseaux.html">
+    <a class="nav-card" href="reseaux.html">
       <div class="card-left">
         <span class="card-title">Architecture réseaux</span>
         <span class="card-meta">7 modules</span>
@@ -138,7 +30,7 @@
     </a>
   </div>
 
-  <footer><p style="text-align: center;">Une seule réponse possible par question. Validation de la réponse au clic. <br> Proposition de révisions ciblées en cas d'échec.</p></footer>
+  <footer>Ajoute cette page à ton écran d'accueil pour y accéder en un tap</footer>
 
 </body>
 </html>
