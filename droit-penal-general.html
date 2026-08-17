@@ -1,0 +1,1292 @@
+<!doctype html>
+<html lang="fr">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>QCM - Droit pénal général</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <main>
+    <header><a class="home-link" href="index.html">&larr; Accueil</a><h1>Droit pénal général</h1><p class="subtitle">Fiches 61-01 à 61-30 (partie A) · Révisions interactives par module</p></header>
+    <section class="card" id="home"><h2>Choisis un module</h2><p class="home-intro">Chaque module correspond à une fiche du droit pénal général. Les questions mêlent QCM, vrai/faux, textes à trous, associations et remises en ordre. La synthèse générale mélange jusqu’à 50 questions de toutes les fiches.</p><div class="module-grid" id="moduleGrid"></div></section>
+    <section class="card" id="quiz" aria-live="polite">
+      <div class="quiz-nav"><button class="back" id="backToHome">← Retour aux modules</button><span class="module-label" id="moduleLabel"></span></div>
+      <div class="meta"><span id="count"></span><span>Progression du module</span></div>
+      <div class="bar"><span id="bar"></span></div>
+      <p class="tag" id="theme"></p><h2 id="question"></h2><div class="answers" id="answers"></div>
+      <div class="feedback" id="feedback"></div><div class="actions"><button class="verify" id="verify">Vérifier</button><button class="next" id="next">Question suivante</button></div>
+    </section>
+    <section class="card result" id="result"><h2 id="resultTitle">Résultat du module</h2><div class="score" id="finalScore"></div><p id="finalText"></p><h3 class="review-title">Révision ciblée</h3><p id="reviewIntro"></p><div class="review-list" id="reviewList"></div><button class="restart" id="restart">Nouvelle session du même module</button><button class="home-button" id="homeButton">Retour aux modules</button></section>
+    <footer>Les questions et réponses sont mélangées à chaque session.</footer>
+  </main>
+  <script>
+  const Q = [
+  {
+    "theme": "61-01",
+    "type": "single",
+    "text": "Combien de principes fondamentaux régissent le droit pénal, selon la fiche 61-01 ?",
+    "options": [
+      "3",
+      "4",
+      "5",
+      "2"
+    ],
+    "answer": "4",
+    "explanation": "Le cours cite quatre principes : la légalité des délits et des peines, l’interprétation stricte de la loi pénale, la non-rétroactivité de la loi pénale dans le temps et l’application de la loi dans l’espace."
+  },
+  {
+    "theme": "61-01",
+    "type": "multiple",
+    "text": "Parmi les propositions suivantes, lesquelles comptent parmi les principes régissant le droit pénal ? (plusieurs réponses)",
+    "options": [
+      "La légalité des délits et des peines",
+      "L’interprétation stricte de la loi pénale",
+      "La non-rétroactivité de la loi pénale dans le temps",
+      "L’application de la loi dans l’espace",
+      "La présomption d’innocence"
+    ],
+    "answers": [
+      "La légalité des délits et des peines",
+      "L’interprétation stricte de la loi pénale",
+      "La non-rétroactivité de la loi pénale dans le temps",
+      "L’application de la loi dans l’espace"
+    ],
+    "explanation": "Ce sont les quatre principes cités par la fiche 61-01 ; la présomption d’innocence est un principe distinct, de nature procédurale."
+  },
+  {
+    "theme": "61-01",
+    "type": "single",
+    "text": "Vrai ou faux : selon le principe de l’interprétation stricte, le juge peut créer de nouvelles incriminations pour combler un vide juridique.",
+    "options": [
+      "Vrai",
+      "Faux"
+    ],
+    "answer": "Faux",
+    "explanation": "Le juge doit rester dans un rôle d’application des normes ; sinon, il créerait arbitrairement de nouvelles infractions (article 111-4 du code pénal)."
+  },
+  {
+    "theme": "61-01",
+    "type": "blank",
+    "text": "Selon l’article ___ du code pénal, « il n’y a nul crime, nulle peine sans loi ».",
+    "accept": [
+      "111-3",
+      "article 111-3",
+      "111-3 du code pénal"
+    ],
+    "explanation": "Il s’agit de l’article 111-3 du code pénal, qui consacre le principe de légalité des délits et des peines."
+  },
+  {
+    "theme": "61-01",
+    "type": "match",
+    "text": "Associe chaque principe à l’article du code pénal qui le consacre.",
+    "pairs": [
+      [
+        "Légalité des délits et des peines",
+        "Article 111-3 du code pénal"
+      ],
+      [
+        "Interprétation stricte de la loi pénale",
+        "Article 111-4 du code pénal"
+      ],
+      [
+        "Non-rétroactivité de la loi pénale de fond",
+        "Article 112-1 du code pénal"
+      ]
+    ],
+    "explanation": "Chaque principe est rattaché à l’article du code pénal qui le consacre."
+  },
+  {
+    "theme": "61-01",
+    "type": "order",
+    "text": "Remets dans l’ordre les sources normatives nationales du droit pénal, telles que citées par le cours.",
+    "items": [
+      "La Constitution du 4 octobre 1958",
+      "La loi",
+      "L’ordonnance",
+      "Le règlement",
+      "La circulaire",
+      "La coutume"
+    ],
+    "explanation": "Le cours énumère ces six sources dans cet ordre."
+  },
+  {
+    "theme": "61-02",
+    "type": "single",
+    "text": "Combien d’éléments constitutifs suppose la réunion d’une infraction ?",
+    "options": [
+      "2",
+      "3",
+      "4",
+      "5"
+    ],
+    "answer": "3",
+    "explanation": "Une infraction suppose la réunion de trois éléments constitutifs : légal, matériel et moral."
+  },
+  {
+    "theme": "61-02",
+    "type": "multiple",
+    "text": "Quels sont les éléments constitutifs d’une infraction ? (plusieurs réponses)",
+    "options": [
+      "L’élément légal",
+      "L’élément matériel",
+      "L’élément moral",
+      "L’élément procédural",
+      "L’élément civil"
+    ],
+    "answers": [
+      "L’élément légal",
+      "L’élément matériel",
+      "L’élément moral"
+    ],
+    "explanation": "Les éléments procédural et civil ne font pas partie des éléments constitutifs de l’infraction."
+  },
+  {
+    "theme": "61-02",
+    "type": "single",
+    "text": "Vrai ou faux : il existe en France une définition légale de l’infraction inscrite dans le code pénal.",
+    "options": [
+      "Vrai",
+      "Faux"
+    ],
+    "answer": "Faux",
+    "explanation": "Le cours précise qu’il n’y a pas, en France, de définition légale de l’infraction."
+  },
+  {
+    "theme": "61-02",
+    "type": "blank",
+    "text": "L’élément ___ ne doit pas être confondu avec le mobile, qui est la raison ayant poussé le délinquant à commettre l’acte.",
+    "accept": [
+      "moral"
+    ],
+    "explanation": "L’élément moral est la conscience et l’intention de commettre l’acte, distincte du mobile."
+  },
+  {
+    "theme": "61-02",
+    "type": "match",
+    "text": "Associe chaque élément constitutif de l’infraction à sa définition.",
+    "pairs": [
+      [
+        "Élément légal",
+        "Un acte n’est une infraction que s’il est prévu par un texte pénal"
+      ],
+      [
+        "Élément matériel",
+        "Un acte positif (commission) ou négatif (omission)"
+      ],
+      [
+        "Élément moral",
+        "La conscience et l’intention de commettre l’acte"
+      ]
+    ],
+    "explanation": "Le cours associe chacun de ces trois éléments à sa propre définition."
+  },
+  {
+    "theme": "61-02",
+    "type": "single",
+    "text": "Quelle responsabilité a pour objet de réparer le trouble causé à l’ordre social ?",
+    "options": [
+      "La responsabilité pénale",
+      "La responsabilité civile contractuelle",
+      "La responsabilité civile délictuelle",
+      "La responsabilité administrative"
+    ],
+    "answer": "La responsabilité pénale",
+    "explanation": "La responsabilité pénale répare le trouble à l’ordre social ; la responsabilité civile répare le préjudice causé à un tiers."
+  },
+  {
+    "theme": "61-03",
+    "type": "single",
+    "text": "Selon l’article 111-1 du code pénal, les infractions sont classées en fonction de…",
+    "options": [
+      "leur gravité",
+      "leur ancienneté",
+      "le lieu de leur commission",
+      "la nationalité de l’auteur"
+    ],
+    "answer": "leur gravité",
+    "explanation": "L’article 111-1 du code pénal classe les infractions, suivant leur gravité, en crimes, délits et contraventions."
+  },
+  {
+    "theme": "61-03",
+    "type": "multiple",
+    "text": "Quelles sont les trois catégories de la classification tripartite des infractions ? (plusieurs réponses)",
+    "options": [
+      "Les crimes",
+      "Les délits",
+      "Les contraventions",
+      "Les infractions douanières",
+      "Les infractions militaires"
+    ],
+    "answers": [
+      "Les crimes",
+      "Les délits",
+      "Les contraventions"
+    ],
+    "explanation": "La classification tripartite distingue crimes, délits et contraventions selon leur gravité."
+  },
+  {
+    "theme": "61-03",
+    "type": "single",
+    "text": "Vrai ou faux : la durée de la réclusion ou détention criminelle à temps est d’au moins dix ans.",
+    "options": [
+      "Vrai",
+      "Faux"
+    ],
+    "answer": "Vrai",
+    "explanation": "Le cours précise que la durée de la réclusion ou détention criminelle à temps est de dix ans au moins."
+  },
+  {
+    "theme": "61-03",
+    "type": "blank",
+    "text": "Les peines criminelles à temps encourues par les personnes physiques sont de trente ans au plus, ___ ans au plus, ou quinze ans au plus.",
+    "accept": [
+      "vingt",
+      "20"
+    ],
+    "explanation": "L’article 131-1 du code pénal cite les paliers de trente, vingt et quinze ans au plus."
+  },
+  {
+    "theme": "61-03",
+    "type": "order",
+    "text": "Remets dans l’ordre décroissant les durées de réclusion ou détention criminelle à temps prévues par l’article 131-1 du code pénal.",
+    "items": [
+      "Trente ans au plus",
+      "Vingt ans au plus",
+      "Quinze ans au plus"
+    ],
+    "explanation": "L’article 131-1 du code pénal cite ces trois paliers, du plus long au plus court."
+  },
+  {
+    "theme": "61-03",
+    "type": "single",
+    "text": "Quelle peine criminelle peut être prononcée à perpétuité selon le code pénal ?",
+    "options": [
+      "La réclusion ou la détention criminelle",
+      "L’emprisonnement correctionnel",
+      "Le travail d’intérêt général",
+      "Le jour-amende"
+    ],
+    "answer": "La réclusion ou la détention criminelle",
+    "explanation": "L’article 131-1 du code pénal prévoit la réclusion ou la détention criminelle à perpétuité ou à temps."
+  },
+  {
+    "theme": "61-04",
+    "type": "single",
+    "text": "Combien de types de tentative punissable le cours distingue-t-il ?",
+    "options": [
+      "2",
+      "3",
+      "4",
+      "1"
+    ],
+    "answer": "2",
+    "explanation": "Le cours distingue la tentative interrompue et la tentative infructueuse."
+  },
+  {
+    "theme": "61-04",
+    "type": "multiple",
+    "text": "Quels sont les deux types de tentative punissable cités par le cours ? (plusieurs réponses)",
+    "options": [
+      "La tentative interrompue",
+      "La tentative infructueuse",
+      "La tentative consommée",
+      "La tentative collective"
+    ],
+    "answers": [
+      "La tentative interrompue",
+      "La tentative infructueuse"
+    ],
+    "explanation": "Ce sont les deux types de tentative punissable présentés par la fiche 61-04."
+  },
+  {
+    "theme": "61-04",
+    "type": "single",
+    "text": "Vrai ou faux : la tentative est toujours punissable en matière de contravention.",
+    "options": [
+      "Vrai",
+      "Faux"
+    ],
+    "answer": "Faux",
+    "explanation": "La tentative n’est jamais punissable pour les contraventions ; elle est toujours punissable pour les crimes, et seulement dans les cas prévus par la loi pour les délits."
+  },
+  {
+    "theme": "61-04",
+    "type": "blank",
+    "text": "Selon l’article 121-5 du code pénal, la tentative interrompue repose sur une condition positive, le commencement d’___, et une condition négative, l’absence de désistement volontaire.",
+    "accept": [
+      "exécution",
+      "d’exécution"
+    ],
+    "explanation": "Il s’agit du commencement d’exécution."
+  },
+  {
+    "theme": "61-04",
+    "type": "match",
+    "text": "Associe chaque notion à sa définition.",
+    "pairs": [
+      [
+        "Tentative interrompue",
+        "L’auteur n’est pas parvenu à la consommation car il a été interrompu dans ses agissements"
+      ],
+      [
+        "Tentative infructueuse",
+        "L’auteur a réalisé tout le processus incriminé mais n’obtient pas le résultat escompté"
+      ],
+      [
+        "Désistement volontaire",
+        "Cause d’impunité lorsque l’auteur abandonne librement son entreprise criminelle"
+      ]
+    ],
+    "explanation": "Le cours distingue précisément ces trois notions liées à la tentative."
+  },
+  {
+    "theme": "61-04",
+    "type": "order",
+    "text": "Remets dans l’ordre de sévérité décroissante la répression de la tentative selon le type d’infraction.",
+    "items": [
+      "Toujours punissable (crimes)",
+      "Punissable seulement dans les cas prévus par la loi (délits)",
+      "Jamais punissable (contraventions)"
+    ],
+    "explanation": "Le cours indique cette gradation entre crimes, délits et contraventions."
+  },
+  {
+    "theme": "61-05",
+    "type": "single",
+    "text": "Selon l’article 121-1 du code pénal, nul n’est responsable pénalement que…",
+    "options": [
+      "de son propre fait",
+      "des fautes de sa famille",
+      "des fautes de ses employés",
+      "des dommages causés par ses biens"
+    ],
+    "answer": "de son propre fait",
+    "explanation": "L’article 121-1 du code pénal pose le principe de la personnalité de la responsabilité pénale."
+  },
+  {
+    "theme": "61-05",
+    "type": "multiple",
+    "text": "Quelles sont les causes de non-imputabilité citées par le cours ? (plusieurs réponses)",
+    "options": [
+      "Le trouble psychique ou neuropsychique",
+      "La contrainte",
+      "L’erreur de droit",
+      "La légitime défense",
+      "L’état de nécessité"
+    ],
+    "answers": [
+      "Le trouble psychique ou neuropsychique",
+      "La contrainte",
+      "L’erreur de droit"
+    ],
+    "explanation": "La légitime défense et l’état de nécessité sont des faits justificatifs (causes objectives), et non des causes de non-imputabilité (causes subjectives)."
+  },
+  {
+    "theme": "61-05",
+    "type": "single",
+    "text": "Vrai ou faux : la responsabilité des personnes morales exclut celle des personnes physiques.",
+    "options": [
+      "Vrai",
+      "Faux"
+    ],
+    "answer": "Faux",
+    "explanation": "L’article 121-2 alinéa 3 du code pénal permet de cumuler les responsabilités pénales de la personne morale et de la personne physique."
+  },
+  {
+    "theme": "61-05",
+    "type": "blank",
+    "text": "Pour que la responsabilité des personnes morales soit engagée, l’infraction doit avoir été commise par un organe ou un représentant, pour le ___ de la personne morale.",
+    "accept": [
+      "compte",
+      "le compte"
+    ],
+    "explanation": "C’est la deuxième des trois conditions : commission pour le compte de la personne morale."
+  },
+  {
+    "theme": "61-05",
+    "type": "match",
+    "text": "Associe chaque cause de non-imputabilité ou fait justificatif à l’article du code pénal qui le prévoit.",
+    "pairs": [
+      [
+        "Le trouble psychique ou neuropsychique",
+        "Article 122-1 du code pénal"
+      ],
+      [
+        "La contrainte",
+        "Article 122-2 du code pénal"
+      ],
+      [
+        "L’erreur de droit",
+        "Article 122-3 du code pénal"
+      ],
+      [
+        "La légitime défense",
+        "Articles 122-5 et 122-6 du code pénal"
+      ]
+    ],
+    "explanation": "Chacune de ces causes est rattachée à un article précis du code pénal."
+  },
+  {
+    "theme": "61-05",
+    "type": "single",
+    "text": "La personne morale peut-elle être condamnée en qualité de complice ?",
+    "options": [
+      "Oui, aussi bien en qualité d’auteur que de complice",
+      "Non, jamais",
+      "Uniquement en matière contraventionnelle",
+      "Uniquement si elle est une association"
+    ],
+    "answer": "Oui, aussi bien en qualité d’auteur que de complice",
+    "explanation": "Les articles 121-2, 121-6 et 121-7 du code pénal permettent de condamner la personne morale en qualité d’auteur comme de complice."
+  },
+  {
+    "theme": "61-07",
+    "type": "single",
+    "text": "Selon l’article 121-7 alinéa 1 du code pénal, la complicité par aide ou assistance suppose que le complice ait, sciemment, facilité la préparation ou la consommation d’un…",
+    "options": [
+      "crime ou d’un délit",
+      "crime uniquement",
+      "délit ou d’une contravention",
+      "crime, délit ou contravention"
+    ],
+    "answer": "crime ou d’un délit",
+    "explanation": "L’alinéa 1 de l’article 121-7 exclut la contravention ; seul l’alinéa 2 (provocation, instructions) l’inclut."
+  },
+  {
+    "theme": "61-07",
+    "type": "multiple",
+    "text": "Quelles conditions doivent être réunies pour que la complicité soit punissable ? (plusieurs réponses)",
+    "options": [
+      "Un fait principal punissable",
+      "Un acte matériel",
+      "Une intention",
+      "Un préjudice indemnisable",
+      "Une récidive de l’auteur"
+    ],
+    "answers": [
+      "Un fait principal punissable",
+      "Un acte matériel",
+      "Une intention"
+    ],
+    "explanation": "Ces trois conditions correspondent aux éléments légal, matériel et moral de la complicité."
+  },
+  {
+    "theme": "61-07",
+    "type": "single",
+    "text": "Vrai ou faux : la complicité par instigation doit être suivie d’effet, c’est-à-dire que l’infraction doit avoir été consommée ou tentée par la personne provoquée.",
+    "options": [
+      "Vrai",
+      "Faux"
+    ],
+    "answer": "Vrai",
+    "explanation": "En l’absence de commencement d’exécution ou en cas de désistement volontaire, le provocateur n’est pas punissable en tant que complice."
+  },
+  {
+    "theme": "61-07",
+    "type": "blank",
+    "text": "L’article ___ du code pénal dispose que « sera puni comme auteur le complice de l’infraction ».",
+    "accept": [
+      "121-6"
+    ],
+    "explanation": "Il consacre le principe d’assimilation du complice à l’auteur."
+  },
+  {
+    "theme": "61-07",
+    "type": "match",
+    "text": "Associe chaque acte matériel de complicité à sa définition.",
+    "pairs": [
+      [
+        "Complicité par aide ou assistance",
+        "Fourniture de moyens matériels ou aide personnelle facilitant l’infraction"
+      ],
+      [
+        "Complicité par instigation",
+        "Inciter une autre personne à commettre une infraction"
+      ],
+      [
+        "Complicité par instruction",
+        "Fournir des renseignements rendant possible ou facilitant l’infraction"
+      ]
+    ],
+    "explanation": "L’article 121-7 du code pénal énumère limitativement ces trois actes matériels."
+  },
+  {
+    "theme": "61-07",
+    "type": "multiple",
+    "text": "Quelles caractéristiques doit réunir la provocation pour caractériser la complicité par instigation ? (plusieurs réponses)",
+    "options": [
+      "Circonstanciée",
+      "Personnelle",
+      "Directe",
+      "Suivie d’effet",
+      "Anonyme"
+    ],
+    "answers": [
+      "Circonstanciée",
+      "Personnelle",
+      "Directe",
+      "Suivie d’effet"
+    ],
+    "explanation": "Le cours retient ces quatre caractéristiques cumulatives pour la complicité par instigation."
+  },
+  {
+    "theme": "61-07",
+    "type": "order",
+    "text": "Remets dans l’ordre de citation du cours les trois actes matériels de la complicité.",
+    "items": [
+      "Complicité par aide ou assistance",
+      "Complicité par instigation ou provocation",
+      "Complicité par instruction"
+    ],
+    "explanation": "Le cours cite ces trois actes matériels de complicité dans cet ordre, à l’article 121-7 du code pénal."
+  },
+  {
+    "theme": "61-07",
+    "type": "single",
+    "text": "Vrai ou faux : le complice peut être poursuivi même si l’auteur principal est décédé.",
+    "options": [
+      "Vrai",
+      "Faux"
+    ],
+    "answer": "Vrai",
+    "explanation": "Le complice peut être poursuivi indépendamment de l’auteur notamment si celui-ci est en fuite, non identifié, décédé, ou bénéficie d’une immunité personnelle."
+  },
+  {
+    "theme": "61-08",
+    "type": "single",
+    "text": "Comment le cours définit-il la peine ?",
+    "options": [
+      "La sanction infligée à l’auteur d’une infraction pénale par un tribunal répressif",
+      "La réparation du préjudice causé à la victime",
+      "Une mesure administrative de police",
+      "Un accord amiable entre les parties"
+    ],
+    "answer": "La sanction infligée à l’auteur d’une infraction pénale par un tribunal répressif",
+    "explanation": "La peine atteint le délinquant, dans sa personne ou dans ses biens, sur décision d’un tribunal répressif."
+  },
+  {
+    "theme": "61-08",
+    "type": "multiple",
+    "text": "Quelles sont les fonctions de la peine selon l’article 130-1 du code pénal ? (plusieurs réponses)",
+    "options": [
+      "Sanctionner l’auteur de l’infraction",
+      "Favoriser son amendement, son insertion ou sa réinsertion",
+      "Indemniser systématiquement la victime",
+      "Remplacer la responsabilité civile"
+    ],
+    "answers": [
+      "Sanctionner l’auteur de l’infraction",
+      "Favoriser son amendement, son insertion ou sa réinsertion"
+    ],
+    "explanation": "L’article 130-1 du code pénal fixe ces deux fonctions à la peine."
+  },
+  {
+    "theme": "61-08",
+    "type": "single",
+    "text": "Vrai ou faux : l’amende encourue en matière correctionnelle par les personnes physiques est d’au moins 3 750 euros.",
+    "options": [
+      "Vrai",
+      "Faux"
+    ],
+    "answer": "Vrai",
+    "explanation": "L’article 131-3 du code pénal fixe ce plancher pour l’amende correctionnelle."
+  },
+  {
+    "theme": "61-08",
+    "type": "blank",
+    "text": "L’emprisonnement encouru en matière correctionnelle est de ___ ans au plus.",
+    "accept": [
+      "dix",
+      "10"
+    ],
+    "explanation": "L’article 131-3 du code pénal fixe ce plafond à dix ans."
+  },
+  {
+    "theme": "61-08",
+    "type": "match",
+    "text": "Associe chaque catégorie de peine à sa définition.",
+    "pairs": [
+      [
+        "Peines principales de référence",
+        "Réclusion/détention criminelle, emprisonnement et amende, amende contraventionnelle"
+      ],
+      [
+        "Peines principales alternatives",
+        "Prononcées à la place de la peine de référence, en matière correctionnelle ou contraventionnelle"
+      ],
+      [
+        "Peines complémentaires obligatoires",
+        "La loi impose au juge de les prononcer (ex. confiscation, article 131-21)"
+      ],
+      [
+        "Peines complémentaires facultatives",
+        "La loi offre au juge la possibilité de les prononcer (ex. suspension du permis)"
+      ]
+    ],
+    "explanation": "Le cours distingue ces quatre catégories de peines."
+  },
+  {
+    "theme": "61-08",
+    "type": "multiple",
+    "text": "Quelles peines correctionnelles sont citées par le cours parmi celles encourues par les personnes physiques ? (plusieurs réponses)",
+    "options": [
+      "L’emprisonnement",
+      "La détention à domicile sous surveillance électronique",
+      "Le travail d’intérêt général",
+      "La réclusion criminelle à perpétuité",
+      "Le jour-amende"
+    ],
+    "answers": [
+      "L’emprisonnement",
+      "La détention à domicile sous surveillance électronique",
+      "Le travail d’intérêt général",
+      "Le jour-amende"
+    ],
+    "explanation": "La réclusion criminelle à perpétuité est une peine criminelle, non une peine correctionnelle."
+  },
+  {
+    "theme": "61-08",
+    "type": "single",
+    "text": "Quelle classification bipartite des peines est utilisée pour les personnes morales ?",
+    "options": [
+      "Peines criminelles et correctionnelles / peines contraventionnelles",
+      "Peines principales / peines civiles",
+      "Peines de référence / peines administratives",
+      "Peines pécuniaires / peines corporelles"
+    ],
+    "answer": "Peines criminelles et correctionnelles / peines contraventionnelles",
+    "explanation": "Les articles 131-37 à 131-39-2 et 131-40 à 131-44-1 du code pénal organisent cette classification bipartite."
+  },
+  {
+    "theme": "61-08",
+    "type": "single",
+    "text": "Vrai ou faux : le juge de l’application des peines exerce ses fonctions sur tous les établissements pénitentiaires de son ressort.",
+    "options": [
+      "Vrai",
+      "Faux"
+    ],
+    "answer": "Vrai",
+    "explanation": "Le cours indique qu’un juge de l’application des peines est institué auprès de chaque tribunal pour cette mission."
+  },
+  {
+    "theme": "61-09",
+    "type": "single",
+    "text": "Combien de formes présente le concours d’infractions selon le cours ?",
+    "options": [
+      "2",
+      "3",
+      "4",
+      "1"
+    ],
+    "answer": "2",
+    "explanation": "Le concours d’infractions se présente sous deux formes : le concours réel et le concours idéal."
+  },
+  {
+    "theme": "61-09",
+    "type": "multiple",
+    "text": "Quelles sont les deux formes du concours d’infractions ? (plusieurs réponses)",
+    "options": [
+      "Le concours réel d’infractions",
+      "Le concours idéal d’infractions",
+      "Le concours virtuel d’infractions",
+      "Le concours successif d’infractions"
+    ],
+    "answers": [
+      "Le concours réel d’infractions",
+      "Le concours idéal d’infractions"
+    ],
+    "explanation": "Le cours ne retient que ces deux formes de concours d’infractions."
+  },
+  {
+    "theme": "61-09",
+    "type": "single",
+    "text": "Vrai ou faux : selon le principe du cumul des peines de même nature, la juridiction peut prononcer plusieurs peines de cette nature, sans limite.",
+    "options": [
+      "Vrai",
+      "Faux"
+    ],
+    "answer": "Faux",
+    "explanation": "Une seule peine de cette nature peut être prononcée, dans la limite du maximum légal le plus élevé (article 132-3 alinéa 1 du code pénal)."
+  },
+  {
+    "theme": "61-09",
+    "type": "blank",
+    "text": "Le principe de ___ des peines de même nature permet à la peine la plus forte d’absorber, en totalité ou en partie, la ou les peines les moins élevées.",
+    "accept": [
+      "confusion"
+    ],
+    "explanation": "L’article 132-4 du code pénal prévoit la confusion totale ou partielle des peines de même nature."
+  },
+  {
+    "theme": "61-09",
+    "type": "match",
+    "text": "Associe chaque notion à sa définition.",
+    "pairs": [
+      [
+        "Concours réel d’infractions",
+        "Plusieurs infractions distinctes non séparées par une condamnation définitive"
+      ],
+      [
+        "Récidive",
+        "Infractions séparées par une condamnation définitive, dans les conditions des articles 132-8 et suivants"
+      ],
+      [
+        "Réitération d’infractions",
+        "Condamnation antérieure définitive suivie d’une nouvelle infraction, sans réunir les conditions de la récidive"
+      ]
+    ],
+    "explanation": "Le cours distingue précisément ces trois notions voisines."
+  },
+  {
+    "theme": "61-09",
+    "type": "multiple",
+    "text": "Dans quels cas le concours d’infractions peut-il se présenter, selon le cours ? (plusieurs réponses)",
+    "options": [
+      "La personne s’est soustraite aux poursuites",
+      "Les infractions ont été commises dans un délai trop bref pour être jugées",
+      "La personne a été condamnée définitivement entre les deux infractions",
+      "L’auteur est un récidiviste légal"
+    ],
+    "answers": [
+      "La personne s’est soustraite aux poursuites",
+      "Les infractions ont été commises dans un délai trop bref pour être jugées"
+    ],
+    "explanation": "Ces deux cas de figure sont cités par le cours ; les deux autres options excluent au contraire le concours d’infractions."
+  },
+  {
+    "theme": "61-10",
+    "type": "single",
+    "text": "La récidive correctionnelle s’applique à la personne condamnée une première fois pour un délit qui commet, dans quel délai, le même délit ou un délit assimilé ?",
+    "options": [
+      "5 ans",
+      "10 ans",
+      "3 ans",
+      "1 an"
+    ],
+    "answer": "5 ans",
+    "explanation": "L’article 132-10 du code pénal fixe ce délai à cinq ans."
+  },
+  {
+    "theme": "61-10",
+    "type": "multiple",
+    "text": "La récidive suppose deux termes. Lesquels ? (plusieurs réponses)",
+    "options": [
+      "La condamnation antérieure",
+      "La nouvelle infraction",
+      "Le classement sans suite",
+      "La plainte de la victime"
+    ],
+    "answers": [
+      "La condamnation antérieure",
+      "La nouvelle infraction"
+    ],
+    "explanation": "La condamnation antérieure constitue le premier terme, la nouvelle infraction le deuxième."
+  },
+  {
+    "theme": "61-10",
+    "type": "single",
+    "text": "Vrai ou faux : la première condamnation, pour constituer le premier terme de la récidive, doit obligatoirement être définitive.",
+    "options": [
+      "Vrai",
+      "Faux"
+    ],
+    "answer": "Vrai",
+    "explanation": "C’est l’une des six conditions posées par le cours pour que la première condamnation constitue le premier terme de la récidive."
+  },
+  {
+    "theme": "61-10",
+    "type": "blank",
+    "text": "L’état de récidive peut être relevé par le ___ au moment de l’engagement des poursuites, ou d’office par la juridiction de jugement.",
+    "accept": [
+      "parquet"
+    ],
+    "explanation": "Le parquet peut relever l’état de récidive lors de l’engagement des poursuites pénales."
+  },
+  {
+    "theme": "61-10",
+    "type": "order",
+    "text": "Remets dans l’ordre chronologique les deux termes de la récidive.",
+    "items": [
+      "La condamnation antérieure (premier terme)",
+      "La nouvelle infraction (deuxième terme)"
+    ],
+    "explanation": "La condamnation antérieure doit précéder la nouvelle infraction pour caractériser la récidive."
+  },
+  {
+    "theme": "61-10",
+    "type": "single",
+    "text": "Quelle notion correspond à deux infractions successives séparées par une condamnation définitive, sans réunir les conditions légales de la récidive ?",
+    "options": [
+      "La réitération d’infractions",
+      "Le concours réel d’infractions",
+      "Le concours idéal d’infractions",
+      "La complicité"
+    ],
+    "answer": "La réitération d’infractions",
+    "explanation": "La réitération d’infractions se distingue de la récidive par l’absence des conditions légales de celle-ci."
+  },
+  {
+    "theme": "61-15",
+    "type": "single",
+    "text": "Comment le cours définit-il les circonstances aggravantes ?",
+    "options": [
+      "Des faits limitativement déterminés par la loi qui élèvent la peine au-dessus du maximum prévu pour l’infraction simple",
+      "Des circonstances laissées à la libre appréciation du juge",
+      "Des faits qui suppriment la responsabilité pénale",
+      "Des éléments qui réduisent automatiquement la peine encourue"
+    ],
+    "answer": "Des faits limitativement déterminés par la loi qui élèvent la peine au-dessus du maximum prévu pour l’infraction simple",
+    "explanation": "Cette définition figure explicitement dans la fiche 61-15."
+  },
+  {
+    "theme": "61-15",
+    "type": "multiple",
+    "text": "Quelles sont les deux grandes caractéristiques des circonstances aggravantes selon le cours ? (plusieurs réponses)",
+    "options": [
+      "Légales",
+      "Obligatoires",
+      "Facultatives",
+      "Jurisprudentielles uniquement"
+    ],
+    "answers": [
+      "Légales",
+      "Obligatoires"
+    ],
+    "explanation": "Les circonstances aggravantes sont légales (prévues limitativement par la loi) et obligatoires (le juge doit en tenir compte)."
+  },
+  {
+    "theme": "61-15",
+    "type": "single",
+    "text": "Vrai ou faux : le juge peut choisir de ne pas tenir compte d’une circonstance aggravante qu’il reconnaît pourtant établie.",
+    "options": [
+      "Vrai",
+      "Faux"
+    ],
+    "answer": "Faux",
+    "explanation": "Dès lors que le juge reconnaît l’existence d’une circonstance aggravante, il doit obligatoirement en tenir compte."
+  },
+  {
+    "theme": "61-15",
+    "type": "blank",
+    "text": "Devant la cour d’assises, il est posé une question ___ pour chacune des circonstances aggravantes pouvant accompagner le fait principal.",
+    "accept": [
+      "spéciale"
+    ],
+    "explanation": "Une question spéciale est posée pour chaque circonstance aggravante devant la cour d’assises."
+  },
+  {
+    "theme": "61-15",
+    "type": "match",
+    "text": "Associe chaque notion à sa définition.",
+    "pairs": [
+      [
+        "Guet-apens",
+        "Réprime un procédé : se poster en embuscade pour commettre une infraction"
+      ],
+      [
+        "Préméditation",
+        "Sanctionne un état d’esprit : la résolution acquise par avance de commettre l’infraction"
+      ]
+    ],
+    "explanation": "Le cours distingue le mode d’exécution (guet-apens) de l’attitude psychologique (préméditation)."
+  },
+  {
+    "theme": "61-15",
+    "type": "single",
+    "text": "Quels effets les circonstances aggravantes peuvent-elles avoir, selon le cours ?",
+    "options": [
+      "Une incidence sur le quantum voire la nature de la peine, et potentiellement sur la classification de l’infraction",
+      "Aucun effet sur la peine encourue",
+      "Uniquement une incidence sur la responsabilité civile",
+      "La suppression automatique de la tentative punissable"
+    ],
+    "answer": "Une incidence sur le quantum voire la nature de la peine, et potentiellement sur la classification de l’infraction",
+    "explanation": "Le cours précise que la classification de l’infraction et la compétence juridictionnelle peuvent s’en trouver modifiées."
+  },
+  {
+    "theme": "61-30",
+    "type": "single",
+    "text": "Comment le cours définit-il les causes de non-imputabilité ?",
+    "options": [
+      "Des circonstances affectant la personnalité de l’auteur qui suppriment ou diminuent sa responsabilité pénale",
+      "Des circonstances qui aggravent automatiquement la peine encourue",
+      "Des règles de compétence juridictionnelle",
+      "Des conditions de recevabilité de l’action civile"
+    ],
+    "answer": "Des circonstances affectant la personnalité de l’auteur qui suppriment ou diminuent sa responsabilité pénale",
+    "explanation": "Cette définition figure explicitement dans la fiche 61-30."
+  },
+  {
+    "theme": "61-30",
+    "type": "multiple",
+    "text": "Quelles sont les causes de non-imputabilité citées par le cours ? (plusieurs réponses)",
+    "options": [
+      "Le trouble psychique ou neuropsychique",
+      "La contrainte",
+      "L’erreur de droit",
+      "L’état de nécessité",
+      "La légitime défense"
+    ],
+    "answers": [
+      "Le trouble psychique ou neuropsychique",
+      "La contrainte",
+      "L’erreur de droit"
+    ],
+    "explanation": "L’état de nécessité et la légitime défense sont des faits justificatifs, non des causes de non-imputabilité."
+  },
+  {
+    "theme": "61-30",
+    "type": "single",
+    "text": "Vrai ou faux : un fait justificatif peut être invoqué pour la première fois devant la Cour de cassation.",
+    "options": [
+      "Vrai",
+      "Faux"
+    ],
+    "answer": "Faux",
+    "explanation": "Le fait justificatif doit être invoqué devant les juges du fond ; il ne peut être proposé pour la première fois devant la Cour de cassation."
+  },
+  {
+    "theme": "61-30",
+    "type": "blank",
+    "text": "La légitime défense répond à des conditions relatives à l’attaque, qui doit être certaine, actuelle et ___, et à la riposte, qui doit être nécessaire, simultanée et proportionnée.",
+    "accept": [
+      "injuste"
+    ],
+    "explanation": "L’attaque doit être certaine, actuelle et injuste pour que la légitime défense soit retenue."
+  },
+  {
+    "theme": "61-30",
+    "type": "match",
+    "text": "Associe chaque fait justificatif à l’article du code pénal qui le prévoit.",
+    "pairs": [
+      [
+        "L’ordre de la loi et le commandement de l’autorité légitime",
+        "Article 122-4 du code pénal"
+      ],
+      [
+        "La légitime défense des personnes ou des biens",
+        "Articles 122-5 et 122-6 du code pénal"
+      ],
+      [
+        "L’état de nécessité",
+        "Article 122-7 du code pénal"
+      ]
+    ],
+    "explanation": "Chaque fait justificatif est rattaché à l’article du code pénal qui le prévoit."
+  },
+  {
+    "theme": "61-30",
+    "type": "order",
+    "text": "Remets dans l’ordre les trois catégories de mineurs distinguées par le droit pénal, du plus jeune au plus âgé.",
+    "items": [
+      "Les mineurs de moins de treize ans",
+      "Les mineurs âgés d’au moins treize ans",
+      "Les mineurs âgés d’au moins seize ans"
+    ],
+    "explanation": "Le cours distingue ces trois catégories, avec une présomption de non-discernement pour les moins de treize ans."
+  },
+  {
+    "theme": "61-30",
+    "type": "single",
+    "text": "Vrai ou faux : les mineurs de moins de treize ans sont présumés capables de discernement.",
+    "options": [
+      "Vrai",
+      "Faux"
+    ],
+    "answer": "Faux",
+    "explanation": "Ce sont au contraire les mineurs âgés d’au moins treize ans qui sont présumés capables de discernement ; les moins de treize ans sont présumés ne pas l’être."
+  }
+];
+  const MODULES = [
+  {
+    "id": "m1",
+    "number": "Fiche 61-01",
+    "name": "Présentation du droit pénal",
+    "description": "Les quatre principes du droit pénal, sources normatives nationales.",
+    "themes": [
+      "61-01"
+    ]
+  },
+  {
+    "id": "m2",
+    "number": "Fiche 61-02",
+    "name": "L’infraction",
+    "description": "Éléments constitutifs de l’infraction, responsabilités civile et pénale.",
+    "themes": [
+      "61-02"
+    ]
+  },
+  {
+    "id": "m3",
+    "number": "Fiche 61-03",
+    "name": "La classification des infractions",
+    "description": "Classification tripartite, peines criminelles encourues.",
+    "themes": [
+      "61-03"
+    ]
+  },
+  {
+    "id": "m4",
+    "number": "Fiche 61-04",
+    "name": "La tentative punissable",
+    "description": "Tentative interrompue et infructueuse, désistement volontaire.",
+    "themes": [
+      "61-04"
+    ]
+  },
+  {
+    "id": "m5",
+    "number": "Fiche 61-05",
+    "name": "La personne punissable et la responsabilité pénale",
+    "description": "Responsabilité du fait personnel, causes d’exclusion, personnes morales.",
+    "themes": [
+      "61-05"
+    ]
+  },
+  {
+    "id": "m6",
+    "number": "Fiche 61-07",
+    "name": "La complicité",
+    "description": "Éléments de la complicité, actes matériels, assimilation du complice à l’auteur.",
+    "themes": [
+      "61-07"
+    ]
+  },
+  {
+    "id": "m7",
+    "number": "Fiche 61-08",
+    "name": "Définition et classification des peines",
+    "description": "Fonctions de la peine, peines principales/complémentaires, personnes morales.",
+    "themes": [
+      "61-08"
+    ]
+  },
+  {
+    "id": "m8",
+    "number": "Fiche 61-09",
+    "name": "Le concours d’infractions",
+    "description": "Concours réel et idéal, cumul et confusion des peines.",
+    "themes": [
+      "61-09"
+    ]
+  },
+  {
+    "id": "m9",
+    "number": "Fiche 61-10",
+    "name": "La récidive",
+    "description": "Récidive correctionnelle, termes de la récidive, réitération d’infractions.",
+    "themes": [
+      "61-10"
+    ]
+  },
+  {
+    "id": "m10",
+    "number": "Fiche 61-15",
+    "name": "Les circonstances aggravantes",
+    "description": "Définition, caractéristiques légales et obligatoires, guet-apens/préméditation.",
+    "themes": [
+      "61-15"
+    ]
+  },
+  {
+    "id": "m11",
+    "number": "Fiche 61-30",
+    "name": "Causes d’irresponsabilité ou d’atténuation",
+    "description": "Causes de non-imputabilité, faits justificatifs, mineurs, légitime défense.",
+    "themes": [
+      "61-30"
+    ]
+  },
+  {
+    "id": "m12",
+    "number": "Module 12",
+    "name": "Synthèse générale",
+    "description": "Questions mélangées sur l’ensemble des fiches 61-01 à 61-30 (partie A).",
+    "themes": null,
+    "synthesis": true
+  }
+];
+
+  const $ = id => document.getElementById(id);
+  const norm = s => (s || '').toString().trim().toLowerCase()
+    .normalize('NFD').replace(/[̀-ͯ]/g, '')
+    .replace(/[’']/g, "'").replace(/\s+/g, ' ');
+  const arraysEqual = (a, b) => a.length === b.length && a.every((v, i) => v === b[i]);
+
+  let session = [], index = 0, score = 0, locked = false, themeStats = {}, currentTopic = null, currentModule = null;
+  let selected = new Set(), matchAssign = {}, orderList = [];
+  const shuffle = list => [...list].sort(() => Math.random() - .5);
+  const moduleQuestions = module => module.synthesis ? Q : Q.filter(q => module.themes.includes(q.theme));
+
+  function renderHome() {
+    $('moduleGrid').replaceChildren(...MODULES.map(module => {
+      const b = document.createElement('button'); b.className = 'module';
+      b.innerHTML = `<span class="module-number">${module.number}</span><h2>${module.name}</h2><p>${module.description}</p>`;
+      b.onclick = () => startModule(module); return b;
+    }));
+  }
+  function startModule(module) {
+    currentModule = module; currentTopic = null;
+    const available = moduleQuestions(module);
+    session = shuffle(available).slice(0, Math.min(module.synthesis ? 50 : available.length, available.length));
+    index = 0; score = 0; themeStats = {};
+    $('home').style.display = 'none'; $('quiz').style.display = 'block'; $('result').classList.remove('show'); $('moduleLabel').textContent = module.name; render();
+  }
+  function startTopic(topic) {
+    currentTopic = topic; currentModule = null;
+    const available = Q.filter(q => q.theme === topic);
+    session = shuffle(available); index = 0; score = 0; themeStats = {};
+    $('quiz').style.display = 'block'; $('result').classList.remove('show'); $('moduleLabel').textContent = `Révision ciblée : ${topic}`; render();
+  }
+
+  function render() {
+    locked = false; selected = new Set(); matchAssign = {}; orderList = [];
+    const q = session[index];
+    $('count').textContent = `Question ${index + 1} / ${session.length}`; $('bar').style.width = `${(index / session.length) * 100}%`;
+    $('theme').textContent = `${currentTopic ? 'Révision ciblée' : currentModule.name} · ${q.theme}`;
+    $('question').textContent = q.text;
+    $('feedback').className = 'feedback'; $('feedback').innerHTML = '';
+    $('next').classList.remove('show'); $('verify').classList.remove('show');
+    const area = $('answers'); area.replaceChildren(); area.className = 'answers';
+
+    if (q.type === 'multiple') {
+      area.replaceChildren(...shuffle(q.options).map(option => {
+        const b = document.createElement('button'); b.className = 'answer multi';
+        b.innerHTML = `<span class="checkbox"></span><span>${option}</span>`;
+        b.onclick = () => toggleMulti(option, b); return b;
+      }));
+      $('verify').classList.add('show');
+    } else if (q.type === 'blank') {
+      const wrap = document.createElement('div'); wrap.className = 'blank-wrap';
+      const input = document.createElement('input'); input.type = 'text'; input.className = 'blank-input'; input.id = 'blankInput';
+      input.placeholder = 'Ta réponse…'; input.autocomplete = 'off';
+      input.addEventListener('keydown', e => { if (e.key === 'Enter' && !locked) verify(); });
+      wrap.appendChild(input); area.appendChild(wrap);
+      $('verify').classList.add('show');
+      setTimeout(() => input.focus(), 30);
+    } else if (q.type === 'match') {
+      const rightValues = shuffle(q.pairs.map(p => p[1]));
+      const grid = document.createElement('div'); grid.className = 'match-grid';
+      q.pairs.forEach((pair, i) => {
+        const row = document.createElement('div'); row.className = 'match-row';
+        const left = document.createElement('span'); left.className = 'match-left'; left.textContent = pair[0];
+        const select = document.createElement('select'); select.className = 'match-select'; select.dataset.left = pair[0];
+        const empty = document.createElement('option'); empty.value = ''; empty.textContent = 'Choisir…'; select.appendChild(empty);
+        rightValues.forEach(v => { const o = document.createElement('option'); o.value = v; o.textContent = v; select.appendChild(o); });
+        row.append(left, select); grid.appendChild(row);
+      });
+      area.appendChild(grid);
+      $('verify').classList.add('show');
+    } else if (q.type === 'order') {
+      orderList = shuffle(q.items);
+      renderOrderList(area);
+      $('verify').classList.add('show');
+    } else {
+      const letters = ['A', 'B', 'C', 'D'];
+      area.replaceChildren(...shuffle(q.options).map((option, i) => {
+        const b = document.createElement('button'); b.className = 'answer';
+        b.innerHTML = `<span class="letter">${letters[i] || (i + 1)}</span><span>${option}</span>`;
+        b.onclick = () => answer(option, b); return b;
+      }));
+    }
+  }
+
+  function renderOrderList(area) {
+    area.replaceChildren();
+    const list = document.createElement('div'); list.className = 'order-list';
+    orderList.forEach((item, i) => {
+      const row = document.createElement('div'); row.className = 'order-item';
+      const up = document.createElement('button'); up.type = 'button'; up.className = 'order-btn'; up.textContent = '↑'; up.disabled = i === 0;
+      up.onclick = () => { if (locked) return; [orderList[i - 1], orderList[i]] = [orderList[i], orderList[i - 1]]; renderOrderList(area); };
+      const down = document.createElement('button'); down.type = 'button'; down.className = 'order-btn'; down.textContent = '↓'; down.disabled = i === orderList.length - 1;
+      down.onclick = () => { if (locked) return; [orderList[i + 1], orderList[i]] = [orderList[i], orderList[i + 1]]; renderOrderList(area); };
+      const num = document.createElement('span'); num.className = 'order-num'; num.textContent = i + 1;
+      const label = document.createElement('span'); label.className = 'order-label'; label.textContent = item;
+      const controls = document.createElement('span'); controls.className = 'order-controls'; controls.append(up, down);
+      row.append(num, label, controls); list.appendChild(row);
+    });
+    area.appendChild(list);
+  }
+
+  function toggleMulti(choice, b) {
+    if (locked) return;
+    if (selected.has(choice)) { selected.delete(choice); b.classList.remove('selected'); }
+    else { selected.add(choice); b.classList.add('selected'); }
+  }
+
+  function recordStat(theme, ok) { themeStats[theme] ||= { total: 0, correct: 0 }; themeStats[theme].total++; if (ok) themeStats[theme].correct++; }
+  function showFeedback(ok, explanation) {
+    $('feedback').className = `feedback show ${ok ? 'good' : 'bad'}`;
+    $('feedback').innerHTML = `<strong>${ok ? 'Bonne réponse !' : 'Réponse incorrecte.'}</strong>${explanation}`;
+    $('verify').classList.remove('show'); $('next').classList.add('show');
+  }
+
+  function verify() {
+    if (locked) return; locked = true;
+    const q = session[index];
+    let ok = false;
+    if (q.type === 'multiple') {
+      const correctSet = new Set(q.answers);
+      ok = selected.size === correctSet.size && [...selected].every(s => correctSet.has(s));
+      [...$('answers').children].forEach(b => {
+        b.disabled = true; const label = b.querySelector('span:last-child').textContent;
+        if (correctSet.has(label)) b.classList.add('good'); else if (selected.has(label)) b.classList.add('bad');
+      });
+    } else if (q.type === 'blank') {
+      const input = $('blankInput'); const val = norm(input.value);
+      ok = q.accept.some(a => norm(a) === val);
+      input.disabled = true; input.classList.add(ok ? 'good' : 'bad');
+      if (!ok) { const hint = document.createElement('div'); hint.className = 'blank-answer'; hint.textContent = `Réponse attendue : ${q.accept[0]}`; input.insertAdjacentElement('afterend', hint); }
+    } else if (q.type === 'match') {
+      const selects = [...$('answers').querySelectorAll('.match-select')];
+      ok = selects.every(sel => sel.value === q.pairs.find(p => p[0] === sel.dataset.left)[1]);
+      selects.forEach(sel => { sel.disabled = true; const correctVal = q.pairs.find(p => p[0] === sel.dataset.left)[1]; sel.classList.add(sel.value === correctVal ? 'good' : 'bad'); });
+    } else if (q.type === 'order') {
+      ok = arraysEqual(orderList, q.items);
+      [...$('answers').querySelectorAll('.order-btn')].forEach(b => b.disabled = true);
+      $('answers').querySelector('.order-list').classList.add(ok ? 'good' : 'bad');
+    }
+    recordStat(q.theme, ok); if (ok) score++;
+    showFeedback(ok, q.explanation);
+  }
+
+  function answer(choice, button) {
+    if (locked) return; locked = true;
+    const q = session[index], correct = choice === q.answer; if (correct) score++;
+    recordStat(q.theme, correct);
+    [...$('answers').children].forEach(b => { b.disabled = true; if (b.querySelector('span:last-child').textContent === q.answer) b.classList.add('good'); });
+    if (!correct) button.classList.add('bad');
+    showFeedback(correct, q.explanation);
+  }
+
+  $('next').onclick = () => { index++; if (index < session.length) render(); else finish(); };
+  $('verify').onclick = verify;
+
+  function finish() {
+    $('quiz').style.display = 'none'; $('result').classList.add('show');
+    const rate = Math.round(score / session.length * 100);
+    $('resultTitle').textContent = currentTopic ? `Résultat - Révision ciblée : ${currentTopic}` : `Résultat - ${currentModule.name}`;
+    $('finalScore').textContent = `${rate} %`;
+    const assessment = rate >= 90 ? 'Très bon niveau.' : rate >= 70 ? 'Bon niveau : quelques points sont à consolider.' : 'Révision recommandée avant une nouvelle session.';
+    $('finalText').textContent = `Réussite du module : ${score} bonne${score > 1 ? 's' : ''} réponse${score > 1 ? 's' : ''} sur ${session.length}. ${assessment}`;
+    const weaknesses = Object.entries(themeStats).map(([theme, stat]) => ({ theme, ...stat, wrong: stat.total - stat.correct })).filter(s => s.wrong > 0).sort((a, b) => (b.wrong / b.total) - (a.wrong / a.total) || b.wrong - a.wrong);
+    $('reviewList').replaceChildren();
+    if (!weaknesses.length) {
+      $('reviewIntro').textContent = 'Aucun thème faible sur cette session.';
+      const message = document.createElement('div'); message.className = 'review-empty'; message.textContent = 'Parfait : tu n’as commis aucune erreur. Lance une nouvelle session pour varier les questions.'; $('reviewList').append(message);
+    } else {
+      $('reviewIntro').textContent = 'Choisis une fiche où une erreur a été repérée :';
+      weaknesses.forEach(({ theme, total, wrong }) => {
+        const b = document.createElement('button'); b.className = 'review-item'; b.innerHTML = `<strong>${theme}</strong><span>${wrong} erreur${wrong > 1 ? 's' : ''} sur ${total}</span>`; b.onclick = () => startTopic(theme); $('reviewList').append(b);
+      });
+    }
+  }
+  $('restart').onclick = () => currentTopic ? startTopic(currentTopic) : startModule(currentModule);
+  function goHome() { $('quiz').style.display = 'none'; $('result').classList.remove('show'); $('home').style.display = 'block'; }
+  $('homeButton').onclick = goHome;
+  $('backToHome').onclick = goHome;
+  renderHome();
+  </script>
+</body>
+</html>
