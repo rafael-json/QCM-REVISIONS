@@ -1,171 +1,1595 @@
 <!doctype html>
 <html lang="fr">
 <head>
-<meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>QCM - Architecture réseaux</title>
-<link rel="stylesheet" href="style.css"></head>
-<body><main><header><a class="home-link" href="index.html">&larr; Accueil</a><h1>Architecture des réseaux</h1><p class="subtitle">Révisions interactives par module</p></header>
-<section class="card" id="home"><h2>Choisis un module</h2><p class="home-intro">Les questions sont basées sur les cours de terminologie, normalisation, modèles et équipements réseau. La synthèse générale sélectionne 50 questions mélangées.</p><div class="module-grid" id="moduleGrid"></div></section>
-<section class="card" id="quiz" aria-live="polite"><div class="quiz-nav"><button class="back" id="backHome">← Retour aux modules</button><span class="module-label" id="moduleLabel"></span></div><div class="meta"><span id="count"></span><span>Progression du module</span></div><div class="bar"><span id="bar"></span></div><p class="tag" id="theme"></p><h2 id="question"></h2><div class="answers" id="answers"></div><div class="feedback" id="feedback"></div><div class="actions"><button class="verify" id="verify">Vérifier</button><button class="next" id="next">Question suivante</button></div></section>
-<section class="card result" id="result"><h2 id="resultTitle">Résultat du module</h2><div class="score" id="finalScore"></div><p id="finalText"></p><h3 class="review-title">Révision ciblée</h3><p id="reviewIntro"></p><div class="review-list" id="reviewList"></div><button class="restart" id="restart">Nouvelle session du même module</button><button class="home-button" id="homeButton">Retour aux modules</button></section><footer>Les questions et réponses sont mélangées à chaque session.</footer></main>
-<script>
-const q=(theme,text,answer,others,explanation)=>({theme,text,options:[answer,...others],answer,explanation});
-const qm=(theme,text,options,answers,explanation)=>({theme,text,type:'multiple',options,answers,explanation});
-const Q=[
-q('Signaux','Dans les réseaux informatiques, la plus petite unité d’information transportée est…','le bit',['l’octet','le paquet','la trame'],'Le cours indique que le bit est la plus petite unité d’information transportée.'),
-q('Signaux','Un signal est avant tout…','un phénomène physique transmettant une information',['un câble réseau','un protocole de routage','une adresse IP'],'Un signal peut être une tension, un courant, une onde lumineuse ou électromagnétique transmettant une information.'),
-q('Signaux','La bande passante d’un support de transmission désigne principalement…','le débit binaire maximal que le support peut transmettre',['le temps de propagation du signal sur la ligne','le nombre total de postes connectés au réseau'],'La bande passante est la caractéristique de performance physique d’un support de transmission.'),
-q('Signaux','Une qualité de liaison exprimée par 10⁻³ signifie…','une erreur binaire pour 1 000 bits transmis',['une erreur pour 3 bits','1 000 erreurs par bit','une absence totale d’erreur'],'Le taux d’erreur binaire est exprimé sous forme de puissance négative.'),
-q('Signaux','La rapidité de modulation est exprimée en…','bauds',['octets','hertz uniquement','décibels'],'Elle représente le nombre d’intervalles significatifs transmis en une seconde.'),
-q('Signaux','Une rapidité de 50 bauds correspond ici à…','50 intervalles significatifs par seconde',['50 octets par seconde','5 bits par seconde'],'Dans l’exemple du cours, un intervalle de 20 ms donne 50 bauds, soit 50 bits/s.'),
-q('Signaux','L’atténuation d’un signal est habituellement exprimée en…','décibels',['bauds','gigaoctets','ports'],'L’atténuation représente la perte d’intensité du signal dans le médium.'),
-q('Signaux','Quand l’atténuation devient trop importante…','l’information ne peut plus être interprétée correctement',['le débit augmente automatiquement','le signal devient numérique'],'Sous un certain seuil, le signal est trop faible pour être interprété correctement.'),
-q('Transmissions','Le mode simplex est une communication…','unilatérale, avec un émetteur vers un ou plusieurs récepteurs',['simultanée dans les deux sens','alternée','réservée aux routeurs'],'La télévision ou la radio illustrent un mode simplex.'),
-q('Transmissions','Le half duplex permet…','une discussion alternée dans les deux sens',['une émission dans un seul sens','une discussion simultanée','la diffusion à tous les hôtes'],'L’émetteur devient récepteur une fois sa transmission terminée.'),
-q('Transmissions','Le full duplex permet…','une communication simultanée dans les deux sens',['un seul émetteur','une alternance obligatoire'],'En full duplex, chaque participant peut émettre et recevoir au même moment.'),
-q('Transmissions','Une transmission synchrone est cadencée par…','une horloge d’un élément maître',['un bit de stop uniquement','un câble coaxial','une adresse MAC'],'Les autres membres se calent sur l’horloge émise continuellement par le maître.'),
-q('Transmissions','En transmission asynchrone, une communication commence généralement par…','un bit de start',['une adresse IP','une trame Ethernet complète','un signal lumineux'],'Le cours indique aussi la présence d’un bit de stop à la fin.'),
-q('Transmissions','Le port série RS232 utilise une transmission…','asynchrone',['synchrone','full duplex uniquement','par paquets uniquement'],'Les communications par port série RS232 sont données comme exemple d’asynchrone.'),
-q('Transmissions','Une collision se produit lorsque…','deux signaux se chevauchent',['un câble est débranché','un paquet arrive correctement','un routeur choisit une route'],'Une collision entraîne une perte d’information et doit être détectée ou évitée.'),
-q('Diffusion','Unicast correspond à…','une communication entre un émetteur et un seul destinataire',['une diffusion vers tous','une diffusion vers un groupe','une diffusion géographique'],'Unicast est aussi appelé unidiffusion ou pair à pair.'),
-q('Diffusion','Multicast correspond à…','une diffusion vers plusieurs membres, sans viser la totalité',['un seul destinataire','tous les membres sans exception','aucun destinataire'],'Multicast est une multidiffusion vers un groupe de destinataires.'),
-q('Diffusion','Broadcast permet d’envoyer un contenu…','à l’ensemble des membres du réseau',['à un seul serveur','à un groupe choisi','à la ville la plus proche'],'Broadcast signifie diffusion générale.'),
-q('Diffusion','Une broadcast storm est…','une saturation du réseau qui peut le bloquer',['une méthode de chiffrement','une liaison point à point','un protocole Wi-Fi'],'Une tempête de diffusion peut résulter d’une panne ou d’un acte malveillant.'),
-q('Diffusion','Anycast vise à rediriger des données vers…','l’équipement le plus proche ou le plus rapide',['tous les équipements','un équipement choisi aléatoirement','la totalité du réseau local'],'Anycast associe plusieurs adresses derrière une même adresse commune.'),
-q('Diffusion','Geocast est une diffusion ciblée selon…','une zone géographique du réseau',['la vitesse du processeur','la taille des paquets','le fabricant du switch'],'Geocast permet de diffuser une information à une partie géographique du réseau.'),
-q('Commutation','La commutation consiste à…','établir une liaison temporaire entre deux nœuds du réseau',['diffuser systématiquement les données à tous les nœuds','chiffrer les données avant leur transmission'],'Le cours définit la commutation comme l’établissement d’une liaison temporaire physique entre nœuds.'),
-q('Commutation','La commutation de circuits établit…','un circuit dédié dans le réseau',['des paquets indépendants','un message stocké sur chaque nœud','un broadcast'],'La ligne de communication est assimilée à un tuyau dédié à la communication.'),
-q('Commutation','En commutation de paquets, les données sont…','découpées en paquets',['toujours transmises comme un bloc unique','converties en signal analogique','supprimées après chaque saut'],'La segmentation découpe les données avant leur transmission.'),
-q('Commutation','Avec la commutation de paquets, des paquets peuvent…','emprunter des routes différentes',['toujours suivre le même chemin','ne jamais être réassemblés','être transmis uniquement en circuit dédié'],'Les nœuds choisissent chaque route selon leurs tables de routage.'),
-q('Commutation','Le modèle dominant sur Internet est…','la commutation de paquets',['la commutation de circuits','la commutation de messages','la transmission simplex'],'Elle résiste aux pannes intermédiaires et utilise efficacement les lignes.'),
-q('Commutation','En commutation de messages, chaque nœud…','attend le message complet avant de le transmettre',['ne reçoit qu’un bit','transmet avant toute réception','efface le message'],'Le message est transmis séquentiellement d’un nœud à un autre.'),
-q('Échelles','PAN signifie…','Personal Area Network',['Public Access Network','Primary Area Node','Protocol Access Network'],'Le PAN est le réseau personnel, la plus petite échelle décrite dans le cours.'),
-q('Échelles','Un PAN couvre généralement au maximum…','une dizaine de mètres',['une ville entière','un continent','un bâtiment de plusieurs étages uniquement'],'Le PAN relie par exemple montre, smartphone, PC ou manette à courte distance.'),
-q('Échelles','Bluetooth est une technologie typique de…','PAN',['WAN','MAN','réseau en anneau'],'Le cours cite Bluetooth, infrarouge et RS232 pour les réseaux personnels.'),
-q('Échelles','LAN signifie…','Local Area Network',['Large Access Node','Logical Area Network','Long Area Network'],'Un LAN est un réseau local, limité par exemple à un bâtiment ou un campus.'),
-q('Échelles','Un LAN se caractérise généralement par…','une zone peu étendue et un débit important',['une couverture planétaire','une absence de matériel','un unique utilisateur'],'Le cours cite le bâtiment, le campus et une organisation unique.'),
-q('Échelles','MAN signifie…','Metropolitan Area Network',['Main Access Network','Media Area Node','Multiple Area Network'],'Un MAN interconnecte une ou plusieurs villes de manière optimisée.'),
-q('Échelles','WAN signifie…','Wide Area Network',['Wireless Access Node','Web Area Network','Wired Application Network'],'Un WAN couvre une zone plus large, jusqu’au pays, continent ou planète.'),
-q('Échelles','MPLS est cité dans le cours comme une technologie de…','WAN',['PAN','réseau personnel Bluetooth','couche présentation'],'MPLS est un mécanisme de transport fondé sur la commutation d’étiquettes.'),
-q('Topologies','Dans un réseau point à point…','un hôte discute avec un seul autre hôte',['tous les clients parlent au serveur','il y a forcément un routeur','tous les hôtes reçoivent chaque message'],'Les deux membres peuvent tour à tour être client et serveur.'),
-q('Topologies','Dans une architecture client-serveur…','plusieurs clients utilisent une même machine serveur',['chaque client est relié à tous les autres','il n’y a aucun serveur','tous les postes ont exactement le même rôle'],'Le cours précise qu’il n’y a pas de lien direct entre les clients.'),
-q('Topologies','La topologie en bus repose sur…','un câble unique auquel les nœuds se raccordent',['un nœud central unique','un cercle fermé','des liaisons redondantes systématiques'],'Si un nœud est hors service, le réseau en bus reste fonctionnel.'),
-q('Topologies','La topologie en bus utilise le protocole…','CSMA/CD',['TCP/IP','Bluetooth','MPLS'],'Les stations connectées au câble commun utilisent CSMA/CD.'),
-q('Topologies','Une topologie en anneau est…','un bus fermé sur lui-même',['un réseau avec nœud central','un câble unique non fermé','un réseau sans liaisons'],'Chaque nœud est connecté à deux autres dans l’anneau.'),
-q('Topologies','Dans un anneau, si un nœud est hors service…','le réseau peut être hors service',['le réseau devient plus rapide','rien ne change jamais','seul le serveur s’arrête'],'C’est l’inconvénient principal du réseau en anneau décrit dans le cours.'),
-q('Topologies','Dans une topologie en étoile, le point critique est…','le nœud central',['chaque câble individuel uniquement','un poste connecté en périphérie du réseau'],'Un poste peut tomber en panne sans arrêter le réseau, mais pas le nœud central.'),
-q('Topologies','Un réseau maillé se caractérise par…','des redondances de liaisons',['un seul câble commun','un unique client','une absence de route alternative'],'Cette topologie est comparée à une toile d’araignée.'),
-q('Normalisation','ISO signifie…','Organisation internationale de normalisation',['Internet System Office','International Signal Organisation','Integrated Standard Office'],'L’ISO est le plus grand organisme de normalisation présenté dans le cours.'),
-q('Normalisation','Le siège de l’ISO est situé à…','Genève',['Paris','Bruxelles','New York'],'Le cours situe l’ISO à Genève, en Suisse.'),
-q('Normalisation','Le modèle OSI a été défini par…','l’ISO',['IEEE','IETF','AFNOR'],'L’ISO définit le modèle OSI dans sa norme sur l’interconnexion des systèmes ouverts.'),
-q('Normalisation','AFNOR est…','membre de l’ISO',['un protocole réseau','un fabricant de routeurs','une couche OSI'],'L’Association française de normalisation édicte notamment les normes NF EN.'),
-q('Normalisation','Les normes de l’ITU sont appelées…','des recommandations',['RFC','trames','segments'],'L’Union internationale des télécommunications produit des recommandations.'),
-q('Normalisation','IEEE 802.3 concerne…','la couche média CSMA/CD',['le Wi-Fi','Bluetooth','la messagerie SMTP'],'Les comités IEEE 802 regroupent plusieurs normes importantes pour les réseaux.'),
-q('Normalisation','IEEE 802.11 concerne…','les réseaux locaux sans fil Wi-Fi',['Token Ring','Bluetooth','le routage IP'],'802.11 est la famille de normes Wi-Fi.'),
-q('Normalisation','IEEE 802.15 est associé à…','Bluetooth',['Ethernet filaire','MPLS','SMTP'],'Le cours rattache Bluetooth au comité IEEE 802.15.'),
-q('Modèles','Le modèle OSI comporte…','7 couches hiérarchiques',['4 couches','5 couches','10 couches'],'Le modèle de référence OSI est structuré en sept couches.'),
-q('Modèles','Le modèle OSI a été publié en…','1983',['1971','1995','2004'],'Le cours indique sa publication par l’ISO en 1983.'),
-q('Modèles','Même peu implémenté, le modèle OSI sert surtout à…','identifier le niveau de fonctionnement d’un composant réseau',['remplacer tous les protocoles','chiffrer les paquets','mesurer la bande passante'],'Il reste une référence de description et de diagnostic des réseaux.'),
-q('Modèles','Un protocole définit…','les règles de dialogue entre couches de même niveau',['la topologie physique du réseau','les adresses IP attribuées aux hôtes'],'Les protocoles encadrent les échanges entre entités homologues.'),
-q('Modèles','Une interface dans le modèle OSI permet…','la communication entre deux couches adjacentes',['le chiffrement de tous les fichiers','la création d’une adresse MAC'],'Elle définit comment une couche utilise les services de la couche inférieure.'),
-q('Modèles','Le modèle TCP/IP comporte…','4 couches',['7 couches','2 couches','8 couches'],'Le modèle Internet TCP/IP est une architecture à quatre couches.'),
-q('Modèles','Dans TCP/IP, la couche accès réseau regroupe les couches OSI…','physique et liaison de données',['réseau et transport','session et présentation','application et session'],'Elle dépend notamment de la technologie utilisée sur le réseau local.'),
-q('Modèles','La couche Internet du modèle TCP/IP s’appuie officiellement sur…','IP',['HTTP','SMTP','Ethernet'],'IP assure l’interconnexion des réseaux distants dans le modèle TCP/IP.'),
-q('Modèles','TCP est un protocole…','fiable et orienté connexion',['sans connexion et sans contrôle d’erreur','réservé à la couche physique','analogue à un signal radio'],'TCP gère notamment fragmentation et contrôle de flux.'),
-q('Modèles','UDP est adapté notamment aux applications…','temps réel',['où une garantie de livraison intégrale est indispensable','de transfert de fichiers volumineux sans perte de données'],'UDP est rapide, sans connexion et sans contrôle d’erreur selon le cours.'),
-q('Modèles','Telnet, FTP et SMTP appartiennent à la couche TCP/IP…','application',['Internet','transport','accès réseau'],'La couche application rassemble les protocoles destinés aux applications hôtes.'),
-q('Encapsulation','L’encapsulation consiste à…','ajouter des informations de contrôle à chaque couche',['supprimer les adresses réseau','réduire la longueur du câble','convertir tous les signaux en analogique'],'Chaque couche ajoute ses propres informations pour dialoguer avec son homologue.'),
-q('Couche physique','La couche physique s’occupe principalement…','de la transmission des bits sur le médium',['des adresses IP','des numéros de port','du chiffrement des fichiers'],'Elle concerne le support, le signal et les caractéristiques physiques de transmission.'),
-q('Couche liaison','La couche liaison travaille avec des…','trames',['segments','datagrammes applicatifs','fichiers'],'La trame est l’unité de données de la couche liaison.'),
-q('Couche liaison','Une erreur FCS ou CRC indique généralement…','une trame corrompue par une interférence',['une adresse IP mal configurée','une collision détectée sur le support'],'Le contrôle de séquence de trame détecte les corruptions, notamment sur le câble.'),
-q('Couche liaison','Store-and-forward signifie que le commutateur…','reçoit la trame complète avant de la retransmettre',['transmet dès la première adresse lue','ignore le CRC','diffuse sur tous les ports'],'Cette méthode vérifie notamment CRC, tailles de trame et collisions.'),
-q('Couche liaison','Cut-through consiste à…','transmettre sans attendre la trame complète',['stocker tous les paquets durablement','chiffrer une trame','interdire le broadcast'],'Elle réduit la latence mais peut relayer des erreurs ou fragments de collision.'),
-q('Couche réseau','La couche réseau choisit…','le meilleur chemin vers le destinataire',['le format d’encodage des caractères transmis','le nombre de collisions détectées sur le support'],'Elle assure adressage logique et routage à l’aide de tables statiques ou dynamiques.'),
-q('Couche réseau','La couche réseau utilise principalement l’adressage…','IP',['MAC uniquement'],'IP est l’exemple d’adressage logique cité dans le cours.'),
-q('Couche transport','La couche transport assure une communication…','de bout en bout',['uniquement électrique','entre deux câbles','sans application'],'Elle utilise notamment les numéros de port et des mécanismes de fiabilité.'),
-q('Couche transport','L’unité d’information de la couche transport est…','le segment ou le datagramme',['la trame uniquement','le bit','le paquet Ethernet'],'Le cours emploie les termes segment ou datagramme pour cette couche.'),
-q('Couche session','La couche session gère notamment…','le dialogue et les connexions entre tâches distantes',['les signaux électriques sur le support','le chiffrement des données transmises'],'Elle organise, synchronise et libère les sessions entre deux machines.'),
-q('Couche présentation','La couche présentation assure notamment…','la mise en forme, le chiffrement et la compression',['le routage IP','la commutation Ethernet','la régénération du signal'],'Elle convertit et rend les données compatibles entre tâches communicantes.'),
-q('Couche application','La couche application est l’interface entre…','l’utilisateur et les services applicatifs réseau',['le câble et le répéteur','les couches physique et liaison uniquement','le routeur et le switch uniquement'],'Elle fournit par exemple messagerie SMTP, Web HTTP ou transfert FTP.'),
-q('Équipements','Un équipement de niveau 1 travaille dans la couche OSI…','physique',['liaison','réseau','transport'],'Les équipements de niveau 1 ne fonctionnent que dans la couche 1.'),
-q('Équipements','Le rôle d’un répéteur est de…','régénérer et resynchroniser le signal',['choisir la meilleure route IP','filtrer les ports TCP','attribuer des adresses MAC'],'Le répéteur agit au niveau du bit sans modifier le contenu du message.'),
-q('Équipements','Un transceiver sert à…','convertir un type de signal en un autre',['filtrer les broadcasts','gérer une table de routage','chiffrer une session'],'Il peut par exemple convertir un signal électrique en signal optique.'),
-q('Équipements','Un hub diffuse un signal reçu…','sur tous les autres ports',['uniquement vers le destinataire MAC','vers le meilleur routeur','dans une table FDB'],'Le hub est un répéteur multiports, donc peu sécurisé.'),
-q('Équipements','Un hub est interdit en gendarmerie notamment parce que…','le trafic peut être capturé sur n’importe quel port',['il chiffre automatiquement les données transmises','il nécessite systématiquement une adresse IP fixe'],'Sa diffusion sur tous les ports offre une sécurité faible.'),
-q('Équipements','Un pont est un équipement de niveau…','2',['1','3','4'],'Un pont fonctionne à la couche liaison et hérite des fonctions de niveau 1.'),
-q('Équipements','Un pont filtre les trames selon…','les adresses MAC',['les adresses IP uniquement','les numéros de port TCP uniquement'],'Il lit les champs de couche 2 et conserve les adresses sources dans une FDB.'),
-q('Équipements','La FDB d’un pont contient…','des adresses MAC apprises',['des adresses IP apprises','des règles de filtrage par port TCP'],'Forwarding Data Base permet au pont de savoir de quel côté se trouve un émetteur.'),
-q('Équipements','Un commutateur ou switch est aussi appelé…','pont multiports',['répéteur simple','pare-feu applicatif uniquement','transceiver'],'Le switch combine les fonctions de pont et de concentrateur de manière intelligente.'),
-q('Équipements','Un switch limite les collisions mais…','n’éradique pas le broadcast',['supprime toute trame','ne connaît pas les adresses MAC','ne peut avoir qu’un port'],'Il transmet vers le port adéquat, mais les broadcasts subsistent.'),
-q('Équipements','Un routeur est principalement…','la passerelle entre réseaux',['un simple répéteur de bits','un convertisseur électrique-optique','un périphérique de stockage'],'Il choisit un chemin entre réseaux à l’aide d’adresses IP et de tables de routage.'),
-q('Équipements','Un routeur utilise des adresses…','logiques IP',['MAC seulement'],'Les adresses logiques permettent de distinguer les réseaux et les hôtes.'),
-q('Équipements','Un routeur privilégie d’abord…','les réseaux directement connectés',['les routes dynamiques','les routes les plus longues','les broadcasts'],'Le cours donne l’ordre : directement connectés, statiques, puis dynamiques.'),
-q('Équipements','Un pare-feu peut notamment…','filtrer des paquets et faire de la translation d’adresses',['régénérer seulement les bits comme un répéteur','filtrer uniquement par adresse MAC comme un pont'],'Le pare-feu peut aussi assurer commutation, routage et VPN selon le cours.'),
-q('Équipements','Dans un pare-feu, la zone Trust représente…','le réseau que l’on contrôle',['Internet et les réseaux externes','un câble débranché','la zone de diffusion broadcast'],'La zone Untrust correspond à l’extérieur, par exemple Internet.'),
-q('Équipements','Un VPN proposé par un pare-feu peut associer…','encapsulation, authentification et chiffrement',['seulement une adresse MAC','seulement une trame Ethernet'],'Le cours cite aussi l’utilisation d’IPSec pour les VPN.'),
-qm('Signaux','La bande passante d’un support de transmission peut être limitée par… (plusieurs réponses)',['La distance de la ligne','Le partage du débit nominal entre de nombreux utilisateurs','Le manque de ressources réseau (infrastructure, temps de réponse des serveurs)','La couleur du câble','Le système d’exploitation utilisé'],['La distance de la ligne','Le partage du débit nominal entre de nombreux utilisateurs','Le manque de ressources réseau (infrastructure, temps de réponse des serveurs)'],'Le cours cite ces trois facteurs comme limitant la bande passante : distance, partage du débit et ressources réseau.'),
-qm('Transmissions','Parmi ces affirmations sur la transmission asynchrone, lesquelles sont exactes ? (plusieurs réponses)',['Elle commence par un bit de start','Elle se termine par un bit de stop','Le port série RS232 l’utilise','Elle est cadencée en continu par l’horloge d’un élément maître','Les réseaux locaux l’utilisent car ils détectent mieux les erreurs'],['Elle commence par un bit de start','Elle se termine par un bit de stop','Le port série RS232 l’utilise'],'Les deux dernières propositions décrivent la transmission synchrone, pas l’asynchrone.'),
-qm('Diffusion','Quels types de diffusion visent plusieurs destinataires sans être la totalité du réseau ? (plusieurs réponses)',['Multicast','Geocast','Unicast','Broadcast','Anycast'],['Multicast','Geocast'],'Multicast diffuse à plusieurs membres sans viser la totalité, Geocast cible une zone géographique du réseau. Unicast vise un seul destinataire, Broadcast vise tous les membres, Anycast redirige vers l’équipement le plus proche.'),
-qm('Commutation','Quels sont les avantages de la commutation de paquets citée par le cours comme modèle dominant sur Internet ? (plusieurs réponses)',['Résistance aux pannes des nœuds intermédiaires','Utilisation rationnelle et efficace des lignes de transmission','Les paquets peuvent emprunter des routes différentes','Un circuit dédié est établi pour toute la communication','Chaque nœud attend le message complet avant de le transmettre'],['Résistance aux pannes des nœuds intermédiaires','Utilisation rationnelle et efficace des lignes de transmission','Les paquets peuvent emprunter des routes différentes'],'Le circuit dédié décrit la commutation de circuits, et l’attente du message complet décrit la commutation de messages.'),
-qm('Échelles','Quelles technologies sont citées par le cours comme typiques d’un PAN ? (plusieurs réponses)',['Bluetooth','Infrarouge','RS232','Ethernet filaire','MPLS'],['Bluetooth','Infrarouge','RS232'],'Le cours cite Bluetooth, infrarouge et RS232 comme technologies employées pour les réseaux personnels (PAN).'),
-qm('Topologies','Quelles affirmations sur la topologie en bus sont exactes ? (plusieurs réponses)',['Elle repose sur un câble unique auquel les nœuds se raccordent','Les nœuds connectés utilisent le protocole CSMA/CD','Si un nœud est hors service, le réseau reste fonctionnel','Chaque nœud est connecté à deux autres nœuds seulement','Le point critique du réseau est un nœud central'],['Elle repose sur un câble unique auquel les nœuds se raccordent','Les nœuds connectés utilisent le protocole CSMA/CD','Si un nœud est hors service, le réseau reste fonctionnel'],'Les deux dernières propositions décrivent respectivement la topologie en anneau et la topologie en étoile.'),
-qm('Normalisation','Quels organismes sont cités par le cours comme membres de l’ISO ? (plusieurs réponses)',['AFNOR','Le Comité Européen de Normalisation','IEEE','IETF','ITU'],['AFNOR','Le Comité Européen de Normalisation'],'AFNOR et le Comité Européen de Normalisation sont cités comme membres de l’ISO. IEEE, IETF et ITU sont des organismes distincts.'),
-qm('Normalisation','Quelles normes ou familles de normes sont gérées par l’IEEE selon le cours ? (plusieurs réponses)',['802.3 (CSMA-CD)','802.11 (Wi-Fi)','802.15 (Bluetooth)','Les RFC','Les recommandations de l’ITU'],['802.3 (CSMA-CD)','802.11 (Wi-Fi)','802.15 (Bluetooth)'],'Les RFC sont produites par l’IETF, et les recommandations par l’ITU, pas par l’IEEE.'),
-qm('Modèles','Quelles couches du modèle OSI sont regroupées dans la couche « accès réseau » du modèle TCP/IP ? (plusieurs réponses)',['Couche physique','Couche liaison','Couche réseau','Couche transport'],['Couche physique','Couche liaison'],'Le cours indique que la couche accès réseau du modèle TCP/IP regroupe les couches physique et liaison de données du modèle OSI.'),
-qm('Modèles','Quelles caractéristiques concernent le protocole TCP selon le cours ? (plusieurs réponses)',['Il est fiable et orienté connexion','Il gère la fragmentation et le contrôle de flux','Il est adapté aux applications temps réel comme la VOIP','Il fonctionne sans contrôle d’erreur ni connexion'],['Il est fiable et orienté connexion','Il gère la fragmentation et le contrôle de flux'],'Les deux dernières propositions décrivent UDP, pas TCP.'),
-qm('Couche physique','Quelles sont des causes d’erreurs possibles au niveau de la couche physique citées par le cours ? (plusieurs réponses)',['La collision','L’atténuation','Le bruit','Une erreur de routage','Une erreur de commutation de paquets'],['La collision','L’atténuation','Le bruit'],'Le cours cite explicitement la collision, l’atténuation et le bruit comme erreurs possibles de la couche physique.'),
-qm('Couche liaison','Quelles fonctions sont assurées par la sous-couche LLC selon le cours ? (plusieurs réponses)',['Gérer, établir et terminer les liaisons','Identifier et encapsuler les protocoles de la couche supérieure','Contrôler les flux et gérer les erreurs en annulant les trames erronées','Fournir l’adressage physique MAC','Choisir le meilleur chemin vers le destinataire'],['Gérer, établir et terminer les liaisons','Identifier et encapsuler les protocoles de la couche supérieure','Contrôler les flux et gérer les erreurs en annulant les trames erronées'],'L’adressage MAC est le rôle de la sous-couche MAC, et le choix du meilleur chemin est le rôle de la couche réseau.'),
-qm('Couche liaison','Quels champs composent une trame Ethernet v2 selon le cours ? (plusieurs réponses)',['Le préambule','Les adresses MAC source et destination','Le champ Ether Type','La séquence de contrôle de trame (FCS)','Un numéro de port applicatif'],['Le préambule','Les adresses MAC source et destination','Le champ Ether Type','La séquence de contrôle de trame (FCS)'],'Le numéro de port est une donnée de couche transport, absente de la trame Ethernet.'),
-qm('Équipements','Quels équipements fonctionnent uniquement au niveau 1 du modèle OSI selon le cours ? (plusieurs réponses)',['Le répéteur','Le convertisseur de média (transceiver)','Le répéteur multiports (hub)','Le pont','Le commutateur'],['Le répéteur','Le convertisseur de média (transceiver)','Le répéteur multiports (hub)'],'Le pont et le commutateur sont des équipements de niveau 2, pas de niveau 1.'),
-qm('Équipements','Quelles affirmations sur le commutateur (switch) sont exactes selon le cours ? (plusieurs réponses)',['Il est à la fois un pont et un concentrateur','Il étudie l’adresse MAC source pour l’associer à un port','Il limite considérablement les collisions','Il éradique totalement le broadcast','Il utilise des adresses IP pour transmettre les trames'],['Il est à la fois un pont et un concentrateur','Il étudie l’adresse MAC source pour l’associer à un port','Il limite considérablement les collisions'],'Le cours précise que le commutateur n’éradique pas le broadcast, et qu’il travaille avec des adresses MAC, pas IP.'),
-qm('Équipements','Quels rôles sont attribués au routeur selon le cours ? (plusieurs réponses)',['Il choisit la meilleure route possible','Il met à jour sa table de routage','Il ne laisse pas passer certains paquets (broadcast, destination inconnue)','Il filtre uniquement par adresse MAC','Il ne fait que régénérer le signal'],['Il choisit la meilleure route possible','Il met à jour sa table de routage','Il ne laisse pas passer certains paquets (broadcast, destination inconnue)'],'Le filtrage par adresse MAC seul décrit le pont, et la régénération seule décrit le répéteur.'),
-qm('Topologies','Quelles topologies sont présentées par le cours comme des « topologies dérivées » ? (plusieurs réponses)',['Le réseau hiérarchique (en arbre)','Le réseau maillé','La topologie en grille','La topologie toroïdale','La topologie en étoile'],['Le réseau hiérarchique (en arbre)','Le réseau maillé','La topologie en grille','La topologie toroïdale'],'Le cours classe hiérarchique, maillé, grille et toroïdale comme topologies dérivées ; l’étoile est une topologie de base.'),
-q('Topologies','Le réseau hiérarchique est aussi appelé…','réseau en arbre',['réseau en étoile','réseau en anneau'],'Il comporte un nœud supérieur relié à des nœuds inférieurs, eux-mêmes reliés à d’autres nœuds inférieurs.'),
-q('Topologies','La topologie toroïdale est directement dérivée…','de la topologie en grille',['de la topologie en bus','du réseau maillé'],'Elle offre une vision en trois dimensions là où la topologie en grille n’en offre que deux.'),
-qm('Modèles','Quelles sont les caractéristiques d’un système « ouvert » selon le cours ? (plusieurs réponses)',['La portabilité','L’interopérabilité','La compatibilité d’échelle','Le chiffrement systématique','La propriété exclusive d’un fabricant'],['La portabilité','L’interopérabilité','La compatibilité d’échelle'],'Les systèmes ouverts s’opposent aux systèmes propriétaires (IBM, BULL...) grâce à ces trois caractéristiques.'),
-q('Modèles','Les couches 1 à 3 du modèle OSI sont dites « couches média », orientées…','transmission',['traitement','application uniquement'],'Le cours regroupe les couches 1 à 3 comme couches média orientées transmission, et 4 à 7 comme couches hôtes orientées traitement.'),
-q('Modèles','Les couches 4 à 7 du modèle OSI sont dites « couches hôtes », orientées…','traitement',['transmission','physique uniquement'],'Elles se distinguent des couches basses, davantage liées au support physique.'),
-q('Normalisation','L’ISO regroupe des représentants d’organismes nationaux de…','164 pays',['64 pays','264 pays'],'Le cours précise que l’ISO est composée de représentants d’organisation nationale de normalisation de 164 pays.'),
-q('Normalisation','L’IEEE regroupe environ…','400 000 membres',['40 000 membres','4 000 membres'],'Le cours indique que l’IEEE regroupe informaticiens, ingénieurs électriciens et professionnels des télécommunications.'),
-q('Normalisation','Au sein de l’IETF, chaque domaine dispose de…','un ou deux directeurs',['un conseil de dix directeurs','aucun responsable désigné'],'Les participants échangent via des listes de courriels dédiées à chaque domaine.'),
-qm('Couche liaison','Parmi ces anomalies, lesquelles concernent la longueur d’une trame selon le cours ? (plusieurs réponses)',['Une trame « pygmée » (moins de 4 octets)','Une trame « géante » (plus de 6000 octets)','Un « runt » ou trame avortée (moins de 64 octets)','Une erreur de séquence de contrôle (FCS)','Une tempête de broadcast'],['Une trame « pygmée » (moins de 4 octets)','Une trame « géante » (plus de 6000 octets)','Un « runt » ou trame avortée (moins de 64 octets)'],'Le FCS concerne le contenu de la trame, et la tempête de broadcast est un phénomène distinct lié au volume de trafic.'),
-q('Couche liaison','Un périphérique « jabber » désigne…','un équipement présentant des problèmes électriques provoquant des défauts de signalisation',['un commutateur qui limite les collisions','un protocole de chiffrement des trames'],'Ces défauts peuvent induire un arrêt de l’ensemble du trafic réseau.'),
-q('Couche liaison','Une tempête de broadcast est caractérisée par un trafic supérieur à…','126 trames par seconde',['12 trames par seconde','1260 trames par seconde'],'Au-delà de ce seuil, le réseau est considéré en tempête de diffusion selon le cours.'),
-q('Couche liaison','Le mode « fragment-free », variante du cut-through, lit…','les 64 premiers octets de la trame',['la trame dans son intégralité','uniquement l’adresse de destination'],'Ce mode, appelé aussi fragment-free chez Cisco, vérifie les trames minimales et détecte les fragments de collision.'),
-q('Couche liaison','Le mode de commutation « adaptatif » ajuste son fonctionnement selon…','le nombre d’erreurs détectées par le FCS',['la priorité des adresses MAC','le nombre de ports libres'],'Si les erreurs augmentent, il rétrograde vers le mode cut-through modifié voire store-and-forward.'),
-qm('Couche réseau','Quels protocoles la couche réseau gère-t-elle selon le cours ? (plusieurs réponses)',['IP','ICMP','ARP','TCP','HTTP'],['IP','ICMP','ARP'],'TCP appartient à la couche transport et HTTP à la couche application.'),
-qm('Couche réseau','Quels protocoles de routage sont cités par le cours ? (plusieurs réponses)',['RIP','BGP','OSPF','FTP','SMTP'],['RIP','BGP','OSPF'],'FTP et SMTP sont des protocoles de la couche application, pas des protocoles de routage.'),
-q('Couche transport','TLS a pour prédécesseur…','SSL',['HTTP','FTP'],'SSL, développé à l’origine par Netscape, a été poursuivi par l’IETF sous le nom de TLS.'),
-qm('Couche présentation','Quels formats de codage de caractères sont cités par le cours ? (plusieurs réponses)',['EBCDIC','ASCII','FCS','MTU'],['EBCDIC','ASCII'],'FCS et MTU sont des notions liées à la trame Ethernet, pas au codage de caractères.'),
-q('Équipements','La lettre « L » dans les commutateurs L2, L3, L4, L7 caractérise…','la couche du modèle OSI dans laquelle le commutateur travaille',['le nombre de ports du commutateur','la version du firmware'],'Il existe des commutateurs L2, L3, L4 et même L7 selon le cours.'),
-q('Signaux','L’intervalle de temps durant lequel un état significatif est maintenu se nomme…','intervalle significatif (ou moment élémentaire)',['la bande passante','le taux d’erreur binaire'],'Il est noté « t » et cadencé par l’horloge du système dans un signal numérique.')
-];
-const M=[
-{n:'Module 1',name:'Signaux et transmissions',d:'Bande passante, modulation, atténuation, simplex et duplex.',t:['Signaux','Transmissions']},
-{n:'Module 2',name:'Diffusion et commutation',d:'Unicast, multicast, broadcast, anycast et méthodes de commutation.',t:['Diffusion','Commutation']},
-{n:'Module 3',name:'Échelles et topologies',d:'PAN, LAN, MAN, WAN, architectures et topologies réseau.',t:['Échelles','Topologies']},
-{n:'Module 4',name:'Normalisation',d:'ISO, ITU, IEEE, IETF et normes IEEE 802.',t:['Normalisation']},
-{n:'Module 5',name:'Modèles et protocoles',d:'OSI, TCP/IP, encapsulation et fonctions des couches.',t:['Modèles','Encapsulation','Couche physique','Couche liaison','Couche réseau','Couche transport','Couche session','Couche présentation','Couche application']},
-{n:'Module 6',name:'Équipements réseau',d:'Répéteur, hub, pont, switch, routeur et pare-feu.',t:['Équipements']},
-{n:'Module 7',name:'Synthèse générale',d:'50 questions mélangées sur l’ensemble des cours.',all:true}
-];
-const $=id=>document.getElementById(id),shuffle=a=>[...a].sort(()=>Math.random()-.5);let session=[],i=0,score=0,locked=false,stats={},active=null,reviewTheme=null,selected=new Set();
-const setOf=m=>m.all?Q:Q.filter(x=>m.t.includes(x.theme));
-function home(){ $('quiz').style.display='none';$('result').classList.remove('show');$('home').style.display='block' }
-function drawHome(){ $('moduleGrid').replaceChildren(...M.map(m=>{const b=document.createElement('button');b.className='module';b.innerHTML=`<span class="module-number">${m.n}</span><h2>${m.name}</h2><p>${m.d}</p>`;b.onclick=()=>start(m);return b})) }
-function start(m){active=m;reviewTheme=null;session=shuffle(setOf(m)).slice(0,m.all?50:setOf(m).length);i=0;score=0;stats={};$('home').style.display='none';$('result').classList.remove('show');$('quiz').style.display='block';$('moduleLabel').textContent=m.name;render()}
-function targeted(theme){active=null;reviewTheme=theme;session=shuffle(Q.filter(x=>x.theme===theme));i=0;score=0;stats={};$('result').classList.remove('show');$('quiz').style.display='block';$('moduleLabel').textContent=`Révision ciblée : ${theme}`;render()}
-function render(){locked=false;selected=new Set();const x=session[i];$('count').textContent=`Question ${i+1} / ${session.length}`;$('bar').style.width=`${i/session.length*100}%`;$('theme').textContent=`${reviewTheme?'Révision ciblée':active.name} · ${x.theme}`;$('question').textContent=x.text;$('feedback').className='feedback';$('next').classList.remove('show');$('verify').classList.remove('show');
-  if(x.type==='multiple'){
-    $('answers').replaceChildren(...shuffle(x.options).map(o=>{const b=document.createElement('button');b.className='answer multi';b.innerHTML=`<span class="checkbox"></span><span>${o}</span>`;b.onclick=()=>toggle(o,b);return b}));
-    $('verify').classList.add('show');
-  } else {
-    const letters=['A','B','C','D'];
-    $('answers').replaceChildren(...shuffle(x.options).map((o,k)=>{const b=document.createElement('button');b.className='answer';b.innerHTML=`<span class="letter">${letters[k]}</span><span>${o}</span>`;b.onclick=()=>answer(o,b);return b}));
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>QCM - Architecture réseaux</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <main>
+    <header><a class="home-link" href="index.html">&larr; Accueil</a><h1>Architecture des réseaux</h1><p class="subtitle">Révisions interactives par module</p></header>
+    <section class="card" id="home"><h2>Choisis un module</h2><p class="home-intro">Les questions sont basées sur les cours de terminologie, normalisation, modèles et équipements réseau. Elles mêlent QCM (choix unique ou multiple), vrai/faux, textes à trous, associations et remises en ordre. La synthèse générale mélange jusqu’à 50 questions de tous les modules.</p><div class="module-grid" id="moduleGrid"></div></section>
+    <section class="card" id="quiz" aria-live="polite">
+      <div class="quiz-nav"><button class="back" id="backToHome">← Retour aux modules</button><span class="module-label" id="moduleLabel"></span></div>
+      <div class="meta"><span id="count"></span><span>Progression du module</span></div>
+      <div class="bar"><span id="bar"></span></div>
+      <p class="tag" id="theme"></p><h2 id="question"></h2><div class="answers" id="answers"></div>
+      <div class="feedback" id="feedback"></div><div class="actions"><button class="verify" id="verify">Vérifier</button><button class="next" id="next">Question suivante</button></div>
+    </section>
+    <section class="card result" id="result"><h2 id="resultTitle">Résultat du module</h2><div class="score" id="finalScore"></div><p id="finalText"></p><h3 class="review-title">Révision ciblée</h3><p id="reviewIntro"></p><div class="review-list" id="reviewList"></div><button class="restart" id="restart">Nouvelle session du même module</button><button class="home-button" id="homeButton">Retour aux modules</button></section>
+    <footer>Les questions et réponses sont mélangées à chaque session.</footer>
+  </main>
+  <script>
+  const Q = [
+  {
+    "theme": "Signaux",
+    "type": "single",
+    "text": "Un signal est avant tout…",
+    "options": [
+      "un phénomène physique transmettant une information",
+      "un protocole de routage",
+      "une adresse MAC",
+      "un fichier de configuration réseau"
+    ],
+    "answer": "un phénomène physique transmettant une information",
+    "explanation": "Un signal peut être une tension, un courant, une onde lumineuse ou électromagnétique transmettant une information."
+  },
+  {
+    "theme": "Signaux",
+    "type": "single",
+    "text": "Dans les réseaux informatiques, la plus petite unité d’information transportée est…",
+    "options": [
+      "le bit",
+      "l’octet",
+      "la trame",
+      "le paquet"
+    ],
+    "answer": "le bit",
+    "explanation": "Le cours indique que le bit est la plus petite unité d’information transportée."
+  },
+  {
+    "theme": "Signaux",
+    "type": "multiple",
+    "text": "Qu’est-ce qui peut limiter la bande passante d’un support de transmission, selon le cours ? (plusieurs réponses)",
+    "options": [
+      "La distance de la ligne",
+      "Le partage du débit entre de nombreux utilisateurs",
+      "Le manque de ressources réseau",
+      "La couleur du câble",
+      "Le nombre de couches du modèle OSI"
+    ],
+    "answers": [
+      "La distance de la ligne",
+      "Le partage du débit entre de nombreux utilisateurs",
+      "Le manque de ressources réseau"
+    ],
+    "explanation": "Le cours cite ces trois facteurs comme limitant la bande passante : distance de la ligne, partage du débit entre utilisateurs, manque de ressources réseau."
+  },
+  {
+    "theme": "Signaux",
+    "type": "single",
+    "text": "Vrai ou faux : la bande passante désigne la vitesse de transmission du signal.",
+    "options": [
+      "Vrai",
+      "Faux"
+    ],
+    "answer": "Faux",
+    "explanation": "La bande passante désigne le débit binaire maximal d’un support ; elle est souvent, à tort, désignée pour parler de vitesse, de capacité de transmission ou de taille du canal."
+  },
+  {
+    "theme": "Signaux",
+    "type": "blank",
+    "text": "Le nombre d’intervalles significatifs transmis en une seconde s’appelle la rapidité de ___, exprimée en bauds.",
+    "accept": [
+      "modulation"
+    ],
+    "explanation": "La rapidité de modulation s’exprime en bauds, du nom d’Émile Baudot."
+  },
+  {
+    "theme": "Transmissions",
+    "type": "blank",
+    "text": "Dans le mode ___, la liaison est cadencée par l’horloge continue d’un élément maître, auquel les autres membres du réseau viennent se caler.",
+    "accept": [
+      "synchrone"
+    ],
+    "explanation": "La transmission synchrone est cadencée par l’horloge d’un élément maître, émise en continu."
+  },
+  {
+    "theme": "Transmissions",
+    "type": "match",
+    "text": "Associe chaque technique de communication à sa définition.",
+    "pairs": [
+      [
+        "Simplex",
+        "Diffusion unilatérale avec un seul émetteur et un ou plusieurs récepteurs"
+      ],
+      [
+        "Half Duplex",
+        "Discussion alternée où l’émetteur devient récepteur une fois la transmission finie"
+      ],
+      [
+        "Full Duplex",
+        "Émission et réception simultanées dans les deux sens"
+      ]
+    ],
+    "explanation": "Le cours distingue ces trois techniques de communication."
+  },
+  {
+    "theme": "Transmissions",
+    "type": "match",
+    "text": "Associe chaque type de transmission à sa caractéristique.",
+    "pairs": [
+      [
+        "Synchrone",
+        "Cadencée par l’horloge continue d’un élément maître"
+      ],
+      [
+        "Asynchrone",
+        "Débute par un bit de start et se termine par un bit de stop, sans maître"
+      ],
+      [
+        "Isochrone",
+        "Envoi périodique de données dans des intervalles de temps égaux, comme la téléphonie"
+      ]
+    ],
+    "explanation": "Le cours distingue ces trois types de transmission."
+  },
+  {
+    "theme": "Signaux",
+    "type": "order",
+    "text": "Remets dans l’ordre ces trois techniques de communication, du plus simple (un seul sens) au plus complet (double sens simultané).",
+    "items": [
+      "Simplex",
+      "Half Duplex",
+      "Full Duplex"
+    ],
+    "explanation": "Le Simplex est unilatéral, le Half Duplex alterne émission et réception, le Full Duplex permet les deux simultanément."
+  },
+  {
+    "theme": "Transmissions",
+    "type": "order",
+    "text": "Remets dans l’ordre le déroulement d’une transmission asynchrone telle que décrite par le cours.",
+    "items": [
+      "Bit de start",
+      "Transmission de l’information",
+      "Bit de stop"
+    ],
+    "explanation": "Les transmissions asynchrones commencent par un bit de start et se terminent par un bit de stop."
+  },
+  {
+    "theme": "Signaux",
+    "type": "single",
+    "text": "Le taux d’erreur binaire (Te) se calcule comme…",
+    "options": [
+      "le nombre de bits erronés reçus divisé par le nombre de bits transmis",
+      "le nombre de bits transmis divisé par la bande passante",
+      "le nombre de collisions par seconde",
+      "le débit binaire maximal du support"
+    ],
+    "answer": "le nombre de bits erronés reçus divisé par le nombre de bits transmis",
+    "explanation": "Le taux d’erreur binaire Te est le rapport entre le nombre de bits erronés reçus et le nombre de bits transmis."
+  },
+  {
+    "theme": "Transmissions",
+    "type": "single",
+    "text": "Quel mode de transmission ouvre la communication par un bit de start et la termine par un bit de stop, sans horloge maître ?",
+    "options": [
+      "Le mode asynchrone",
+      "Le mode synchrone",
+      "Le mode isochrone",
+      "Le mode simplex"
+    ],
+    "answer": "Le mode asynchrone",
+    "explanation": "Les communications asynchrones, comme le port série RS232, débutent par un bit de start et se terminent par un bit de stop."
+  },
+  {
+    "theme": "Signaux",
+    "type": "multiple",
+    "text": "Que provoque une collision sur un réseau, selon le cours ? (plusieurs réponses)",
+    "options": [
+      "Une perte de l’information",
+      "Un chevauchement de deux signaux",
+      "Une augmentation automatique de la bande passante",
+      "Un changement d’adresse MAC"
+    ],
+    "answers": [
+      "Une perte de l’information",
+      "Un chevauchement de deux signaux"
+    ],
+    "explanation": "On parle de collision quand deux signaux se chevauchent, ce qui entraîne une perte de l’information."
+  },
+  {
+    "theme": "Signaux",
+    "type": "single",
+    "text": "Vrai ou faux : l’atténuation se mesure en décibels.",
+    "options": [
+      "Vrai",
+      "Faux"
+    ],
+    "answer": "Vrai",
+    "explanation": "L’unité de l’atténuation est le décibel, même si elle peut aussi s’exprimer en pourcentage de perte."
+  },
+  {
+    "theme": "Transmissions",
+    "type": "single",
+    "text": "Vrai ou faux : dans le mode Half Duplex, l’émetteur peut recevoir en même temps qu’il émet.",
+    "options": [
+      "Vrai",
+      "Faux"
+    ],
+    "answer": "Faux",
+    "explanation": "Le Half Duplex est une discussion alternée : l’émetteur devient récepteur une fois la transmission finie. C’est le Full Duplex qui permet l’émission et la réception simultanées."
+  },
+  {
+    "theme": "Signaux",
+    "type": "single",
+    "text": "Selon l’exemple du cours, un intervalle significatif de 20 ms correspond à…",
+    "options": [
+      "50 bauds",
+      "200 bauds",
+      "20 bauds",
+      "5 bauds"
+    ],
+    "answer": "50 bauds",
+    "explanation": "1 / 20 ms = 1 / 0,02 s = 50 bauds, ce qui équivaut à 50 bits par seconde."
+  },
+  {
+    "theme": "Diffusion",
+    "type": "single",
+    "text": "Comment appelle-t-on le type de diffusion où un membre du réseau discute avec un seul autre membre ?",
+    "options": [
+      "Unicast",
+      "Multicast",
+      "Broadcast",
+      "Anycast"
+    ],
+    "answer": "Unicast",
+    "explanation": "Unicast ou unidiffusion est un type de diffusion pair à pair entre deux membres du réseau."
+  },
+  {
+    "theme": "Diffusion",
+    "type": "single",
+    "text": "Le broadcast storm est…",
+    "options": [
+      "une saturation du réseau entraînant son blocage",
+      "un type de diffusion vers plusieurs destinataires",
+      "une technique de routage anycast",
+      "un mode de chiffrement des trames"
+    ],
+    "answer": "une saturation du réseau entraînant son blocage",
+    "explanation": "Le broadcast storm, ou tempête de broadcast, est une saturation du réseau entraînant son blocage, résultant d’une panne ou d’un acte malveillant."
+  },
+  {
+    "theme": "Diffusion",
+    "type": "multiple",
+    "text": "Quels types de diffusion visent plusieurs destinataires sans être la totalité du réseau ? (plusieurs réponses)",
+    "options": [
+      "Multicast",
+      "Geocast",
+      "Unicast",
+      "Broadcast",
+      "Anycast"
+    ],
+    "answers": [
+      "Multicast",
+      "Geocast"
+    ],
+    "explanation": "Multicast diffuse à plusieurs membres sans viser la totalité, Geocast cible une zone géographique du réseau. Unicast vise un seul destinataire, Broadcast vise tous les membres, Anycast redirige vers l’équipement le plus proche."
+  },
+  {
+    "theme": "Diffusion",
+    "type": "single",
+    "text": "Vrai ou faux : l’anycast redirige les données vers l’équipement le plus proche ou le plus rapide.",
+    "options": [
+      "Vrai",
+      "Faux"
+    ],
+    "answer": "Vrai",
+    "explanation": "L’anycast associe une à plusieurs adresses réseau derrière une adresse commune, afin de rediriger vers l’équipement le plus proche ou le plus rapide."
+  },
+  {
+    "theme": "Diffusion",
+    "type": "single",
+    "text": "Vrai ou faux : le broadcast storm résulte toujours d’un acte malveillant.",
+    "options": [
+      "Vrai",
+      "Faux"
+    ],
+    "answer": "Faux",
+    "explanation": "Le broadcast storm est la résultante d’une panne ou d’un acte malveillant, pas uniquement d’un acte malveillant."
+  },
+  {
+    "theme": "Diffusion",
+    "type": "blank",
+    "text": "Le terme anglophone « cast », utilisé dans unicast, multicast ou broadcast, signifie ___.",
+    "accept": [
+      "lancer"
+    ],
+    "explanation": "Le cours précise que le terme « cast » désigne « lancer »."
+  },
+  {
+    "theme": "Commutation",
+    "type": "blank",
+    "text": "La commutation de paquets est aussi appelée commutation d’___, car chaque paquet est renseigné avec un numéro d’identification.",
+    "accept": [
+      "étiquettes",
+      "d’étiquettes"
+    ],
+    "explanation": "On parle de commutation d’étiquettes (packet switching) car les paquets sont renseignés avec des numéros d’identification."
+  },
+  {
+    "theme": "Diffusion",
+    "type": "match",
+    "text": "Associe chaque type de diffusion à sa définition.",
+    "pairs": [
+      [
+        "Unicast",
+        "Diffusion pair à pair entre un membre du réseau et un seul autre membre"
+      ],
+      [
+        "Multicast",
+        "Diffusion simultanée vers plusieurs membres du réseau sans en être la totalité"
+      ],
+      [
+        "Broadcast",
+        "Diffusion du contenu à l’ensemble des membres du réseau"
+      ],
+      [
+        "Geocast",
+        "Diffusion du contenu à une partie géographique du réseau"
+      ]
+    ],
+    "explanation": "Le cours distingue ces quatre types de diffusion."
+  },
+  {
+    "theme": "Commutation",
+    "type": "match",
+    "text": "Associe chaque mode de commutation à sa définition.",
+    "pairs": [
+      [
+        "Commutation de circuits",
+        "Établissement d’un circuit dédié entre les nœuds pour toute la communication"
+      ],
+      [
+        "Commutation de paquets",
+        "Découpage des données en paquets pouvant emprunter des routes différentes"
+      ],
+      [
+        "Commutation de messages",
+        "Transmission séquentielle où chaque nœud attend le message complet avant de le transmettre"
+      ]
+    ],
+    "explanation": "Le cours distingue ces trois modes de commutation."
+  },
+  {
+    "theme": "Commutation",
+    "type": "order",
+    "text": "Remets dans l’ordre chronologique les étapes de la commutation de paquets telles que décrites par le cours.",
+    "items": [
+      "Segmentation des données en paquets",
+      "Détermination de la route par chaque nœud selon sa table de routage",
+      "Réassemblage des paquets par le nœud destinataire"
+    ],
+    "explanation": "Les données sont d’abord découpées en paquets, chaque nœud choisit ensuite librement la route, puis le nœud destinataire réassemble les paquets."
+  },
+  {
+    "theme": "Diffusion",
+    "type": "order",
+    "text": "Remets dans l’ordre croissant du nombre de destinataires visés par chaque type de diffusion.",
+    "items": [
+      "Unicast",
+      "Multicast",
+      "Broadcast"
+    ],
+    "explanation": "Unicast vise un seul destinataire, Multicast en vise plusieurs sans la totalité, Broadcast vise l’ensemble des membres du réseau."
+  },
+  {
+    "theme": "Commutation",
+    "type": "single",
+    "text": "Quel est le mode de transfert de données dominant sur Internet aujourd’hui, selon le cours ?",
+    "options": [
+      "La commutation de paquets",
+      "La commutation de circuits",
+      "La commutation de messages",
+      "Le multicast"
+    ],
+    "answer": "La commutation de paquets",
+    "explanation": "La commutation de paquets est le modèle dominant à ce jour, utilisé sur Internet."
+  },
+  {
+    "theme": "Commutation",
+    "type": "multiple",
+    "text": "Quels sont les avantages de la commutation de paquets cités par le cours comme modèle dominant sur Internet ? (plusieurs réponses)",
+    "options": [
+      "Résistance aux pannes des nœuds intermédiaires",
+      "Utilisation rationnelle et efficace des lignes de transmission",
+      "Les paquets peuvent emprunter des routes différentes",
+      "Un circuit dédié est établi pour toute la communication",
+      "Chaque nœud attend le message complet avant de le transmettre"
+    ],
+    "answers": [
+      "Résistance aux pannes des nœuds intermédiaires",
+      "Utilisation rationnelle et efficace des lignes de transmission",
+      "Les paquets peuvent emprunter des routes différentes"
+    ],
+    "explanation": "Le circuit dédié décrit la commutation de circuits, et l’attente du message complet décrit la commutation de messages."
+  },
+  {
+    "theme": "Commutation",
+    "type": "single",
+    "text": "Vrai ou faux : dans la commutation de messages, chaque nœud retransmet l’information dès qu’il en reçoit une partie.",
+    "options": [
+      "Vrai",
+      "Faux"
+    ],
+    "answer": "Faux",
+    "explanation": "Dans la commutation de messages, chaque nœud attend d’avoir reçu l’intégralité du message avant de le transmettre au suivant."
+  },
+  {
+    "theme": "Diffusion",
+    "type": "single",
+    "text": "Le geocast permet de…",
+    "options": [
+      "diffuser le contenu à une partie géographique du réseau",
+      "diffuser à tous les membres du réseau",
+      "établir un circuit dédié",
+      "associer une adresse unique à plusieurs équipements"
+    ],
+    "answer": "diffuser le contenu à une partie géographique du réseau",
+    "explanation": "Geocast ou diffusion géographique permet de diffuser le contenu de l’information à une partie géographique du réseau."
+  },
+  {
+    "theme": "Échelles",
+    "type": "single",
+    "text": "Quelle est la plus petite échelle de réseau selon le cours ?",
+    "options": [
+      "Le PAN (Personal Area Network)",
+      "Le LAN (Local Area Network)",
+      "Le MAN (Metropolitan Area Network)",
+      "Le WAN (Wide Area Network)"
+    ],
+    "answer": "Le PAN (Personal Area Network)",
+    "explanation": "Le PAN, ou réseau personnel, est la plus petite échelle de réseau, avec une portée d’une dizaine de mètres au maximum."
+  },
+  {
+    "theme": "Échelles",
+    "type": "single",
+    "text": "Quelle technologie utilise un mécanisme de transport de données basé sur la commutation d’étiquettes dans un WAN ?",
+    "options": [
+      "Le MPLS",
+      "Le CSMA/CD",
+      "Le Token Ring",
+      "Le FTTB"
+    ],
+    "answer": "Le MPLS",
+    "explanation": "Le Multiprotocol Label Switching (MPLS) est un mécanisme de transport de données basé sur la commutation d’étiquettes, utilisé dans les WAN."
+  },
+  {
+    "theme": "Échelles",
+    "type": "multiple",
+    "text": "Quelles technologies sont citées par le cours comme typiques d’un PAN ? (plusieurs réponses)",
+    "options": [
+      "Bluetooth",
+      "Infrarouge",
+      "RS232",
+      "Ethernet filaire",
+      "MPLS"
+    ],
+    "answers": [
+      "Bluetooth",
+      "Infrarouge",
+      "RS232"
+    ],
+    "explanation": "Le cours cite Bluetooth, infrarouge et RS232 comme technologies employées pour les réseaux personnels (PAN)."
+  },
+  {
+    "theme": "Échelles",
+    "type": "single",
+    "text": "Vrai ou faux : dans un réseau point à point, il existe une notion de client et de serveur fixes.",
+    "options": [
+      "Vrai",
+      "Faux"
+    ],
+    "answer": "Faux",
+    "explanation": "Dans un réseau point à point, il n’y a pas de notion client/serveur : les deux membres sont chacun leur tour client et serveur."
+  },
+  {
+    "theme": "Topologies",
+    "type": "single",
+    "text": "Vrai ou faux : dans la topologie en bus, si un nœud tombe en panne, l’ensemble du réseau cesse de fonctionner.",
+    "options": [
+      "Vrai",
+      "Faux"
+    ],
+    "answer": "Faux",
+    "explanation": "Si un nœud du réseau en bus est hors service, le réseau reste fonctionnel."
+  },
+  {
+    "theme": "Topologies",
+    "type": "single",
+    "text": "Vrai ou faux : dans la topologie en anneau, si un nœud est hors service, le réseau devient lui aussi hors service.",
+    "options": [
+      "Vrai",
+      "Faux"
+    ],
+    "answer": "Vrai",
+    "explanation": "L’inconvénient de l’anneau est que si un nœud est hors service, c’est le réseau qui l’est également."
+  },
+  {
+    "theme": "Échelles",
+    "type": "blank",
+    "text": "Le ___ (Metropolitan Area Network) interconnecte une zone géographique à l’échelle d’une ou plusieurs villes.",
+    "accept": [
+      "MAN"
+    ],
+    "explanation": "Le MAN, ou réseau métropolitain, interconnecte une zone à l’échelle d’une ou plusieurs villes."
+  },
+  {
+    "theme": "Topologies",
+    "type": "blank",
+    "text": "Dans la topologie en bus, les nœuds connectés utilisent le protocole ___.",
+    "accept": [
+      "CSMA/CD",
+      "CSMA-CD"
+    ],
+    "explanation": "Les nœuds d’un réseau en bus utilisent le protocole CSMA/CD, issu du réseau AlohaNet."
+  },
+  {
+    "theme": "Échelles",
+    "type": "match",
+    "text": "Associe chaque échelle de réseau à sa description.",
+    "pairs": [
+      [
+        "PAN",
+        "Connexions à très courte distance, comme une montre connectée ou un smartphone avec un PC"
+      ],
+      [
+        "LAN",
+        "Réseau local peu étendu au débit important, comme une brigade de gendarmerie"
+      ],
+      [
+        "MAN",
+        "Interconnexion d’une zone à l’échelle d’une ou plusieurs villes"
+      ],
+      [
+        "WAN",
+        "Réseau étendu à l’échelle d’un pays, d’un continent ou de la planète"
+      ]
+    ],
+    "explanation": "Le cours distingue ces quatre échelles de réseau."
+  },
+  {
+    "theme": "Topologies",
+    "type": "match",
+    "text": "Associe chaque topologie à sa caractéristique.",
+    "pairs": [
+      [
+        "Bus",
+        "Câble unique auquel les nœuds se raccordent directement"
+      ],
+      [
+        "Anneau",
+        "Chaque nœud est connecté directement à deux autres nœuds"
+      ],
+      [
+        "Étoile",
+        "Toutes les communications traversent un nœud central"
+      ],
+      [
+        "Maillé",
+        "Topologie à redondance de liaisons permettant un contournement en cas de panne"
+      ]
+    ],
+    "explanation": "Le cours distingue ces quatre topologies."
+  },
+  {
+    "theme": "Échelles",
+    "type": "order",
+    "text": "Remets dans l’ordre croissant de portée géographique ces échelles de réseau.",
+    "items": [
+      "PAN",
+      "LAN",
+      "MAN",
+      "WAN"
+    ],
+    "explanation": "Le PAN couvre quelques mètres, le LAN un bâtiment, le MAN une ou plusieurs villes, le WAN un pays, un continent ou la planète."
+  },
+  {
+    "theme": "Topologies",
+    "type": "order",
+    "text": "Remets dans l’ordre de citation du cours ces topologies dérivées.",
+    "items": [
+      "Hiérarchique",
+      "Réseau maillé",
+      "Topologie en grille"
+    ],
+    "explanation": "Le cours présente successivement le réseau hiérarchique, le réseau maillé, puis la topologie en grille et toroïdale."
+  },
+  {
+    "theme": "Topologies",
+    "type": "single",
+    "text": "Quelle topologie est typique du réseau informatique de l’unité élémentaire isolée de la gendarmerie, selon le cours ?",
+    "options": [
+      "L’étoile",
+      "Le bus",
+      "L’anneau",
+      "Le maillage"
+    ],
+    "answer": "L’étoile",
+    "explanation": "Cette topologie est typique du réseau informatique de l’unité élémentaire isolée de la gendarmerie."
+  },
+  {
+    "theme": "Topologies",
+    "type": "single",
+    "text": "Le réseau hiérarchique est aussi appelé…",
+    "options": [
+      "réseau en arbre",
+      "réseau en étoile",
+      "réseau en anneau",
+      "réseau en grille"
+    ],
+    "answer": "réseau en arbre",
+    "explanation": "Il comporte un nœud supérieur relié à des nœuds inférieurs, eux-mêmes reliés à d’autres nœuds inférieurs."
+  },
+  {
+    "theme": "Topologies",
+    "type": "multiple",
+    "text": "Quelles affirmations sur la topologie en bus sont exactes ? (plusieurs réponses)",
+    "options": [
+      "Elle repose sur un câble unique auquel les nœuds se raccordent",
+      "Les nœuds connectés utilisent le protocole CSMA/CD",
+      "Si un nœud est hors service, le réseau reste fonctionnel",
+      "Chaque nœud est connecté à deux autres nœuds seulement",
+      "Le point critique du réseau est un nœud central"
+    ],
+    "answers": [
+      "Elle repose sur un câble unique auquel les nœuds se raccordent",
+      "Les nœuds connectés utilisent le protocole CSMA/CD",
+      "Si un nœud est hors service, le réseau reste fonctionnel"
+    ],
+    "explanation": "Les deux dernières propositions décrivent respectivement la topologie en anneau et la topologie en étoile."
+  },
+  {
+    "theme": "Échelles",
+    "type": "single",
+    "text": "Dans une architecture client-serveur, selon le cours…",
+    "options": [
+      "plusieurs machines clientes sollicitent une seule et même machine serveur",
+      "chaque machine est tour à tour client et serveur",
+      "toutes les machines sont reliées à un câble unique",
+      "les machines communiquent uniquement en half duplex"
+    ],
+    "answer": "plusieurs machines clientes sollicitent une seule et même machine serveur",
+    "explanation": "Dans une architecture client-serveur, plusieurs machines clientes répondent aux sollicitations ou sollicitent une seule et même machine appelée serveur, sans lien entre les clients."
+  },
+  {
+    "theme": "Normalisation",
+    "type": "single",
+    "text": "Où se situe le siège de l’ISO, selon le cours ?",
+    "options": [
+      "À Genève",
+      "À Paris",
+      "À New York",
+      "À Bruxelles"
+    ],
+    "answer": "À Genève",
+    "explanation": "Le siège de l’ISO, comme celui de l’ITU, est situé à Genève."
+  },
+  {
+    "theme": "Normalisation",
+    "type": "single",
+    "text": "Quel organisme édicte les normes NF EN XXXXX en France ?",
+    "options": [
+      "L’AFNOR",
+      "Le Comité Européen de Normalisation",
+      "L’ITU",
+      "L’IEEE"
+    ],
+    "answer": "L’AFNOR",
+    "explanation": "L’Association Française de Normalisation (AFNOR), membre de l’ISO, édicte les normes NF EN XXXXX."
+  },
+  {
+    "theme": "Normalisation",
+    "type": "multiple",
+    "text": "Quels organismes sont cités par le cours comme membres de l’ISO ? (plusieurs réponses)",
+    "options": [
+      "AFNOR",
+      "Le Comité Européen de Normalisation",
+      "IEEE",
+      "IETF",
+      "ITU"
+    ],
+    "answers": [
+      "AFNOR",
+      "Le Comité Européen de Normalisation"
+    ],
+    "explanation": "AFNOR et le Comité Européen de Normalisation sont cités comme membres de l’ISO. IEEE, IETF et ITU sont des organismes distincts."
+  },
+  {
+    "theme": "Normalisation",
+    "type": "multiple",
+    "text": "Quelles normes ou familles de normes sont gérées par l’IEEE selon le cours ? (plusieurs réponses)",
+    "options": [
+      "802.3 (CSMA-CD)",
+      "802.11 (Wi-Fi)",
+      "802.15 (Bluetooth)",
+      "Les RFC",
+      "Les recommandations de l’ITU"
+    ],
+    "answers": [
+      "802.3 (CSMA-CD)",
+      "802.11 (Wi-Fi)",
+      "802.15 (Bluetooth)"
+    ],
+    "explanation": "Les RFC sont produites par l’IETF, et les recommandations par l’ITU, pas par l’IEEE."
+  },
+  {
+    "theme": "Normalisation",
+    "type": "single",
+    "text": "Vrai ou faux : les normes produites par l’ITU sont appelées des Recommandations.",
+    "options": [
+      "Vrai",
+      "Faux"
+    ],
+    "answer": "Vrai",
+    "explanation": "Les normes produites par l’ITU sont appelées des « Recommandations »."
+  },
+  {
+    "theme": "Normalisation",
+    "type": "single",
+    "text": "Vrai ou faux : l’IETF est un organisme fermé, réservé aux salariés des grandes entreprises technologiques.",
+    "options": [
+      "Vrai",
+      "Faux"
+    ],
+    "answer": "Faux",
+    "explanation": "L’IETF est un groupe informel, international, ouvert à tout individu, qui participe à l’élaboration des standards internet."
+  },
+  {
+    "theme": "Normalisation",
+    "type": "blank",
+    "text": "L’IETF élabore les standards internet sous forme de ___, documents numérotés de façon invariable.",
+    "accept": [
+      "RFC"
+    ],
+    "explanation": "L’IETF élabore les standards internet via des Requests for Comments (RFC), numérotées de façon invariable."
+  },
+  {
+    "theme": "Normalisation",
+    "type": "blank",
+    "text": "Le comité IEEE 802.3 correspond à la couche média ___.",
+    "accept": [
+      "CSMA-CD",
+      "CSMA/CD"
+    ],
+    "explanation": "Le comité 802.3 de l’IEEE correspond à la méthode d’accès CSMA-CD."
+  },
+  {
+    "theme": "Normalisation",
+    "type": "match",
+    "text": "Associe chaque organisme à son rôle.",
+    "pairs": [
+      [
+        "ISO",
+        "Organisme international de normalisation qui a publié le modèle OSI"
+      ],
+      [
+        "ITU",
+        "Institution spécialisée des Nations Unies pour les télécommunications"
+      ],
+      [
+        "IEEE",
+        "Association professionnelle américaine organisée en comités normatifs, dont le 802"
+      ],
+      [
+        "IETF",
+        "Groupe informel et ouvert qui élabore les standards internet via des RFC"
+      ]
+    ],
+    "explanation": "Le cours présente ces quatre organismes de normalisation."
+  },
+  {
+    "theme": "Normalisation",
+    "type": "match",
+    "text": "Associe chaque norme IEEE 802 à son domaine.",
+    "pairs": [
+      [
+        "802.1",
+        "Gestion des réseaux locaux"
+      ],
+      [
+        "802.3",
+        "Couche média CSMA-CD"
+      ],
+      [
+        "802.11",
+        "Réseau local sans fil (Wi-Fi)"
+      ],
+      [
+        "802.15",
+        "Bluetooth"
+      ]
+    ],
+    "explanation": "Le cours cite ces comités IEEE 802 pour le réseau."
+  },
+  {
+    "theme": "Normalisation",
+    "type": "order",
+    "text": "Remets dans l’ordre de citation du cours ces organismes de normalisation.",
+    "items": [
+      "ISO",
+      "ITU",
+      "IEEE",
+      "IETF"
+    ],
+    "explanation": "Le cours présente successivement l’ISO, l’ITU, l’IEEE puis l’IETF."
+  },
+  {
+    "theme": "Normalisation",
+    "type": "single",
+    "text": "Combien de pays sont représentés au sein de l’ISO, selon le cours ?",
+    "options": [
+      "164",
+      "27",
+      "50",
+      "195"
+    ],
+    "answer": "164",
+    "explanation": "L’ISO est composée de représentants d’organisations nationales de normalisation de 164 pays."
+  },
+  {
+    "theme": "Normalisation",
+    "type": "single",
+    "text": "L’IEEE compte environ combien de membres selon le cours ?",
+    "options": [
+      "400 000",
+      "4 000",
+      "40 000",
+      "4 000 000"
+    ],
+    "answer": "400 000",
+    "explanation": "L’IEEE compte 400 000 membres informaticiens, ingénieurs électriciens et professionnels des télécommunications."
+  },
+  {
+    "theme": "Normalisation",
+    "type": "single",
+    "text": "Vrai ou faux : le Comité Européen de Normalisation a pour rôle d’harmoniser les réseaux au sein des membres de l’Union Européenne.",
+    "options": [
+      "Vrai",
+      "Faux"
+    ],
+    "answer": "Vrai",
+    "explanation": "Le Comité Européen de Normalisation, membre de l’ISO, a pour rôle d’harmoniser les réseaux au sein des membres de l’Union Européenne."
+  },
+  {
+    "theme": "Modèles",
+    "type": "single",
+    "text": "En quelle année l’ISO a-t-elle publié le modèle de référence OSI ?",
+    "options": [
+      "1983",
+      "1970",
+      "1990",
+      "2000"
+    ],
+    "answer": "1983",
+    "explanation": "L’ISO a publié le modèle de référence Open System Interconnection (OSI) en 1983."
+  },
+  {
+    "theme": "Modèles",
+    "type": "single",
+    "text": "Combien de couches comporte le modèle OSI ?",
+    "options": [
+      "7",
+      "4",
+      "5",
+      "6"
+    ],
+    "answer": "7",
+    "explanation": "Le modèle OSI est basé sur un principe de sept couches hiérarchiques."
+  },
+  {
+    "theme": "Couche physique",
+    "type": "single",
+    "text": "La couche physique du modèle OSI transmet…",
+    "options": [
+      "des bits",
+      "des trames",
+      "des paquets",
+      "des segments"
+    ],
+    "answer": "des bits",
+    "explanation": "La couche physique (couche 1) assure la connexion au réseau et transmet des bits."
+  },
+  {
+    "theme": "Couche liaison",
+    "type": "single",
+    "text": "L’unité d’information de la couche liaison est…",
+    "options": [
+      "la trame",
+      "le bit",
+      "le paquet",
+      "le segment"
+    ],
+    "answer": "la trame",
+    "explanation": "La couche liaison (couche 2) assure le transfert local et la gestion des erreurs, avec la trame comme unité d’information."
+  },
+  {
+    "theme": "Couche réseau",
+    "type": "single",
+    "text": "L’unité d’information de la couche réseau est…",
+    "options": [
+      "le paquet",
+      "la trame",
+      "le segment",
+      "la session"
+    ],
+    "answer": "le paquet",
+    "explanation": "La couche réseau (couche 3) assure le routage et le contrôle, avec le paquet comme unité d’information."
+  },
+  {
+    "theme": "Modèles",
+    "type": "multiple",
+    "text": "Quelles couches du modèle OSI sont qualifiées de couches « média », orientées transmission ? (plusieurs réponses)",
+    "options": [
+      "Couche physique",
+      "Couche liaison",
+      "Couche réseau",
+      "Couche transport",
+      "Couche session"
+    ],
+    "answers": [
+      "Couche physique",
+      "Couche liaison",
+      "Couche réseau"
+    ],
+    "explanation": "Les couches 1 à 3 sont les couches média orientées transmission ; les couches 4 à 7 sont les couches hôtes orientées traitement."
+  },
+  {
+    "theme": "Couche transport",
+    "type": "multiple",
+    "text": "Quelles caractéristiques appartiennent au protocole TCP selon le cours ? (plusieurs réponses)",
+    "options": [
+      "Il est orienté connexion",
+      "Il gère la fragmentation et le contrôle de flux",
+      "Il ne garantit aucune intégrité",
+      "Il est adapté à la VOIP et à la visioconférence",
+      "Il remet les messages dans le bon ordre"
+    ],
+    "answers": [
+      "Il est orienté connexion",
+      "Il gère la fragmentation et le contrôle de flux",
+      "Il remet les messages dans le bon ordre"
+    ],
+    "explanation": "TCP est un protocole fiable, orienté connexion, qui gère la fragmentation et le contrôle de flux, et remet les messages dans le bon ordre. UDP, non connecté et sans garantie, est adapté à la VOIP."
+  },
+  {
+    "theme": "Couche liaison",
+    "type": "multiple",
+    "text": "Quels champs composent une trame Ethernet v2 selon le cours ? (plusieurs réponses)",
+    "options": [
+      "Le préambule",
+      "Les adresses MAC source et destination",
+      "Le champ Ether Type",
+      "La séquence de contrôle de trame (FCS)",
+      "Un numéro de port applicatif"
+    ],
+    "answers": [
+      "Le préambule",
+      "Les adresses MAC source et destination",
+      "Le champ Ether Type",
+      "La séquence de contrôle de trame (FCS)"
+    ],
+    "explanation": "Le numéro de port est une donnée de couche transport, absente de la trame Ethernet."
+  },
+  {
+    "theme": "Modèles",
+    "type": "single",
+    "text": "Vrai ou faux : le modèle OSI est aujourd’hui très largement implémenté tel quel, en pratique.",
+    "options": [
+      "Vrai",
+      "Faux"
+    ],
+    "answer": "Faux",
+    "explanation": "Le modèle OSI est très peu implémenté ; il sert surtout de référence, tandis que le modèle TCP/IP domine depuis l’explosion d’Internet."
+  },
+  {
+    "theme": "Encapsulation",
+    "type": "single",
+    "text": "Vrai ou faux : lors de l’encapsulation, chaque couche ajoute un en-tête qui devient une donnée pour la couche inférieure.",
+    "options": [
+      "Vrai",
+      "Faux"
+    ],
+    "answer": "Vrai",
+    "explanation": "L’en-tête et les données d’une couche N deviennent les données de la couche N-1, comme le principe des poupées russes."
+  },
+  {
+    "theme": "Couche transport",
+    "type": "single",
+    "text": "Vrai ou faux : UDP est un protocole orienté connexion, fiable et garantissant l’ordre des messages.",
+    "options": [
+      "Vrai",
+      "Faux"
+    ],
+    "answer": "Faux",
+    "explanation": "C’est TCP qui est orienté connexion et fiable ; UDP est sans contrôle d’erreur et sans connexion, adapté aux applications temps réel."
+  },
+  {
+    "theme": "Couche liaison",
+    "type": "single",
+    "text": "Vrai ou faux : la méthode Store-and-Forward attend la réception complète de la trame avant de la retransmettre.",
+    "options": [
+      "Vrai",
+      "Faux"
+    ],
+    "answer": "Vrai",
+    "explanation": "Le fonctionnement Store-and-Forward attend d’avoir reçu la trame dans son entier avant de la traiter et de l’émettre."
+  },
+  {
+    "theme": "Couche physique",
+    "type": "single",
+    "text": "Vrai ou faux : pour un médium cuivre, la distance maximale entre deux actifs réseau est de 100 mètres.",
+    "options": [
+      "Vrai",
+      "Faux"
+    ],
+    "answer": "Vrai",
+    "explanation": "Pour le médium cuivre, la distance maximale d’un actif réseau à un autre est de 100 mètres."
+  },
+  {
+    "theme": "Modèles",
+    "type": "blank",
+    "text": "Le modèle TCP/IP a été créé dans les années 1970 par l’agence ___, d’où son autre nom de DoD Model.",
+    "accept": [
+      "DARPA"
+    ],
+    "explanation": "Le modèle Internet TCP/IP fut créé par la DARPA (Defense Advanced Research Projects Agency), d’où l’appellation DoD Model."
+  },
+  {
+    "theme": "Couche liaison",
+    "type": "blank",
+    "text": "La couche liaison de données se divise en deux sous-couches selon la norme IEEE 802 : LLC et ___.",
+    "accept": [
+      "MAC"
+    ],
+    "explanation": "IEEE 802 divise la couche de liaison de données en deux sous-couches : LLC (Logical Link Control) et MAC (Media Access Control)."
+  },
+  {
+    "theme": "Couche session",
+    "type": "blank",
+    "text": "Le protocole ___, successeur de SSL, sécurise les échanges sur Internet et a été repris par l’IETF.",
+    "accept": [
+      "TLS"
+    ],
+    "explanation": "Transport Layer Security (TLS) est le successeur de SSL, dont le développement a été repris par l’IETF."
+  },
+  {
+    "theme": "Modèles",
+    "type": "match",
+    "text": "Associe chaque couche OSI à son unité d’information.",
+    "pairs": [
+      [
+        "Couche physique",
+        "Bit"
+      ],
+      [
+        "Couche liaison",
+        "Trame"
+      ],
+      [
+        "Couche réseau",
+        "Paquet"
+      ],
+      [
+        "Couche transport",
+        "Segment ou datagramme"
+      ]
+    ],
+    "explanation": "Chaque couche du modèle OSI possède sa propre unité d’information."
+  },
+  {
+    "theme": "Couche application",
+    "type": "match",
+    "text": "Associe chaque protocole à son usage principal.",
+    "pairs": [
+      [
+        "SMTP",
+        "Messagerie électronique"
+      ],
+      [
+        "HTTP",
+        "Consultation de pages web"
+      ],
+      [
+        "FTP",
+        "Transfert de fichiers"
+      ],
+      [
+        "TCP",
+        "Transport fiable et orienté connexion"
+      ]
+    ],
+    "explanation": "Le cours cite ces protocoles pour la couche application et la couche transport."
+  },
+  {
+    "theme": "Modèles",
+    "type": "order",
+    "text": "Remets dans l’ordre, de la couche 1 à la couche 7, les couches du modèle OSI.",
+    "items": [
+      "Couche physique",
+      "Couche liaison",
+      "Couche réseau",
+      "Couche transport",
+      "Couche session",
+      "Couche présentation",
+      "Couche application"
+    ],
+    "explanation": "Le modèle OSI comporte sept couches hiérarchiques, de la couche physique à la couche application."
+  },
+  {
+    "theme": "Couche liaison",
+    "type": "order",
+    "text": "Remets dans l’ordre les étapes de la méthode Store-and-Forward telles que décrites par le cours.",
+    "items": [
+      "Stockage de la trame avant retransmission",
+      "Lecture de la trame entièrement",
+      "Vérification du CRC et des longueurs, détection des collisions"
+    ],
+    "explanation": "Le cours décrit ces trois étapes de la méthode Store-and-Forward, dans cet ordre."
+  },
+  {
+    "theme": "Couche présentation",
+    "type": "single",
+    "text": "Quel rôle joue la couche présentation du modèle OSI ?",
+    "options": [
+      "La mise en forme des données, le chiffrement et la compression",
+      "Le choix du meilleur chemin vers le destinataire",
+      "L’adressage applicatif par numéro de port",
+      "La gestion du dialogue et des points de synchronisation"
+    ],
+    "answer": "La mise en forme des données, le chiffrement et la compression",
+    "explanation": "La couche présentation s’occupe de la mise en forme des données, du chiffrement et de la compression."
+  },
+  {
+    "theme": "Couche session",
+    "type": "single",
+    "text": "Quelle couche du modèle OSI gère la mise en relation des utilisateurs et la gestion du jeton ?",
+    "options": [
+      "La couche session",
+      "La couche présentation",
+      "La couche transport",
+      "La couche réseau"
+    ],
+    "answer": "La couche session",
+    "explanation": "La couche session organise et synchronise les échanges entre tâches distantes, et gère notamment le jeton."
+  },
+  {
+    "theme": "Équipements",
+    "type": "single",
+    "text": "Quel équipement régénère les signaux réseau et les resynchronise au niveau du bit, sans modifier le contenu du message ?",
+    "options": [
+      "Le répéteur",
+      "Le pont",
+      "Le commutateur",
+      "Le routeur"
+    ],
+    "answer": "Le répéteur",
+    "explanation": "Le répéteur régénère les signaux et les resynchronise au niveau du bit, sans modifier le contenu du message."
+  },
+  {
+    "theme": "Équipements",
+    "type": "single",
+    "text": "Pourquoi le répéteur multiports (hub) est-il interdit en gendarmerie, selon le cours ?",
+    "options": [
+      "Parce que la sécurité y est faible : l’information d’un port peut être capturée sur n’importe quel autre port",
+      "Parce qu’il consomme trop d’électricité",
+      "Parce qu’il ne fonctionne qu’en half duplex",
+      "Parce qu’il ne peut relier que deux postes"
+    ],
+    "answer": "Parce que la sécurité y est faible : l’information d’un port peut être capturée sur n’importe quel autre port",
+    "explanation": "Le hub diffuse l’information reçue sur un port vers tous les autres ports, ce qui rend la sécurité faible ; il est donc interdit en gendarmerie."
+  },
+  {
+    "theme": "Équipements",
+    "type": "multiple",
+    "text": "Quels équipements fonctionnent uniquement au niveau 1 du modèle OSI selon le cours ? (plusieurs réponses)",
+    "options": [
+      "Le répéteur",
+      "Le convertisseur de média (transceiver)",
+      "Le répéteur multiports (hub)",
+      "Le pont",
+      "Le commutateur"
+    ],
+    "answers": [
+      "Le répéteur",
+      "Le convertisseur de média (transceiver)",
+      "Le répéteur multiports (hub)"
+    ],
+    "explanation": "Le pont et le commutateur sont des équipements de niveau 2, pas de niveau 1."
+  },
+  {
+    "theme": "Équipements",
+    "type": "multiple",
+    "text": "Quelles affirmations sur le commutateur (switch) sont exactes selon le cours ? (plusieurs réponses)",
+    "options": [
+      "Il est à la fois un pont et un concentrateur",
+      "Il étudie l’adresse MAC source pour l’associer à un port",
+      "Il limite considérablement les collisions",
+      "Il éradique totalement le broadcast",
+      "Il utilise des adresses IP pour transmettre les trames"
+    ],
+    "answers": [
+      "Il est à la fois un pont et un concentrateur",
+      "Il étudie l’adresse MAC source pour l’associer à un port",
+      "Il limite considérablement les collisions"
+    ],
+    "explanation": "Le cours précise que le commutateur n’éradique pas le broadcast, et qu’il travaille avec des adresses MAC, pas IP."
+  },
+  {
+    "theme": "Équipements",
+    "type": "multiple",
+    "text": "Quels rôles sont attribués au routeur selon le cours ? (plusieurs réponses)",
+    "options": [
+      "Il choisit la meilleure route possible",
+      "Il met à jour sa table de routage",
+      "Il ne laisse pas passer certains paquets (broadcast, destination inconnue)",
+      "Il filtre uniquement par adresse MAC",
+      "Il ne fait que régénérer le signal"
+    ],
+    "answers": [
+      "Il choisit la meilleure route possible",
+      "Il met à jour sa table de routage",
+      "Il ne laisse pas passer certains paquets (broadcast, destination inconnue)"
+    ],
+    "explanation": "Le filtrage par adresse MAC seul décrit le pont, et la régénération seule décrit le répéteur."
+  },
+  {
+    "theme": "Équipements",
+    "type": "single",
+    "text": "Vrai ou faux : le pont interprète les adresses MAC et stocke les adresses sources dans une table de filtrage (FDB).",
+    "options": [
+      "Vrai",
+      "Faux"
+    ],
+    "answer": "Vrai",
+    "explanation": "Le pont est capable d’interpréter les adresses MAC et stocke les adresses sources dans sa table de filtrage (Forwarding Data Base)."
+  },
+  {
+    "theme": "Équipements",
+    "type": "single",
+    "text": "Vrai ou faux : sans paramétrage, le routeur se comporte comme un commutateur.",
+    "options": [
+      "Vrai",
+      "Faux"
+    ],
+    "answer": "Vrai",
+    "explanation": "Le cours précise que s’il n’est pas paramétré, le routeur se comporte comme un commutateur."
+  },
+  {
+    "theme": "Équipements",
+    "type": "single",
+    "text": "Vrai ou faux : le pare-feu ne peut travailler qu’au niveau 4 et au-dessus, jamais en commutation ou en routage.",
+    "options": [
+      "Vrai",
+      "Faux"
+    ],
+    "answer": "Faux",
+    "explanation": "Le pare-feu est capable de traiter des paquets en commutation (niveau 2) et en routage (niveau 3), en plus du filtrage et des VPN."
+  },
+  {
+    "theme": "Équipements",
+    "type": "blank",
+    "text": "Le commutateur ou switch est aussi appelé pont ___.",
+    "accept": [
+      "multiports",
+      "multi-ports"
+    ],
+    "explanation": "Le commutateur, ou switch, est aussi appelé pont multiports : il est à la fois un pont et un concentrateur."
+  },
+  {
+    "theme": "Équipements",
+    "type": "blank",
+    "text": "Le pare-feu distingue une zone de confiance appelée Trust et une zone sans confiance appelée ___.",
+    "accept": [
+      "Untrust"
+    ],
+    "explanation": "Le pare-feu comporte une zone Trust (le réseau contrôlé) et une zone Untrust (l’extérieur, comme Internet)."
+  },
+  {
+    "theme": "Équipements",
+    "type": "match",
+    "text": "Associe chaque équipement à son niveau OSI principal.",
+    "pairs": [
+      [
+        "Répéteur",
+        "Niveau 1"
+      ],
+      [
+        "Pont",
+        "Niveau 2"
+      ],
+      [
+        "Routeur",
+        "Niveau 3"
+      ],
+      [
+        "Pare-feu",
+        "Niveau 4 et plus"
+      ]
+    ],
+    "explanation": "Chaque équipement réseau correspond au niveau OSI où il opère principalement."
+  },
+  {
+    "theme": "Équipements",
+    "type": "match",
+    "text": "Associe chaque équipement à sa fonction.",
+    "pairs": [
+      [
+        "Convertisseur de média (transceiver)",
+        "Convertit un signal d’un type en un autre, par exemple électrique en optique"
+      ],
+      [
+        "Commutateur L3",
+        "Utilise des fonctions habituellement réservées aux routeurs, comme l’adressage IP"
+      ],
+      [
+        "Routeur",
+        "Achemine l’information d’un réseau vers un autre réseau via une table de routage"
+      ]
+    ],
+    "explanation": "Le cours décrit précisément la fonction de chacun de ces équipements."
+  },
+  {
+    "theme": "Équipements",
+    "type": "order",
+    "text": "Remets dans l’ordre croissant de niveau OSI (du plus bas au plus haut) ces équipements réseau.",
+    "items": [
+      "Répéteur",
+      "Pont",
+      "Routeur",
+      "Pare-feu"
+    ],
+    "explanation": "Le répéteur travaille au niveau 1, le pont au niveau 2, le routeur au niveau 3, et le pare-feu au niveau 4 et plus."
+  },
+  {
+    "theme": "Équipements",
+    "type": "single",
+    "text": "Quel équipement filtre les trames de couche 2 par adresse MAC pour segmenter un réseau ?",
+    "options": [
+      "Le pont",
+      "Le répéteur",
+      "Le convertisseur de média",
+      "Le routeur"
+    ],
+    "answer": "Le pont",
+    "explanation": "Le pont est un équipement de couche 2 conçu pour connecter deux segments du LAN en filtrant les trames par adresse MAC."
+  },
+  {
+    "theme": "Équipements",
+    "type": "single",
+    "text": "Le routeur utilise principalement, pour choisir son chemin…",
+    "options": [
+      "des adresses logiques (IP) et sa table de routage",
+      "des adresses MAC uniquement",
+      "le protocole CSMA/CD",
+      "le champ Ether Type de la trame"
+    ],
+    "answer": "des adresses logiques (IP) et sa table de routage",
+    "explanation": "Le routeur se base sur les adresses logiques (IP) et sa table de routage pour choisir le meilleur chemin."
+  },
+  {
+    "theme": "Équipements",
+    "type": "single",
+    "text": "Vrai ou faux : les commutateurs L3 ont généralement un coût par port inférieur à celui des routeurs.",
+    "options": [
+      "Vrai",
+      "Faux"
+    ],
+    "answer": "Vrai",
+    "explanation": "Les commutateurs L3 bénéficient d’un coût par port inférieur à celui des routeurs, tout en exécutant moins de traitements."
   }
-}
-function toggle(choice,b){if(locked)return;if(selected.has(choice)){selected.delete(choice);b.classList.remove('selected')}else{selected.add(choice);b.classList.add('selected')}}
-function verify(){if(locked)return;locked=true;const x=session[i],correct=new Set(x.answers),ok=selected.size===correct.size&&[...selected].every(s=>correct.has(s));if(ok)score++;stats[x.theme]??={n:0,ok:0};stats[x.theme].n++;if(ok)stats[x.theme].ok++;[...$('answers').children].forEach(z=>{z.disabled=true;const label=z.querySelector('span:last-child').textContent;if(correct.has(label))z.classList.add('good');else if(selected.has(label))z.classList.add('bad')});$('feedback').className=`feedback show ${ok?'good':'bad'}`;$('feedback').innerHTML=`<strong>${ok?'Bonne réponse !':'Réponse incomplète ou incorrecte.'}</strong>${x.explanation}`;$('verify').classList.remove('show');$('next').classList.add('show')}
-function answer(choice,b){if(locked)return;locked=true;const x=session[i],ok=choice===x.answer;if(ok)score++;stats[x.theme]??={n:0,ok:0};stats[x.theme].n++;if(ok)stats[x.theme].ok++;[...$('answers').children].forEach(z=>{z.disabled=true;if(z.textContent.trim().slice(1).trim()===x.answer)z.classList.add('good')});if(!ok)b.classList.add('bad');$('feedback').className=`feedback show ${ok?'good':'bad'}`;$('feedback').innerHTML=`<strong>${ok?'Bonne réponse !':'Réponse incorrecte.'}</strong>${x.explanation}`;$('next').classList.add('show')}
-function finish(){const rate=Math.round(score/session.length*100);$('quiz').style.display='none';$('result').classList.add('show');$('resultTitle').textContent=reviewTheme?`Résultat - Révision ciblée : ${reviewTheme}`:`Résultat - ${active.name}`;$('finalScore').textContent=`${rate} %`;$('finalText').textContent=`Réussite du module : ${score} bonne${score>1?'s':''} réponse${score>1?'s':''} sur ${session.length}. ${rate>=90?'Très bon niveau.':rate>=70?'Bon niveau : quelques points sont à consolider.':'Révision recommandée avant une nouvelle session.'}`;const weak=Object.entries(stats).map(([theme,s])=>({theme,...s,bad:s.n-s.ok})).filter(s=>s.bad).sort((a,b)=>b.bad/b.n-a.bad/a.n);$('reviewList').replaceChildren();if(!weak.length){$('reviewIntro').textContent='Aucun thème faible sur cette session.';const d=document.createElement('div');d.className='review-empty';d.textContent='Parfait : aucune erreur. Lance une autre session pour varier les questions.';$('reviewList').append(d)}else{$('reviewIntro').textContent='Choisis un thème où une erreur a été repérée :';weak.forEach(s=>{const b=document.createElement('button');b.className='review-item';b.innerHTML=`<strong>${s.theme}</strong><span>${s.bad} erreur${s.bad>1?'s':''} sur ${s.n}</span>`;b.onclick=()=>targeted(s.theme);$('reviewList').append(b)})}}
-$('next').onclick=()=>{i++;i<session.length?render():finish()};$('verify').onclick=verify;$('restart').onclick=()=>reviewTheme?targeted(reviewTheme):start(active);$('backHome').onclick=home;$('homeButton').onclick=home;drawHome();
-</script></body></html>
+  ];
+
+  const MODULES = [
+    { id: 'm1', number: 'Module 1', name: 'Signaux et transmissions', description: 'Bande passante, modulation, atténuation, simplex, duplex et types de transmission.', themes: ['Signaux', 'Transmissions'] },
+    { id: 'm2', number: 'Module 2', name: 'Diffusion et commutation', description: 'Unicast, multicast, broadcast, anycast, geocast et méthodes de commutation.', themes: ['Diffusion', 'Commutation'] },
+    { id: 'm3', number: 'Module 3', name: 'Échelles et topologies', description: 'PAN, LAN, MAN, WAN, architectures et topologies réseau.', themes: ['Échelles', 'Topologies'] },
+    { id: 'm4', number: 'Module 4', name: 'Normalisation', description: 'ISO, ITU, IEEE, IETF, AFNOR et normes IEEE 802.', themes: ['Normalisation'] },
+    { id: 'm5', number: 'Module 5', name: 'Modèles et protocoles', description: 'OSI, TCP/IP, encapsulation et fonctions des sept couches.', themes: ['Modèles', 'Encapsulation', 'Couche physique', 'Couche liaison', 'Couche réseau', 'Couche transport', 'Couche session', 'Couche présentation', 'Couche application'] },
+    { id: 'm6', number: 'Module 6', name: 'Équipements réseau', description: 'Répéteur, hub, pont, commutateur, routeur et pare-feu.', themes: ['Équipements'] },
+    { id: 'm7', number: 'Module 7', name: 'Synthèse générale', description: 'Jusqu’à 50 questions mélangées sur l’ensemble des modules.', themes: null, synthesis: true }
+  ];
+
+  const $ = id => document.getElementById(id);
+  const norm = s => (s || '').toString().trim().toLowerCase()
+    .normalize('NFD').replace(/[̀-ͯ]/g, '')
+    .replace(/[’']/g, "'").replace(/\s+/g, ' ');
+  const arraysEqual = (a, b) => a.length === b.length && a.every((v, i) => v === b[i]);
+
+  let session = [], index = 0, score = 0, locked = false, themeStats = {}, currentTopic = null, currentModule = null;
+  let selected = new Set(), orderList = [];
+  const shuffle = list => [...list].sort(() => Math.random() - .5);
+  const moduleQuestions = module => module.synthesis ? Q : Q.filter(q => module.themes.includes(q.theme));
+
+  function renderHome() {
+    $('moduleGrid').replaceChildren(...MODULES.map(module => {
+      const b = document.createElement('button'); b.className = 'module';
+      b.innerHTML = `<span class="module-number">${module.number}</span><h2>${module.name}</h2><p>${module.description}</p>`;
+      b.onclick = () => startModule(module); return b;
+    }));
+  }
+  function startModule(module) {
+    currentModule = module; currentTopic = null;
+    const available = moduleQuestions(module);
+    session = shuffle(available).slice(0, Math.min(module.synthesis ? 50 : available.length, available.length));
+    index = 0; score = 0; themeStats = {};
+    $('home').style.display = 'none'; $('quiz').style.display = 'block'; $('result').classList.remove('show'); $('moduleLabel').textContent = module.name; render();
+  }
+  function startTopic(topic) {
+    currentTopic = topic; currentModule = null;
+    const available = Q.filter(q => q.theme === topic);
+    session = shuffle(available); index = 0; score = 0; themeStats = {};
+    $('quiz').style.display = 'block'; $('result').classList.remove('show'); $('moduleLabel').textContent = `Révision ciblée : ${topic}`; render();
+  }
+
+  function render() {
+    locked = false; selected = new Set(); orderList = [];
+    const q = session[index];
+    $('count').textContent = `Question ${index + 1} / ${session.length}`; $('bar').style.width = `${(index / session.length) * 100}%`;
+    $('theme').textContent = `${currentTopic ? 'Révision ciblée' : currentModule.name} · ${q.theme}`;
+    $('question').textContent = q.text;
+    $('feedback').className = 'feedback'; $('feedback').innerHTML = '';
+    $('next').classList.remove('show'); $('verify').classList.remove('show');
+    const area = $('answers'); area.replaceChildren(); area.className = 'answers';
+
+    if (q.type === 'multiple') {
+      area.replaceChildren(...shuffle(q.options).map(option => {
+        const b = document.createElement('button'); b.className = 'answer multi';
+        b.innerHTML = `<span class="checkbox"></span><span>${option}</span>`;
+        b.onclick = () => toggleMulti(option, b); return b;
+      }));
+      $('verify').classList.add('show');
+    } else if (q.type === 'blank') {
+      const wrap = document.createElement('div'); wrap.className = 'blank-wrap';
+      const input = document.createElement('input'); input.type = 'text'; input.className = 'blank-input'; input.id = 'blankInput';
+      input.placeholder = 'Ta réponse…'; input.autocomplete = 'off';
+      input.addEventListener('keydown', e => { if (e.key === 'Enter' && !locked) verify(); });
+      wrap.appendChild(input); area.appendChild(wrap);
+      $('verify').classList.add('show');
+      setTimeout(() => input.focus(), 30);
+    } else if (q.type === 'match') {
+      const rightValues = shuffle(q.pairs.map(p => p[1]));
+      const grid = document.createElement('div'); grid.className = 'match-grid';
+      q.pairs.forEach(pair => {
+        const row = document.createElement('div'); row.className = 'match-row';
+        const left = document.createElement('span'); left.className = 'match-left'; left.textContent = pair[0];
+        const select = document.createElement('select'); select.className = 'match-select'; select.dataset.left = pair[0];
+        const empty = document.createElement('option'); empty.value = ''; empty.textContent = 'Choisir…'; select.appendChild(empty);
+        rightValues.forEach(v => { const o = document.createElement('option'); o.value = v; o.textContent = v; select.appendChild(o); });
+        row.append(left, select); grid.appendChild(row);
+      });
+      area.appendChild(grid);
+      $('verify').classList.add('show');
+    } else if (q.type === 'order') {
+      orderList = shuffle(q.items);
+      renderOrderList(area);
+      $('verify').classList.add('show');
+    } else {
+      const letters = ['A', 'B', 'C', 'D', 'E'];
+      area.replaceChildren(...shuffle(q.options).map((option, i) => {
+        const b = document.createElement('button'); b.className = 'answer';
+        b.innerHTML = `<span class="letter">${letters[i] || (i + 1)}</span><span>${option}</span>`;
+        b.onclick = () => answer(option, b); return b;
+      }));
+    }
+  }
+
+  function renderOrderList(area) {
+    area.replaceChildren();
+    const list = document.createElement('div'); list.className = 'order-list';
+    orderList.forEach((item, i) => {
+      const row = document.createElement('div'); row.className = 'order-item';
+      const up = document.createElement('button'); up.type = 'button'; up.className = 'order-btn'; up.textContent = '↑'; up.disabled = i === 0;
+      up.onclick = () => { if (locked) return; [orderList[i - 1], orderList[i]] = [orderList[i], orderList[i - 1]]; renderOrderList(area); };
+      const down = document.createElement('button'); down.type = 'button'; down.className = 'order-btn'; down.textContent = '↓'; down.disabled = i === orderList.length - 1;
+      down.onclick = () => { if (locked) return; [orderList[i + 1], orderList[i]] = [orderList[i], orderList[i + 1]]; renderOrderList(area); };
+      const num = document.createElement('span'); num.className = 'order-num'; num.textContent = i + 1;
+      const label = document.createElement('span'); label.className = 'order-label'; label.textContent = item;
+      const controls = document.createElement('span'); controls.className = 'order-controls'; controls.append(up, down);
+      row.append(num, label, controls); list.appendChild(row);
+    });
+    area.appendChild(list);
+  }
+
+  function toggleMulti(choice, b) {
+    if (locked) return;
+    if (selected.has(choice)) { selected.delete(choice); b.classList.remove('selected'); }
+    else { selected.add(choice); b.classList.add('selected'); }
+  }
+
+  function recordStat(theme, ok) { themeStats[theme] ||= { total: 0, correct: 0 }; themeStats[theme].total++; if (ok) themeStats[theme].correct++; }
+  function showFeedback(ok, explanation) {
+    $('feedback').className = `feedback show ${ok ? 'good' : 'bad'}`;
+    $('feedback').innerHTML = `<strong>${ok ? 'Bonne réponse !' : 'Réponse incorrecte.'}</strong>${explanation}`;
+    $('verify').classList.remove('show'); $('next').classList.add('show');
+  }
+
+  function verify() {
+    if (locked) return; locked = true;
+    const q = session[index];
+    let ok = false;
+    if (q.type === 'multiple') {
+      const correctSet = new Set(q.answers);
+      ok = selected.size === correctSet.size && [...selected].every(s => correctSet.has(s));
+      [...$('answers').children].forEach(b => {
+        b.disabled = true; const label = b.querySelector('span:last-child').textContent;
+        if (correctSet.has(label)) b.classList.add('good'); else if (selected.has(label)) b.classList.add('bad');
+      });
+    } else if (q.type === 'blank') {
+      const input = $('blankInput'); const val = norm(input.value);
+      ok = q.accept.some(a => norm(a) === val);
+      input.disabled = true; input.classList.add(ok ? 'good' : 'bad');
+      if (!ok) { const hint = document.createElement('div'); hint.className = 'blank-answer'; hint.textContent = `Réponse attendue : ${q.accept[0]}`; input.insertAdjacentElement('afterend', hint); }
+    } else if (q.type === 'match') {
+      const selects = [...$('answers').querySelectorAll('.match-select')];
+      ok = selects.every(sel => sel.value === q.pairs.find(p => p[0] === sel.dataset.left)[1]);
+      selects.forEach(sel => { sel.disabled = true; const correctVal = q.pairs.find(p => p[0] === sel.dataset.left)[1]; sel.classList.add(sel.value === correctVal ? 'good' : 'bad'); });
+    } else if (q.type === 'order') {
+      ok = arraysEqual(orderList, q.items);
+      const rows = [...$('answers').querySelectorAll('.order-item')];
+      rows.forEach((row, i) => { row.querySelectorAll('.order-btn').forEach(b => b.disabled = true); row.classList.add(orderList[i] === q.items[i] ? 'good' : 'bad'); });
+      if (!ok) {
+        const correction = document.createElement('div'); correction.className = 'order-correction';
+        correction.innerHTML = `<strong>Ordre attendu :</strong>`;
+        const ol = document.createElement('ol');
+        q.items.forEach(item => { const li = document.createElement('li'); li.textContent = item; ol.appendChild(li); });
+        correction.appendChild(ol);
+        $('answers').querySelector('.order-list').insertAdjacentElement('afterend', correction);
+      }
+    } else {
+      ok = false;
+    }
+    recordStat(q.theme, ok); if (ok) score++;
+    showFeedback(ok, q.explanation);
+  }
+
+  function answer(choice, button) {
+    if (locked) return; locked = true;
+    const q = session[index], correct = choice === q.answer; if (correct) score++;
+    recordStat(q.theme, correct);
+    [...$('answers').children].forEach(b => { b.disabled = true; if (b.querySelector('span:last-child').textContent === q.answer) b.classList.add('good'); });
+    if (!correct) button.classList.add('bad');
+    showFeedback(correct, q.explanation);
+  }
+
+  $('next').onclick = () => { index++; if (index < session.length) render(); else finish(); };
+  $('verify').onclick = verify;
+
+  function finish() {
+    $('quiz').style.display = 'none'; $('result').classList.add('show');
+    const rate = Math.round(score / session.length * 100);
+    $('resultTitle').textContent = currentTopic ? `Résultat - Révision ciblée : ${currentTopic}` : `Résultat - ${currentModule.name}`;
+    $('finalScore').textContent = `${rate} %`;
+    const assessment = rate >= 90 ? 'Très bon niveau.' : rate >= 70 ? 'Bon niveau : quelques points sont à consolider.' : 'Révision recommandée avant une nouvelle session.';
+    $('finalText').textContent = `Réussite du module : ${score} bonne${score > 1 ? 's' : ''} réponse${score > 1 ? 's' : ''} sur ${session.length}. ${assessment}`;
+    const weaknesses = Object.entries(themeStats).map(([theme, stat]) => ({ theme, ...stat, wrong: stat.total - stat.correct })).filter(s => s.wrong > 0).sort((a, b) => (b.wrong / b.total) - (a.wrong / a.total) || b.wrong - a.wrong);
+    $('reviewList').replaceChildren();
+    if (!weaknesses.length) {
+      $('reviewIntro').textContent = 'Aucun thème faible sur cette session.';
+      const message = document.createElement('div'); message.className = 'review-empty'; message.textContent = 'Parfait : tu n’as commis aucune erreur. Lance une nouvelle session pour varier les questions.'; $('reviewList').append(message);
+    } else {
+      $('reviewIntro').textContent = 'Choisis un thème où une erreur a été repérée :';
+      weaknesses.forEach(({ theme, total, wrong }) => {
+        const b = document.createElement('button'); b.className = 'review-item'; b.innerHTML = `<strong>${theme}</strong><span>${wrong} erreur${wrong > 1 ? 's' : ''} sur ${total}</span>`; b.onclick = () => startTopic(theme); $('reviewList').append(b);
+      });
+    }
+  }
+  $('restart').onclick = () => currentTopic ? startTopic(currentTopic) : startModule(currentModule);
+  function goHome() { $('quiz').style.display = 'none'; $('result').classList.remove('show'); $('home').style.display = 'block'; }
+  $('homeButton').onclick = goHome;
+  $('backToHome').onclick = goHome;
+  renderHome();
+  </script>
+</body>
+</html>
