@@ -107,6 +107,11 @@ main footer{margin-top:20px;color:var(--muted);font-size:.82rem;text-align:cente
 .order-btn{padding:6px 10px;color:var(--accent);background:rgba(94,234,212,.08);border:1px solid var(--line);border-radius:6px;font-weight:700;transition:border-color .15s ease,background .15s ease}
 .order-btn:not(:disabled):hover{border-color:var(--accent-dim);background:rgba(94,234,212,.14)}
 .order-btn:disabled{opacity:.35;cursor:default}
-.order-list.good{border:1px solid var(--ok);border-radius:12px;padding:8px}
-.order-list.bad{border:1px solid var(--bad);border-radius:12px;padding:8px}
+.order-item.good{border-color:var(--ok);background:rgba(52,211,153,.08)}
+.order-item.good .order-num{color:var(--ok-dark);background:var(--ok)}
+.order-item.bad{border-color:var(--bad);background:rgba(248,113,113,.08)}
+.order-item.bad .order-num{color:var(--bad-dark);background:var(--bad)}
+.order-correction{margin-top:14px;padding:14px 16px;border-left:4px solid var(--accent);border-radius:0 10px 10px 0;background:rgba(94,234,212,.06)}
+.order-correction ol{margin:8px 0 0;padding-left:20px;color:var(--text)}
+.order-correction li{margin:3px 0}
 @media(max-width:520px){main{width:min(100% - 20px,850px);padding:22px 0}.card{border-radius:12px}.module-label{max-width:50%}}
