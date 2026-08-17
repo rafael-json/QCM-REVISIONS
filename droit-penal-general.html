@@ -1244,8 +1244,16 @@
       selects.forEach(sel => { sel.disabled = true; const correctVal = q.pairs.find(p => p[0] === sel.dataset.left)[1]; sel.classList.add(sel.value === correctVal ? 'good' : 'bad'); });
     } else if (q.type === 'order') {
       ok = arraysEqual(orderList, q.items);
-      [...$('answers').querySelectorAll('.order-btn')].forEach(b => b.disabled = true);
-      $('answers').querySelector('.order-list').classList.add(ok ? 'good' : 'bad');
+      const rows = [...$('answers').querySelectorAll('.order-item')];
+      rows.forEach((row, i) => { row.querySelectorAll('.order-btn').forEach(b => b.disabled = true); row.classList.add(orderList[i] === q.items[i] ? 'good' : 'bad'); });
+      if (!ok) {
+        const correction = document.createElement('div'); correction.className = 'order-correction';
+        correction.innerHTML = `<strong>Ordre attendu :</strong>`;
+        const ol = document.createElement('ol');
+        q.items.forEach(item => { const li = document.createElement('li'); li.textContent = item; ol.appendChild(li); });
+        correction.appendChild(ol);
+        $('answers').querySelector('.order-list').insertAdjacentElement('afterend', correction);
+      }
     }
     recordStat(q.theme, ok); if (ok) score++;
     showFeedback(ok, q.explanation);
