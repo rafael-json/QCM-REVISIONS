@@ -48,8 +48,9 @@ header{margin-bottom:24px}
 h2{font-size:clamp(1.18rem,3vw,1.5rem);line-height:1.35;margin:0 0 22px}
 .answers{display:grid;gap:11px}
 button{font:inherit;cursor:pointer}
-.answer{width:100%;display:flex;align-items:flex-start;gap:12px;padding:15px 16px;text-align:left;color:var(--text);background:rgba(255,255,255,.015);border:1px solid var(--line);border-radius:10px;font:inherit;cursor:pointer;transition:transform .15s ease,border-color .15s ease,background .15s ease}
+.answer{width:100%;display:flex;align-items:flex-start;gap:12px;padding:15px 16px;text-align:left;color:var(--text);background:rgba(255,255,255,.015);border:1px solid var(--line);border-radius:10px;font:inherit;cursor:pointer;transition:transform .15s ease,border-color .15s ease,background .15s ease;-webkit-tap-highlight-color:transparent;touch-action:manipulation;user-select:none}
 .answer:not(:disabled):hover{transform:translateY(-1px);border-color:var(--accent-dim);background:rgba(94,234,212,.05)}
+.answer:not(:disabled):active{border-color:var(--accent-dim);background:rgba(94,234,212,.08)}
 .answer:disabled{cursor:default}
 .letter{flex:0 0 25px;width:25px;height:25px;display:grid;place-items:center;color:var(--text);background:var(--line);border-radius:50%;font-size:.8rem;font-weight:700}
 .answer.good{color:#bbf7d0;border-color:var(--ok);background:rgba(52,211,153,.08)}
@@ -66,7 +67,7 @@ button{font:inherit;cursor:pointer}
 .next.show,.verify.show{display:block}
 .next:hover,.restart:hover,.verify:hover{background:#7cf2df}
 .restart{display:inline-block;margin-top:15px}
-.checkbox{flex:0 0 22px;width:22px;height:22px;display:grid;place-items:center;color:transparent;background:var(--line);border:1px solid var(--line);border-radius:5px;font-size:.8rem;font-weight:800}
+.checkbox{flex:0 0 24px;width:24px;height:24px;display:grid;place-items:center;color:transparent;background:var(--line);border:1px solid var(--line);border-radius:6px;font-size:.85rem;font-weight:800}
 .answer.multi.selected{border-color:var(--accent-dim);background:rgba(94,234,212,.06)}
 .answer.multi.selected .checkbox{color:var(--ok-dark);background:var(--accent);border-color:var(--accent)}
 .answer.multi.selected .checkbox::after{content:'✓'}
@@ -96,7 +97,7 @@ main footer{margin-top:20px;color:var(--muted);font-size:.82rem;text-align:cente
 .match-grid{display:grid;gap:11px}
 .match-row{display:flex;align-items:center;justify-content:space-between;gap:14px;padding:13px 16px;background:rgba(255,255,255,.015);border:1px solid var(--line);border-radius:10px}
 .match-left{flex:1;min-width:0}
-.match-select{flex:0 0 auto;max-width:55%;padding:9px 11px;color:var(--text);background:var(--surface);border:1px solid var(--line);border-radius:8px;font:inherit;font-size:.9rem}
+.match-select{flex:0 0 auto;max-width:55%;padding:9px 11px;min-height:44px;color:var(--text);background:var(--surface);border:1px solid var(--line);border-radius:8px;font:inherit;font-size:.9rem}
 .match-select.good{border-color:var(--ok);background:rgba(52,211,153,.08)}
 .match-select.bad{border-color:var(--bad);background:rgba(248,113,113,.08)}
 .order-list{display:grid;gap:9px}
@@ -104,8 +105,9 @@ main footer{margin-top:20px;color:var(--muted);font-size:.82rem;text-align:cente
 .order-num{flex:0 0 25px;width:25px;height:25px;display:grid;place-items:center;color:var(--text);background:var(--line);border-radius:50%;font-size:.8rem;font-weight:700}
 .order-label{flex:1}
 .order-controls{display:flex;gap:6px;flex:0 0 auto}
-.order-btn{padding:6px 10px;color:var(--accent);background:rgba(94,234,212,.08);border:1px solid var(--line);border-radius:6px;font-weight:700;transition:border-color .15s ease,background .15s ease}
+.order-btn{padding:6px 10px;min-width:40px;min-height:40px;color:var(--accent);background:rgba(94,234,212,.08);border:1px solid var(--line);border-radius:6px;font-weight:700;transition:border-color .15s ease,background .15s ease;-webkit-tap-highlight-color:transparent;touch-action:manipulation}
 .order-btn:not(:disabled):hover{border-color:var(--accent-dim);background:rgba(94,234,212,.14)}
+.order-btn:not(:disabled):active{background:rgba(94,234,212,.2)}
 .order-btn:disabled{opacity:.35;cursor:default}
 .order-item.good{border-color:var(--ok);background:rgba(52,211,153,.08)}
 .order-item.good .order-num{color:var(--ok-dark);background:var(--ok)}
@@ -114,4 +116,7 @@ main footer{margin-top:20px;color:var(--muted);font-size:.82rem;text-align:cente
 .order-correction{margin-top:14px;padding:14px 16px;border-left:4px solid var(--accent);border-radius:0 10px 10px 0;background:rgba(94,234,212,.06)}
 .order-correction ol{margin:8px 0 0;padding-left:20px;color:var(--text)}
 .order-correction li{margin:3px 0}
-@media(max-width:520px){main{width:min(100% - 20px,850px);padding:22px 0}.card{border-radius:12px}.module-label{max-width:50%}}
+@media(max-width:520px){main{width:min(100% - 20px,850px);padding:22px 0}.card{border-radius:12px}.module-label{max-width:50%}.answer{padding:16px 14px;gap:14px}.answers{gap:13px}.checkbox,.letter{flex-basis:26px;width:26px;height:26px}.match-row{flex-direction:column;align-items:stretch;gap:8px}.match-select{max-width:100%;width:100%}.order-item{padding:12px 14px}}
+
+/* Les appareils tactiles n'ont pas de vrai survol : on évite que .answer reste visuellement "en survol" après un tap, et on remplace l'effet par un retour au toucher (:active) déjà défini plus haut. */
+@media(hover:none){.answer:hover,a.nav-card:hover,.module:hover,.review-item:hover,.order-btn:hover,.home-link:hover,.back:hover,.home-button:hover{transform:none}}
