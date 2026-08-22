@@ -1,0 +1,1007 @@
+<!doctype html>
+<html lang="fr">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>QCM - Électricité</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <main>
+    <header><a class="home-link" href="index.html">&larr; Accueil</a><h1>Électricité</h1><p class="subtitle">Révisions interactives par module</p></header>
+    <section class="card" id="home"><h2>Choisis un module</h2><p class="home-intro">Les questions sont basées sur les cours de courant, tension, résistance, puissance, condensateur, régime alternatif, dangers de l'électricité et batteries. Elles mêlent QCM (choix unique ou multiple), vrai/faux, textes à trous, associations et remises en ordre. La synthèse générale mélange jusqu'à 50 questions de tous les modules.</p><div class="module-grid" id="moduleGrid"></div></section>
+    <section class="card" id="quiz" aria-live="polite">
+      <div class="quiz-nav"><button class="back" id="backToHome">← Retour aux modules</button><span class="module-label" id="moduleLabel"></span></div>
+      <div class="meta"><span id="count"></span><span>Progression du module</span></div>
+      <div class="bar"><span id="bar"></span></div>
+      <p class="tag" id="theme"></p><h2 id="question"></h2><div class="answers" id="answers"></div>
+      <div class="feedback" id="feedback"></div><div class="actions"><button class="verify" id="verify">Vérifier</button><button class="next" id="next">Question suivante</button></div>
+    </section>
+    <section class="card result" id="result"><h2 id="resultTitle">Résultat du module</h2><div class="score" id="finalScore"></div><p id="finalText"></p><h3 class="review-title">Révision ciblée</h3><p id="reviewIntro"></p><div class="review-list" id="reviewList"></div><button class="restart" id="restart">Nouvelle session du même module</button><button class="home-button" id="homeButton">Retour aux modules</button></section>
+    <footer>Les questions et réponses sont mélangées à chaque session.</footer>
+  </main>
+  <script>
+  const Q = [
+  {
+    "theme": "Atomes",
+    "type": "single",
+    "text": "Combien d'électrons au maximum la couche électronique périphérique d'un atome peut-elle contenir ?",
+    "options": ["8", "4", "2", "16"],
+    "answer": "8",
+    "explanation": "La couche périphérique d'un atome ne peut contenir plus de 8 électrons."
+  },
+  {
+    "theme": "Atomes",
+    "type": "single",
+    "text": "Les atomes ayant 1, 2 ou 3 électrons sur leur couche périphérique ont tendance à…",
+    "options": ["les perdre : ce sont de bons conducteurs", "les compléter à 8 : ce sont des isolants", "ne présenter aucune tendance : ce sont des gaz rares", "former des semi-conducteurs"],
+    "answer": "les perdre : ce sont de bons conducteurs",
+    "explanation": "Les atomes ayant 1, 2 ou 3 électrons périphériques ont tendance à les perdre ; c'est le cas des bons conducteurs électriques."
+  },
+  {
+    "theme": "Atomes",
+    "type": "single",
+    "text": "Les atomes ayant 4 électrons sur leur couche périphérique constituent la catégorie des…",
+    "options": ["semi-conducteurs", "isolants", "conducteurs", "gaz rares"],
+    "answer": "semi-conducteurs",
+    "explanation": "Les atomes ayant 4 électrons périphériques constituent la catégorie des semi-conducteurs."
+  },
+  {
+    "theme": "Atomes",
+    "type": "single",
+    "text": "Vrai ou faux : les atomes ayant 8 électrons périphériques sont les gaz rares.",
+    "options": ["Vrai", "Faux"],
+    "answer": "Vrai",
+    "explanation": "Les atomes ayant 8 électrons périphériques n'ont aucune tendance à échanger des électrons : ce sont les gaz rares."
+  },
+  {
+    "theme": "Atomes",
+    "type": "multiple",
+    "text": "Quels matériaux sont cités par le cours comme conducteurs ? (plusieurs réponses)",
+    "options": ["Le cuivre", "L'aluminium", "La céramique", "Le verre"],
+    "answers": ["Le cuivre", "L'aluminium"],
+    "explanation": "Le cuivre et l'aluminium sont cités comme conducteurs, car leurs atomes s'échangent facilement leurs électrons ; la céramique est au contraire isolante."
+  },
+  {
+    "theme": "Atomes",
+    "type": "blank",
+    "text": "Les atomes ayant 5, 6 ou 7 électrons sur leur couche périphérique ont tendance à la compléter à 8 : ce sont les ___.",
+    "accept": ["isolants"],
+    "explanation": "Les atomes ayant 5, 6 ou 7 électrons périphériques ont tendance à compléter leur couche à 8 : c'est le cas des isolants."
+  },
+  {
+    "theme": "Atomes",
+    "type": "match",
+    "text": "Associe chaque nombre d'électrons périphériques à la catégorie d'atome correspondante.",
+    "pairs": [
+      ["1, 2 ou 3 électrons", "Bons conducteurs"],
+      ["4 électrons", "Semi-conducteurs"],
+      ["5, 6 ou 7 électrons", "Isolants"],
+      ["8 électrons", "Gaz rares"]
+    ],
+    "explanation": "Le cours classe les atomes selon leur nombre d'électrons périphériques."
+  },
+  {
+    "theme": "Unités",
+    "type": "single",
+    "text": "Combien d'unités de base compte le Système International (S.I.) ?",
+    "options": ["7", "4", "10", "12"],
+    "answer": "7",
+    "explanation": "Le Système International comporte 7 unités de base et une multitude d'unités dérivées."
+  },
+  {
+    "theme": "Unités",
+    "type": "single",
+    "text": "Quelle est l'unité du Système International pour l'intensité du courant électrique ?",
+    "options": ["L'ampère (A)", "Le volt (V)", "L'ohm (Ω)", "Le watt (W)"],
+    "answer": "L'ampère (A)",
+    "explanation": "L'ampère (A) est l'unité du S.I. de mesure de l'intensité du courant électrique."
+  },
+  {
+    "theme": "Unités",
+    "type": "blank",
+    "text": "L'ampère correspond au transport d'une charge d'___ coulomb par seconde à travers un matériau.",
+    "accept": ["1", "un"],
+    "explanation": "L'ampère correspond au transport d'une charge d'un coulomb par seconde à travers un matériau."
+  },
+  {
+    "theme": "Unités",
+    "type": "multiple",
+    "text": "Lesquelles de ces unités font partie des 7 unités de base du Système International citées par le cours ? (plusieurs réponses)",
+    "options": ["Le kilogramme (kg)", "La seconde (s)", "L'ampère (A)", "Le volt (V)", "L'ohm (Ω)"],
+    "answers": ["Le kilogramme (kg)", "La seconde (s)", "L'ampère (A)"],
+    "explanation": "Le volt et l'ohm sont des unités dérivées, pas des unités de base du S.I."
+  },
+  {
+    "theme": "Circuits",
+    "type": "single",
+    "text": "Combien de bornes minimales possède un dipôle, le composant électrique le plus simple ?",
+    "options": ["2", "1", "3", "4"],
+    "answer": "2",
+    "explanation": "Le dipôle possède le nombre minimal de bornes, à savoir une borne d'entrée pour le courant et une borne de sortie."
+  },
+  {
+    "theme": "Circuits",
+    "type": "single",
+    "text": "Dans un circuit en série, combien de chemins possibles existe-t-il pour le courant ?",
+    "options": ["Un seul", "Deux", "Autant que d'éléments", "Cela dépend du générateur"],
+    "answer": "Un seul",
+    "explanation": "Dans un circuit en série, tous les éléments sont reliés à la suite les uns des autres : il n'y a qu'une maille, donc un seul chemin possible pour le courant."
+  },
+  {
+    "theme": "Circuits",
+    "type": "single",
+    "text": "Dans un circuit en parallèle (ou dérivation), le courant peut revenir à sa source…",
+    "options": ["par plusieurs chemins", "par un seul chemin", "uniquement via le générateur", "jamais"],
+    "answer": "par plusieurs chemins",
+    "explanation": "Dans un circuit en parallèle, les appareils sont placés en parallèle les uns des autres : le courant peut revenir à sa source par plusieurs chemins."
+  },
+  {
+    "theme": "Circuits",
+    "type": "single",
+    "text": "Vrai ou faux : un circuit mixte comporte des éléments branchés en série et en parallèle.",
+    "options": ["Vrai", "Faux"],
+    "answer": "Vrai",
+    "explanation": "Un circuit mixte comporte des éléments branchés en série et en parallèle ; il possède donc les caractéristiques communes aux deux types."
+  },
+  {
+    "theme": "Circuits",
+    "type": "blank",
+    "text": "Un circuit électrique comporte au minimum un ___, qui délivre le courant, et des récepteurs qui l'utilisent.",
+    "accept": ["générateur"],
+    "explanation": "Un circuit électrique est un ensemble de conducteurs et de composants parmi lesquels on retrouve au minimum un générateur, qui délivre le courant."
+  },
+  {
+    "theme": "Circuits",
+    "type": "match",
+    "text": "Associe chaque type de circuit à sa caractéristique.",
+    "pairs": [
+      ["Circuit en série", "Un seul chemin possible pour le courant"],
+      ["Circuit en parallèle", "Le courant peut revenir à sa source par plusieurs chemins"],
+      ["Circuit mixte", "Comporte des éléments en série et en parallèle"]
+    ],
+    "explanation": "Le cours distingue ces trois grands types de circuits électriques."
+  },
+  {
+    "theme": "Circuits",
+    "type": "single",
+    "text": "Vrai ou faux : le sens conventionnel du courant correspond au sens réel de déplacement des électrons.",
+    "options": ["Vrai", "Faux"],
+    "answer": "Faux",
+    "explanation": "Par convention, le sens du courant va de la borne + à la borne -, alors que les électrons se déplacent en réalité du pôle négatif vers le pôle positif."
+  },
+  {
+    "theme": "Circuits",
+    "type": "blank",
+    "text": "Dans un circuit, le générateur agit un peu comme une ___ : il refoule les électrons de son pôle négatif vers son pôle positif.",
+    "accept": ["pompe"],
+    "explanation": "Le générateur agit comme une pompe : les atomes de son pôle négatif refoulent les électrons vers ceux de son pôle positif qui les aspirent."
+  },
+  {
+    "theme": "Intensité",
+    "type": "single",
+    "text": "Quelle formule permet de calculer l'intensité du courant ?",
+    "options": ["I = Q / t", "I = U / t", "I = U x R", "I = R / t"],
+    "answer": "I = Q / t",
+    "explanation": "L'intensité est la quantité d'électricité qui traverse un point du circuit en une seconde : I = Q / t."
+  },
+  {
+    "theme": "Intensité",
+    "type": "single",
+    "text": "Par analogie avec l'eau, l'intensité électrique correspond…",
+    "options": ["au débit", "à la pression", "au volume", "à la vitesse d'écoulement"],
+    "answer": "au débit",
+    "explanation": "Le cours indique que l'intensité est à l'électricité ce que le débit est à l'eau."
+  },
+  {
+    "theme": "Intensité",
+    "type": "single",
+    "text": "Comment se branche un ampèremètre pour mesurer l'intensité ?",
+    "options": ["En série dans le circuit", "En dérivation dans le circuit", "Indifféremment en série ou en dérivation", "Uniquement aux bornes du générateur"],
+    "answer": "En série dans le circuit",
+    "explanation": "Pour réaliser une mesure d'intensité, l'appareil se branche toujours en série dans le circuit."
+  },
+  {
+    "theme": "Intensité",
+    "type": "single",
+    "text": "Selon la loi des nœuds, la somme des intensités des courants qui arrivent à un nœud est égale à…",
+    "options": ["la somme des intensités des courants qui en partent", "la moitié des intensités qui en partent", "l'intensité du générateur uniquement", "zéro"],
+    "answer": "la somme des intensités des courants qui en partent",
+    "explanation": "À tout instant, la somme des intensités des courants qui arrivent à un nœud est égale à la somme des intensités des courants qui en partent."
+  },
+  {
+    "theme": "Intensité",
+    "type": "single",
+    "text": "D'après la loi d'unicité de l'intensité, dans un circuit en série…",
+    "options": ["l'intensité du courant est la même en tous points", "l'intensité varie selon chaque dipôle", "l'intensité dépend de l'ordre des dipôles", "l'intensité est nulle"],
+    "answer": "l'intensité du courant est la même en tous points",
+    "explanation": "Dans un circuit électrique en série, l'intensité du courant est la même en tous points ; l'ordre des dipôles n'a aucune incidence sur leur fonctionnement."
+  },
+  {
+    "theme": "Intensité",
+    "type": "single",
+    "text": "D'après la loi d'additivité, dans un circuit en dérivation, l'intensité dans la branche principale est égale à…",
+    "options": ["la somme des intensités de toutes les branches dérivées", "l'intensité de la branche la plus faible", "l'intensité moyenne des branches", "zéro"],
+    "answer": "la somme des intensités de toutes les branches dérivées",
+    "explanation": "Dans un circuit en dérivation, la loi d'additivité indique que l'intensité dans la branche principale est égale à la somme des intensités de toutes les branches dérivées."
+  },
+  {
+    "theme": "Intensité",
+    "type": "match",
+    "text": "Associe chaque loi liée à l'intensité à son énoncé.",
+    "pairs": [
+      ["Loi des nœuds", "La somme des intensités entrantes égale la somme des intensités sortantes à un nœud"],
+      ["Loi d'unicité", "En série, l'intensité est la même en tous points du circuit"],
+      ["Loi d'additivité", "En dérivation, l'intensité principale est la somme des intensités des branches"]
+    ],
+    "explanation": "Le cours distingue ces trois lois relatives à l'intensité du courant."
+  },
+  {
+    "theme": "Tension",
+    "type": "single",
+    "text": "Avec quelle lettre note-t-on la tension électrique ?",
+    "options": ["U", "I", "R", "P"],
+    "answer": "U",
+    "explanation": "La tension se note avec la lettre « U », son unité est le volt (V)."
+  },
+  {
+    "theme": "Tension",
+    "type": "single",
+    "text": "Comment se branche un voltmètre pour mesurer une tension ?",
+    "options": ["En dérivation dans le circuit", "En série dans le circuit", "Uniquement sur le générateur", "En amont du fusible"],
+    "answer": "En dérivation dans le circuit",
+    "explanation": "Pour réaliser une mesure de tension, l'appareil se branche toujours en dérivation dans le circuit."
+  },
+  {
+    "theme": "Tension",
+    "type": "blank",
+    "text": "La tension électrique est aussi appelée « Différence De ___ » (D.D.P).",
+    "accept": ["Potentiel"],
+    "explanation": "La tension électrique ou « Différence De Potentiel » (D.D.P) est l'un des concepts les plus importants de l'électricité."
+  },
+  {
+    "theme": "Tension",
+    "type": "single",
+    "text": "D'après la loi des mailles, dans une maille comportant deux lampes L1 et L2 en série avec le générateur, on a…",
+    "options": ["U = U1 + U2", "U = U1 - U2", "U = U1 x U2", "U = U1 / U2"],
+    "answer": "U = U1 + U2",
+    "explanation": "La loi des mailles indique que la somme des tensions aux bornes des lampes L1 et L2 est égale à la tension U aux bornes du générateur."
+  },
+  {
+    "theme": "Tension",
+    "type": "single",
+    "text": "Vrai ou faux : la tension aux bornes d'un fil ou d'un interrupteur fermé est nulle.",
+    "options": ["Vrai", "Faux"],
+    "answer": "Vrai",
+    "explanation": "La loi des mailles précise que la tension aux bornes d'un fil ou d'un interrupteur fermé est nulle."
+  },
+  {
+    "theme": "Tension",
+    "type": "single",
+    "text": "D'après la loi d'unicité des tensions, dans un circuit en dérivation, la tension aux bornes de chaque dipôle est…",
+    "options": ["égale à la tension du générateur", "égale à la moitié de la tension du générateur", "nulle", "dépendante de la position du dipôle"],
+    "answer": "égale à la tension du générateur",
+    "explanation": "Dans un circuit en dérivation, la tension aux bornes de chaque dipôle est égale à la tension du générateur."
+  },
+  {
+    "theme": "Tension",
+    "type": "match",
+    "text": "Associe chaque loi liée à la tension à son énoncé.",
+    "pairs": [
+      ["Loi des mailles", "La somme des tensions dans une maille égale la tension du générateur"],
+      ["Loi d'unicité (tension)", "En dérivation, la tension de chaque dipôle égale celle du générateur"]
+    ],
+    "explanation": "Le cours distingue ces deux lois relatives à la tension du circuit."
+  },
+  {
+    "theme": "Résistance",
+    "type": "single",
+    "text": "Quelle est l'unité de la résistance électrique ?",
+    "options": ["L'ohm (Ω)", "Le volt (V)", "L'ampère (A)", "Le farad (F)"],
+    "answer": "L'ohm (Ω)",
+    "explanation": "La grandeur résistance se note R et son unité est l'ohm (Ω)."
+  },
+  {
+    "theme": "Résistance",
+    "type": "single",
+    "text": "Quel est l'énoncé de la loi d'Ohm ?",
+    "options": ["U = R x I", "I = R x U", "R = U + I", "U = R + I"],
+    "answer": "U = R x I",
+    "explanation": "La loi d'Ohm énonce que la tension aux bornes d'un dipôle est égale au produit de sa résistance par le courant qui le traverse : U = R x I."
+  },
+  {
+    "theme": "Résistance",
+    "type": "single",
+    "text": "La résistance d'un fil augmente lorsque…",
+    "options": ["sa longueur s'accroît", "sa longueur diminue", "sa section augmente", "on change son diamètre pour l'augmenter"],
+    "answer": "sa longueur s'accroît",
+    "explanation": "Les électrons ayant un chemin plus long à parcourir sont davantage freinés : la résistance d'un fil augmente quand sa longueur s'accroît."
+  },
+  {
+    "theme": "Résistance",
+    "type": "single",
+    "text": "La résistance d'un fil augmente lorsque…",
+    "options": ["sa section diminue", "sa section augmente", "sa longueur diminue", "sa température diminue"],
+    "answer": "sa section diminue",
+    "explanation": "Un fil plus fin laisse circuler le courant avec plus de difficulté : la résistance d'un fil augmente quand sa section diminue."
+  },
+  {
+    "theme": "Résistance",
+    "type": "single",
+    "text": "Vrai ou faux : la résistance d'un fil dépend de la nature du matériau qui le compose.",
+    "options": ["Vrai", "Faux"],
+    "answer": "Vrai",
+    "explanation": "Le cuivre conduisant mieux que l'alliage nickel-chrome, la résistance d'un fil dépend bien de la nature du matériau."
+  },
+  {
+    "theme": "Résistance",
+    "type": "single",
+    "text": "Quelle est la formule de la résistance équivalente à des résistances associées en série ?",
+    "options": ["R = R1 + R2", "1/R = 1/R1 + 1/R2", "R = R1 x R2", "R = R1 - R2"],
+    "answer": "R = R1 + R2",
+    "explanation": "La résistance d'un ensemble de résistances en série est égale à la somme de leurs résistances."
+  },
+  {
+    "theme": "Résistance",
+    "type": "single",
+    "text": "Quelle est la formule de la résistance équivalente à des résistances associées en parallèle ?",
+    "options": ["1/R = 1/R1 + 1/R2", "R = R1 + R2", "R = R1 x R2", "R = (R1 + R2) / 2"],
+    "answer": "1/R = 1/R1 + 1/R2",
+    "explanation": "La résistance d'un ensemble de résistances en parallèle est égale à l'inverse de la somme des inverses."
+  },
+  {
+    "theme": "Résistance",
+    "type": "blank",
+    "text": "La résistivité d'un matériau se note ___.",
+    "accept": ["ρ", "rho"],
+    "explanation": "La résistivité se note ρ (rho) et s'exprime en Ω.m."
+  },
+  {
+    "theme": "Résistance",
+    "type": "single",
+    "text": "Quelle est la formule liant résistance et résistivité d'un fil ?",
+    "options": ["R = ρ x (L / S)", "R = ρ x (S / L)", "R = ρ + L + S", "R = ρ / (L x S)"],
+    "answer": "R = ρ x (L / S)",
+    "explanation": "La résistance d'un fil se calcule par R = ρ x (L / S), où L est la longueur et S la section."
+  },
+  {
+    "theme": "Résistance",
+    "type": "blank",
+    "text": "L'inverse de la résistivité est appelé la ___ électrique.",
+    "accept": ["conductivité"],
+    "explanation": "L'inverse de la résistivité est appelée la conductivité électrique (σ = 1/ρ)."
+  },
+  {
+    "theme": "Résistance",
+    "type": "single",
+    "text": "Le pont diviseur de tension est un montage qui permet de…",
+    "options": ["diviser une tension d'entrée", "diviser un courant d'entrée", "multiplier la tension d'entrée", "stocker de l'énergie"],
+    "answer": "diviser une tension d'entrée",
+    "explanation": "Le diviseur de tension est un montage électronique simple qui permet de diviser une tension d'entrée, à l'aide par exemple de deux résistances en série."
+  },
+  {
+    "theme": "Résistance",
+    "type": "single",
+    "text": "Le pont diviseur de courant est un montage qui permet d'obtenir…",
+    "options": ["un courant proportionnel à un autre courant", "une tension proportionnelle à une autre tension", "une résistance nulle", "un court-circuit contrôlé"],
+    "answer": "un courant proportionnel à un autre courant",
+    "explanation": "Le diviseur de courant est un montage électronique simple qui permet d'obtenir un courant proportionnel à un autre courant."
+  },
+  {
+    "theme": "Résistance",
+    "type": "match",
+    "text": "Associe chaque association de résistances à sa caractéristique.",
+    "pairs": [
+      ["Résistances en série", "Le courant est identique dans toutes les résistances"],
+      ["Résistances en parallèle", "La tension est identique aux bornes de toutes les résistances"]
+    ],
+    "explanation": "Le cours distingue le comportement du courant et de la tension selon le mode d'association des résistances."
+  },
+  {
+    "theme": "Puissance",
+    "type": "single",
+    "text": "Quelle formule donne la puissance électrique en courant continu ?",
+    "options": ["P = U x I", "P = U / I", "P = U + I", "P = R x I"],
+    "answer": "P = U x I",
+    "explanation": "La puissance électrique reçue par un récepteur ou fournie par un générateur s'écrit P = U x I."
+  },
+  {
+    "theme": "Puissance",
+    "type": "single",
+    "text": "Quelle est l'unité de la puissance électrique ?",
+    "options": ["Le watt (W)", "Le joule (J)", "Le volt (V)", "L'ampère (A)"],
+    "answer": "Le watt (W)",
+    "explanation": "La puissance électrique P = U x I s'exprime en watt."
+  },
+  {
+    "theme": "Puissance",
+    "type": "single",
+    "text": "Quelle formule donne l'énergie électrique consommée par un appareil ?",
+    "options": ["E = P x t", "E = P / t", "E = P + t", "E = U x t"],
+    "answer": "E = P x t",
+    "explanation": "L'énergie électrique consommée par un appareil fonctionnant avec une puissance P pendant une durée t s'exprime par E = P x t."
+  },
+  {
+    "theme": "Puissance",
+    "type": "single",
+    "text": "Quelle est la formule de la loi de Joule ?",
+    "options": ["W = R x I² x t", "W = U x I", "W = R x I", "W = U / I x t"],
+    "answer": "W = R x I² x t",
+    "explanation": "En remplaçant U par R x I dans W = U.I.t, on obtient la loi de Joule : W = R x I² x t."
+  },
+  {
+    "theme": "Puissance",
+    "type": "single",
+    "text": "L'effet Joule correspond…",
+    "options": ["au dégagement de chaleur accompagnant le passage d'un courant dans un conducteur résistant", "à la production de lumière par un conducteur", "à la disparition de la résistance d'un conducteur chauffé", "à l'augmentation de la tension d'un circuit"],
+    "answer": "au dégagement de chaleur accompagnant le passage d'un courant dans un conducteur résistant",
+    "explanation": "L'effet Joule correspond au dégagement de chaleur qui accompagne le passage d'un courant électrique dans un matériau conducteur lui opposant une résistance."
+  },
+  {
+    "theme": "Puissance",
+    "type": "single",
+    "text": "Vrai ou faux : 1 kWh correspond à 3 600 000 joules.",
+    "options": ["Vrai", "Faux"],
+    "answer": "Vrai",
+    "explanation": "1 kWh correspond à une puissance de 1000 watts consommée pendant une heure (3600 s), soit E = 1000 x 3600 = 3 600 000 J."
+  },
+  {
+    "theme": "Puissance",
+    "type": "blank",
+    "text": "Le kilowattheure est notamment l'unité utilisée par ___ pour l'énergie consommée par une installation électrique.",
+    "accept": ["EDF"],
+    "explanation": "Le kilowattheure est notamment l'unité utilisée par EDF pour l'énergie consommée par une installation électrique."
+  },
+  {
+    "theme": "Puissance",
+    "type": "single",
+    "text": "Un fusible est destiné à…",
+    "options": ["protéger une ligne ou un appareil contre un courant d'intensité trop élevée", "augmenter la puissance d'un circuit", "stocker de l'énergie électrique", "convertir un courant alternatif en courant continu"],
+    "answer": "protéger une ligne ou un appareil contre un courant d'intensité trop élevée",
+    "explanation": "Un fusible est un dipôle destiné à protéger une ligne électrique ou un appareil contre un courant électrique d'intensité trop élevée."
+  },
+  {
+    "theme": "Puissance",
+    "type": "single",
+    "text": "Comment un fusible interrompt-il le circuit en cas de surcharge ?",
+    "options": ["Son fin fil métallique fond sous l'effet Joule et ouvre le circuit", "Il se met automatiquement en position ouverte électroniquement", "Il augmente sa résistance jusqu'à bloquer le courant", "Il convertit le courant en chaleur sans jamais fondre"],
+    "answer": "Son fin fil métallique fond sous l'effet Joule et ouvre le circuit",
+    "explanation": "Le fil métallique du fusible s'échauffe par effet Joule et fond si sa température dépasse une certaine limite, ce qui ouvre le circuit."
+  },
+  {
+    "theme": "Puissance",
+    "type": "multiple",
+    "text": "En quelles formes d'énergie l'énergie électrique reçue par un appareil peut-elle être convertie, selon le cours ? (plusieurs réponses)",
+    "options": ["Énergie thermique", "Énergie mécanique", "Énergie de rayonnement", "Énergie chimique", "Énergie nucléaire"],
+    "answers": ["Énergie thermique", "Énergie mécanique", "Énergie de rayonnement", "Énergie chimique"],
+    "explanation": "Le cours cite la conversion en énergie thermique, mécanique, de rayonnement et chimique ; l'énergie nucléaire n'est pas citée."
+  },
+  {
+    "theme": "Puissance",
+    "type": "match",
+    "text": "Associe chaque forme d'énergie à un exemple d'appareil cité par le cours.",
+    "pairs": [
+      ["Énergie thermique", "Radiateur, fer à repasser"],
+      ["Énergie mécanique", "Moteur"],
+      ["Énergie de rayonnement", "Lampe, four à micro-ondes"],
+      ["Énergie chimique", "Batterie en charge"]
+    ],
+    "explanation": "Le cours illustre chaque forme d'énergie par un exemple d'appareil électrique."
+  },
+  {
+    "theme": "Condensateur",
+    "type": "single",
+    "text": "Quelle formule définit la capacité d'un condensateur ?",
+    "options": ["C = Q / U", "C = U / Q", "C = Q x U", "C = Q + U"],
+    "answer": "C = Q / U",
+    "explanation": "La capacité d'un condensateur est définie par C = Q / U, où Q est la charge en coulomb et U la tension en volt."
+  },
+  {
+    "theme": "Condensateur",
+    "type": "single",
+    "text": "Quelle est l'unité de la capacité d'un condensateur ?",
+    "options": ["Le farad (F)", "Le coulomb (C)", "Le volt (V)", "L'ohm (Ω)"],
+    "answer": "Le farad (F)",
+    "explanation": "La capacité d'un condensateur s'exprime en farad (F)."
+  },
+  {
+    "theme": "Condensateur",
+    "type": "single",
+    "text": "Quelle formule donne l'énergie emmagasinée par un condensateur ?",
+    "options": ["E = 0,5 x C x U²", "E = C x U", "E = C / U", "E = C + U"],
+    "answer": "E = 0,5 x C x U²",
+    "explanation": "L'énergie électrique emmagasinée par un condensateur s'exprime par E = 0,5 x C x U²."
+  },
+  {
+    "theme": "Condensateur",
+    "type": "single",
+    "text": "La capacité équivalente à un groupement de condensateurs en parallèle est égale à…",
+    "options": ["la somme des capacités", "l'inverse de la somme des inverses", "la différence des capacités", "la moyenne des capacités"],
+    "answer": "la somme des capacités",
+    "explanation": "En parallèle, la capacité équivalente est égale à la somme des capacités des condensateurs du groupement."
+  },
+  {
+    "theme": "Condensateur",
+    "type": "single",
+    "text": "Vrai ou faux : dans une association en série de condensateurs, la capacité équivalente est plus petite que celles des condensateurs utilisés.",
+    "options": ["Vrai", "Faux"],
+    "answer": "Vrai",
+    "explanation": "En série, l'inverse de la capacité équivalente est la somme des inverses, ce qui donne une capacité équivalente plus petite que chaque condensateur."
+  },
+  {
+    "theme": "Condensateur",
+    "type": "single",
+    "text": "Vrai ou faux : un condensateur complètement chargé bloque le passage du courant continu.",
+    "options": ["Vrai", "Faux"],
+    "answer": "Vrai",
+    "explanation": "Lorsqu'il est complètement chargé, le condensateur se comporte comme une résistance infinie et bloque le passage du courant continu."
+  },
+  {
+    "theme": "Condensateur",
+    "type": "single",
+    "text": "Vrai ou faux : un condensateur laisse passer le courant alternatif.",
+    "options": ["Vrai", "Faux"],
+    "answer": "Vrai",
+    "explanation": "Raccordé à une tension alternative, le condensateur se charge et se décharge à chaque alternance, laissant ainsi passer le mouvement des électrons du courant alternatif."
+  },
+  {
+    "theme": "Condensateur",
+    "type": "blank",
+    "text": "Un condensateur est constitué de deux ___ conductrices séparées par un isolant appelé diélectrique.",
+    "accept": ["armatures"],
+    "explanation": "Le condensateur est l'ensemble de deux surfaces conductrices, appelées armatures, séparées par un isolant (diélectrique)."
+  },
+  {
+    "theme": "Condensateur",
+    "type": "multiple",
+    "text": "Quels usages du condensateur sont cités par le cours ? (plusieurs réponses)",
+    "options": ["Séparer courant continu et courant alternatif", "Déparasiter des signaux", "Réduire les instabilités d'un circuit", "Augmenter durablement la résistance d'un circuit", "Faciliter le démarrage de certains moteurs"],
+    "answers": ["Séparer courant continu et courant alternatif", "Déparasiter des signaux", "Réduire les instabilités d'un circuit", "Faciliter le démarrage de certains moteurs"],
+    "explanation": "Le cours cite ces usages du condensateur ; augmenter la résistance d'un circuit n'en fait pas partie."
+  },
+  {
+    "theme": "Condensateur",
+    "type": "match",
+    "text": "Associe chaque sous-unité du farad à sa valeur.",
+    "pairs": [
+      ["Millifarad (mF)", "10⁻³ farad"],
+      ["Microfarad (µF)", "10⁻⁶ farad"],
+      ["Nanofarad (nF)", "10⁻⁹ farad"],
+      ["Picofarad (pF)", "10⁻¹² farad"]
+    ],
+    "explanation": "Le farad étant une unité très grande, le cours utilise plus couramment ces sous-unités."
+  },
+  {
+    "theme": "Alternatif",
+    "type": "single",
+    "text": "Que signifie l'acronyme AC utilisé pour désigner le courant alternatif ?",
+    "options": ["Alternative Current", "Alternating Circuit", "Active Current", "Automatic Circuit"],
+    "answer": "Alternative Current",
+    "explanation": "Le courant alternatif (AC pour Alternative Current) transporte des quantités d'électricité alternativement égales dans les deux sens."
+  },
+  {
+    "theme": "Alternatif",
+    "type": "single",
+    "text": "Le courant alternatif est typiquement produit par…",
+    "options": ["un alternateur", "une batterie", "un condensateur", "un redresseur"],
+    "answer": "un alternateur",
+    "explanation": "Le courant alternatif est typiquement produit par des générateurs tournants de type alternateur, utilisés dans les centrales de production."
+  },
+  {
+    "theme": "Alternatif",
+    "type": "single",
+    "text": "Qu'est-ce qu'un alternateur, selon le cours ?",
+    "options": ["Un convertisseur d'énergie cinétique en énergie électrique", "Un convertisseur d'énergie électrique en énergie cinétique", "Un dispositif de stockage d'énergie chimique", "Un composant qui bloque le courant continu"],
+    "answer": "Un convertisseur d'énergie cinétique en énergie électrique",
+    "explanation": "Un alternateur, association d'une bobine et d'un aimant tournant, est un convertisseur d'énergie cinétique en énergie électrique."
+  },
+  {
+    "theme": "Alternatif",
+    "type": "single",
+    "text": "Quelle formule définit l'impédance d'une résistance en courant alternatif ?",
+    "options": ["Z = U / I", "Z = U x I", "Z = U + I", "Z = I / U"],
+    "answer": "Z = U / I",
+    "explanation": "La définition de l'impédance pour une résistance généralise la loi d'Ohm au courant alternatif : Z = U / I."
+  },
+  {
+    "theme": "Alternatif",
+    "type": "single",
+    "text": "Quelle formule permet de calculer la fréquence d'une tension périodique ?",
+    "options": ["f = 1 / T", "f = T", "f = T x 2", "f = 2 / T"],
+    "answer": "f = 1 / T",
+    "explanation": "La fréquence f, exprimée en hertz, se calcule à partir de la période T (en secondes) par f = 1 / T."
+  },
+  {
+    "theme": "Alternatif",
+    "type": "blank",
+    "text": "La fréquence d'une tension périodique s'exprime en ___.",
+    "accept": ["Hertz", "Hz"],
+    "explanation": "La fréquence se note f et s'exprime en Hertz (Hz), ou avec une unité dérivée."
+  },
+  {
+    "theme": "Alternatif",
+    "type": "single",
+    "text": "Quelle formule permet de déduire la tension efficace à partir de la tension maximale (crête) ?",
+    "options": ["Ueff = Umax / √2", "Ueff = Umax x 2", "Ueff = Umax x √2", "Ueff = Umax / 2"],
+    "answer": "Ueff = Umax / √2",
+    "explanation": "La tension efficace se déduit de la tension maximale (ou crête) par la formule Ueff = Umax / √2."
+  },
+  {
+    "theme": "Alternatif",
+    "type": "single",
+    "text": "Vrai ou faux : en mode continu, un multimètre mesurant une tension alternative sinusoïdale affichera 0 V.",
+    "options": ["Vrai", "Faux"],
+    "answer": "Vrai",
+    "explanation": "En mode continu, l'appareil donne le résultat d'une tension moyenne, qui vaut 0 V pour une tension alternative sinusoïdale : il faut sélectionner le calibre alternatif."
+  },
+  {
+    "theme": "Alternatif",
+    "type": "multiple",
+    "text": "Quels intérêts du courant alternatif sont cités par le cours ? (plusieurs réponses)",
+    "options": ["Les alternateurs ont un meilleur rendement que les générateurs de courant continu", "Le courant alternatif est facile à transformer en courant continu", "La tension alternative peut aisément être élevée ou abaissée", "Il ne subit aucune perte lors du transport", "Il ne peut pas être produit par des centrales nucléaires"],
+    "answers": ["Les alternateurs ont un meilleur rendement que les générateurs de courant continu", "Le courant alternatif est facile à transformer en courant continu", "La tension alternative peut aisément être élevée ou abaissée"],
+    "explanation": "Le cours cite ces trois intérêts du courant alternatif pour la production et le transport de l'électricité."
+  },
+  {
+    "theme": "Alternatif",
+    "type": "single",
+    "text": "Pourquoi élève-t-on la tension lors du transport de l'électricité ?",
+    "options": ["Pour réduire l'intensité et limiter les pertes", "Pour augmenter l'intensité et le débit", "Pour éviter d'utiliser des alternateurs", "Pour transformer le courant alternatif en courant continu"],
+    "answer": "Pour réduire l'intensité et limiter les pertes",
+    "explanation": "En élevant la tension, on réduit l'intensité pour limiter les pertes dans les conducteurs tout en véhiculant la même puissance."
+  },
+  {
+    "theme": "Dangers",
+    "type": "single",
+    "text": "Quelle est la résistance moyenne du corps humain en basse tension, retenue par le cours ?",
+    "options": ["2000 Ω", "200 Ω", "20 000 Ω", "500 Ω"],
+    "answer": "2000 Ω",
+    "explanation": "Le cours retient comme valeur de résistance moyenne du corps humain en basse tension, tout facteur confondu, 2000 Ω."
+  },
+  {
+    "theme": "Dangers",
+    "type": "single",
+    "text": "Qu'est-ce que l'électrisation ?",
+    "options": ["Le passage d'un courant électrique dans le corps", "Une électrisation mortelle", "Un court-circuit dans le corps humain", "Une décharge lumineuse sans contact"],
+    "answer": "Le passage d'un courant électrique dans le corps",
+    "explanation": "L'électrisation désigne le passage d'un courant électrique dans le corps ; l'électrocution est une électrisation mortelle."
+  },
+  {
+    "theme": "Dangers",
+    "type": "single",
+    "text": "Qu'est-ce que l'électrocution ?",
+    "options": ["Une électrisation mortelle", "Le simple passage d'un courant dans le corps sans danger", "Un court-circuit sans conséquence", "Une décharge statique bénigne"],
+    "answer": "Une électrisation mortelle",
+    "explanation": "L'électrocution est une électrisation mortelle, contrairement à l'électrisation qui désigne simplement le passage d'un courant dans le corps."
+  },
+  {
+    "theme": "Dangers",
+    "type": "multiple",
+    "text": "Quelles causes d'électrisation sont citées par le cours ? (plusieurs réponses)",
+    "options": ["Un contact direct avec une partie active d'un circuit", "Un contact indirect avec une masse métallique", "Un amorçage d'arc électrique", "Un foudroiement", "Une simple exposition à un champ magnétique"],
+    "answers": ["Un contact direct avec une partie active d'un circuit", "Un contact indirect avec une masse métallique", "Un amorçage d'arc électrique", "Un foudroiement"],
+    "explanation": "Le cours cite le contact direct, le contact indirect, l'amorçage d'arc électrique et le foudroiement comme causes d'électrisation."
+  },
+  {
+    "theme": "Dangers",
+    "type": "single",
+    "text": "Vrai ou faux : un récepteur court-circuité risque d'être endommagé.",
+    "options": ["Vrai", "Faux"],
+    "answer": "Faux",
+    "explanation": "Un récepteur court-circuité ne reçoit plus de courant et cesse simplement de fonctionner, sans risque d'être endommagé."
+  },
+  {
+    "theme": "Dangers",
+    "type": "single",
+    "text": "Le courant électrique traversant le corps humain devient perceptible à partir de…",
+    "options": ["0,5 mA", "10 mA", "30 mA", "75 mA"],
+    "answer": "0,5 mA",
+    "explanation": "Le courant électrique parcourant le corps humain devient perceptible dès 0,5 mA."
+  },
+  {
+    "theme": "Dangers",
+    "type": "single",
+    "text": "À partir de quel seuil parle-t-on du « seuil de non lâché » ?",
+    "options": ["10 mA", "0,5 mA", "30 mA", "75 mA"],
+    "answer": "10 mA",
+    "explanation": "10 mA est appelé le seuil de non lâché : la personne électrisée ne peut plus relâcher le contact."
+  },
+  {
+    "theme": "Dangers",
+    "type": "single",
+    "text": "Quel seuil correspond à la paralysie respiratoire, pouvant aller jusqu'à l'asphyxie ?",
+    "options": ["30 mA", "10 mA", "0,5 mA", "75 mA"],
+    "answer": "30 mA",
+    "explanation": "30 mA est le seuil de paralysie respiratoire : le blocage musculaire au niveau de la cage thoracique peut entraîner l'asphyxie."
+  },
+  {
+    "theme": "Dangers",
+    "type": "single",
+    "text": "Quel seuil correspond à la fibrillation ventriculaire, pouvant causer un arrêt cardiaque ?",
+    "options": ["75 mA", "30 mA", "10 mA", "0,5 mA"],
+    "answer": "75 mA",
+    "explanation": "75 mA est appelé le seuil de fibrillation ventriculaire : l'action du courant désorganise le rythme cardiaque et peut causer un arrêt cardiaque."
+  },
+  {
+    "theme": "Dangers",
+    "type": "match",
+    "text": "Associe chaque seuil de courant à son effet sur le corps humain.",
+    "pairs": [
+      ["0,5 mA", "Seuil de perception"],
+      ["10 mA", "Seuil de non lâché"],
+      ["30 mA", "Seuil de paralysie respiratoire"],
+      ["75 mA", "Seuil de fibrillation ventriculaire"]
+    ],
+    "explanation": "Le cours détaille ces quatre seuils d'intensité et leurs effets respectifs sur le corps humain."
+  },
+  {
+    "theme": "Dangers",
+    "type": "order",
+    "text": "Remets dans l'ordre croissant d'intensité ces seuils de courant traversant le corps humain.",
+    "items": ["Seuil de perception (0,5 mA)", "Seuil de non lâché (10 mA)", "Seuil de paralysie respiratoire (30 mA)", "Seuil de fibrillation ventriculaire (75 mA)"],
+    "explanation": "Le cours présente ces seuils par intensité croissante, du plus faible (perception) au plus dangereux (fibrillation ventriculaire)."
+  },
+  {
+    "theme": "Batteries",
+    "type": "single",
+    "text": "Qu'est-ce qu'une batterie d'accumulateurs, selon le cours ?",
+    "options": ["Un dispositif qui stocke de l'énergie électrique sous forme chimique et la restitue en courant continu", "Un dispositif qui stocke de l'énergie sous forme de courant alternatif", "Un composant qui convertit le courant continu en courant alternatif", "Un dipôle qui protège un circuit contre les surintensités"],
+    "answer": "Un dispositif qui stocke de l'énergie électrique sous forme chimique et la restitue en courant continu",
+    "explanation": "Une batterie stocke de l'énergie électrique sous une forme chimique, puis la libère sous forme de courant continu de manière contrôlée."
+  },
+  {
+    "theme": "Batteries",
+    "type": "single",
+    "text": "Un montage de batteries en série permet de…",
+    "options": ["doubler la tension totale", "doubler la capacité totale", "diviser la tension par deux", "annuler la tension"],
+    "answer": "doubler la tension totale",
+    "explanation": "Le montage en série de deux batteries identiques permet de doubler la tension totale, donc leur puissance."
+  },
+  {
+    "theme": "Batteries",
+    "type": "single",
+    "text": "Un montage de batteries en parallèle permet de…",
+    "options": ["doubler la capacité totale", "doubler la tension totale", "réduire l'autonomie", "annuler la capacité"],
+    "answer": "doubler la capacité totale",
+    "explanation": "Le montage en parallèle de deux batteries identiques permet de doubler la capacité totale, donc leur autonomie."
+  },
+  {
+    "theme": "Batteries",
+    "type": "single",
+    "text": "Quel est le rôle d'un redresseur ?",
+    "options": ["Convertir un courant alternatif en courant continu", "Convertir un courant continu en courant alternatif", "Stocker de l'énergie électrique", "Diviser une tension d'entrée"],
+    "answer": "Convertir un courant alternatif en courant continu",
+    "explanation": "Un redresseur, également appelé convertisseur alternatif-continu, convertit un courant alternatif (CA) en courant continu (CC)."
+  },
+  {
+    "theme": "Batteries",
+    "type": "blank",
+    "text": "La capacité d'une batterie s'exprime en coulomb ou en ___.",
+    "accept": ["ampère-heure", "Ah"],
+    "explanation": "La capacité (ou autonomie) de la batterie représente la quantité de charges électriques qu'elle peut stocker et s'exprime en coulomb ou en ampère-heure (Ah)."
+  },
+  {
+    "theme": "Batteries",
+    "type": "single",
+    "text": "Vrai ou faux : avant de mettre des batteries en série ou en parallèle, elles doivent être identiques et non déchargées.",
+    "options": ["Vrai", "Faux"],
+    "answer": "Vrai",
+    "explanation": "Les batteries doivent être identiques, achetées au même moment et non déchargées avant de réaliser une mise en série ou en parallèle."
+  },
+  {
+    "theme": "Batteries",
+    "type": "match",
+    "text": "Associe chaque grandeur caractérisant une batterie à son unité.",
+    "pairs": [
+      ["Tension", "Volt (V)"],
+      ["Énergie", "Kilowattheure (kWh)"],
+      ["Capacité", "Ampère-heure (Ah)"]
+    ],
+    "explanation": "Le cours cite ces trois grandeurs principales caractérisant une batterie, chacune avec son unité."
+  }
+  ];
+
+  const MODULES = [
+    { id: 'm1', number: 'Module 1', name: 'Notions fondamentales', description: 'Atomes, conducteurs, isolants, semi-conducteurs et unités du Système International.', themes: ['Atomes', 'Unités'] },
+    { id: 'm2', number: 'Module 2', name: 'Circuits, intensité et tension', description: 'Types de circuits, sens du courant, lois des nœuds, mailles, unicité et additivité.', themes: ['Circuits', 'Intensité', 'Tension'] },
+    { id: 'm3', number: 'Module 3', name: 'Résistance et résistivité', description: 'Loi d’Ohm, facteurs d’influence, associations de résistances et ponts diviseurs.', themes: ['Résistance'] },
+    { id: 'm4', number: 'Module 4', name: 'Puissance et énergie', description: 'Puissance, énergie, effet Joule, kilowattheure et principe du fusible.', themes: ['Puissance'] },
+    { id: 'm5', number: 'Module 5', name: 'Le condensateur', description: 'Capacité, énergie emmagasinée, associations et comportement du condensateur.', themes: ['Condensateur'] },
+    { id: 'm6', number: 'Module 6', name: 'Régime alternatif', description: 'Courant alternatif, impédance, fréquence, tension efficace et transport de l’électricité.', themes: ['Alternatif'] },
+    { id: 'm7', number: 'Module 7', name: 'Dangers de l’électricité', description: 'Électrisation, électrocution, court-circuit et effets du courant sur le corps.', themes: ['Dangers'] },
+    { id: 'm8', number: 'Module 8', name: 'Les batteries', description: 'Définition, caractéristiques, associations de batteries et redresseur.', themes: ['Batteries'] },
+    { id: 'm9', number: 'Module 9', name: 'Synthèse générale', description: 'Jusqu’à 50 questions mélangées sur l’ensemble des modules.', themes: null, synthesis: true }
+  ];
+
+  const $ = id => document.getElementById(id);
+  const norm = s => (s || '').toString().trim().toLowerCase()
+    .normalize('NFD').replace(/[̀-ͯ]/g, '')
+    .replace(/[’']/g, "'").replace(/\s+/g, ' ');
+  const arraysEqual = (a, b) => a.length === b.length && a.every((v, i) => v === b[i]);
+
+  let session = [], index = 0, score = 0, locked = false, themeStats = {}, currentTopic = null, currentModule = null;
+  let selected = new Set(), orderList = [];
+  const shuffle = list => [...list].sort(() => Math.random() - .5);
+  const moduleQuestions = module => module.synthesis ? Q : Q.filter(q => module.themes.includes(q.theme));
+
+  function renderHome() {
+    $('moduleGrid').replaceChildren(...MODULES.map(module => {
+      const b = document.createElement('button'); b.className = 'module';
+      b.innerHTML = `<span class="module-number">${module.number}</span><h2>${module.name}</h2><p>${module.description}</p>`;
+      b.onclick = () => startModule(module); return b;
+    }));
+  }
+  function startModule(module) {
+    currentModule = module; currentTopic = null;
+    const available = moduleQuestions(module);
+    session = shuffle(available).slice(0, Math.min(module.synthesis ? 50 : available.length, available.length));
+    index = 0; score = 0; themeStats = {};
+    $('home').style.display = 'none'; $('quiz').style.display = 'block'; $('result').classList.remove('show'); $('moduleLabel').textContent = module.name; render();
+  }
+  function startTopic(topic) {
+    currentTopic = topic; currentModule = null;
+    const available = Q.filter(q => q.theme === topic);
+    session = shuffle(available); index = 0; score = 0; themeStats = {};
+    $('quiz').style.display = 'block'; $('result').classList.remove('show'); $('moduleLabel').textContent = `Révision ciblée : ${topic}`; render();
+  }
+
+  function render() {
+    locked = false; selected = new Set(); orderList = [];
+    const q = session[index];
+    $('count').textContent = `Question ${index + 1} / ${session.length}`; $('bar').style.width = `${(index / session.length) * 100}%`;
+    $('theme').textContent = `${currentTopic ? 'Révision ciblée' : currentModule.name} · ${q.theme}`;
+    $('question').textContent = q.text;
+    $('feedback').className = 'feedback'; $('feedback').innerHTML = '';
+    $('next').classList.remove('show'); $('verify').classList.remove('show');
+    const area = $('answers'); area.replaceChildren(); area.className = 'answers';
+
+    if (q.type === 'multiple') {
+      area.replaceChildren(...shuffle(q.options).map(option => {
+        const b = document.createElement('button'); b.className = 'answer multi';
+        b.innerHTML = `<span class="checkbox"></span><span>${option}</span>`;
+        b.onclick = () => toggleMulti(option, b); return b;
+      }));
+      $('verify').classList.add('show');
+    } else if (q.type === 'blank') {
+      const wrap = document.createElement('div'); wrap.className = 'blank-wrap';
+      const input = document.createElement('input'); input.type = 'text'; input.className = 'blank-input'; input.id = 'blankInput';
+      input.placeholder = 'Ta réponse…'; input.autocomplete = 'off';
+      input.addEventListener('keydown', e => { if (e.key === 'Enter' && !locked) verify(); });
+      wrap.appendChild(input); area.appendChild(wrap);
+      $('verify').classList.add('show');
+      setTimeout(() => input.focus(), 30);
+    } else if (q.type === 'match') {
+      const rightValues = shuffle(q.pairs.map(p => p[1]));
+      const grid = document.createElement('div'); grid.className = 'match-grid';
+      q.pairs.forEach(pair => {
+        const row = document.createElement('div'); row.className = 'match-row';
+        const left = document.createElement('span'); left.className = 'match-left'; left.textContent = pair[0];
+        const select = document.createElement('select'); select.className = 'match-select'; select.dataset.left = pair[0];
+        const empty = document.createElement('option'); empty.value = ''; empty.textContent = 'Choisir…'; select.appendChild(empty);
+        rightValues.forEach(v => { const o = document.createElement('option'); o.value = v; o.textContent = v; select.appendChild(o); });
+        row.append(left, select); grid.appendChild(row);
+      });
+      area.appendChild(grid);
+      $('verify').classList.add('show');
+    } else if (q.type === 'order') {
+      orderList = shuffle(q.items);
+      renderOrderList(area);
+      $('verify').classList.add('show');
+    } else {
+      const letters = ['A', 'B', 'C', 'D', 'E'];
+      area.replaceChildren(...shuffle(q.options).map((option, i) => {
+        const b = document.createElement('button'); b.className = 'answer';
+        b.innerHTML = `<span class="letter">${letters[i] || (i + 1)}</span><span>${option}</span>`;
+        b.onclick = () => answer(option, b); return b;
+      }));
+    }
+  }
+
+  function renderOrderList(area) {
+    area.replaceChildren();
+    const list = document.createElement('div'); list.className = 'order-list';
+    orderList.forEach((item, i) => {
+      const row = document.createElement('div'); row.className = 'order-item';
+      const up = document.createElement('button'); up.type = 'button'; up.className = 'order-btn'; up.textContent = '↑'; up.disabled = i === 0;
+      up.onclick = () => { if (locked) return; [orderList[i - 1], orderList[i]] = [orderList[i], orderList[i - 1]]; renderOrderList(area); };
+      const down = document.createElement('button'); down.type = 'button'; down.className = 'order-btn'; down.textContent = '↓'; down.disabled = i === orderList.length - 1;
+      down.onclick = () => { if (locked) return; [orderList[i + 1], orderList[i]] = [orderList[i], orderList[i + 1]]; renderOrderList(area); };
+      const num = document.createElement('span'); num.className = 'order-num'; num.textContent = i + 1;
+      const label = document.createElement('span'); label.className = 'order-label'; label.textContent = item;
+      const controls = document.createElement('span'); controls.className = 'order-controls'; controls.append(up, down);
+      row.append(num, label, controls); list.appendChild(row);
+    });
+    area.appendChild(list);
+  }
+
+  function toggleMulti(choice, b) {
+    if (locked) return;
+    if (selected.has(choice)) { selected.delete(choice); b.classList.remove('selected'); }
+    else { selected.add(choice); b.classList.add('selected'); }
+  }
+
+  function recordStat(theme, ok) { themeStats[theme] ||= { total: 0, correct: 0 }; themeStats[theme].total++; if (ok) themeStats[theme].correct++; }
+  function showFeedback(ok, explanation) {
+    $('feedback').className = `feedback show ${ok ? 'good' : 'bad'}`;
+    $('feedback').innerHTML = `<strong>${ok ? 'Bonne réponse !' : 'Réponse incorrecte.'}</strong>${explanation}`;
+    $('verify').classList.remove('show'); $('next').classList.add('show');
+  }
+
+  function verify() {
+    if (locked) return; locked = true;
+    const q = session[index];
+    let ok = false;
+    if (q.type === 'multiple') {
+      const correctSet = new Set(q.answers);
+      ok = selected.size === correctSet.size && [...selected].every(s => correctSet.has(s));
+      [...$('answers').children].forEach(b => {
+        b.disabled = true; const label = b.querySelector('span:last-child').textContent;
+        if (correctSet.has(label)) b.classList.add('good'); else if (selected.has(label)) b.classList.add('bad');
+      });
+    } else if (q.type === 'blank') {
+      const input = $('blankInput'); const val = norm(input.value);
+      ok = q.accept.some(a => norm(a) === val);
+      input.disabled = true; input.classList.add(ok ? 'good' : 'bad');
+      if (!ok) { const hint = document.createElement('div'); hint.className = 'blank-answer'; hint.textContent = `Réponse attendue : ${q.accept[0]}`; input.insertAdjacentElement('afterend', hint); }
+    } else if (q.type === 'match') {
+      const selects = [...$('answers').querySelectorAll('.match-select')];
+      ok = selects.every(sel => sel.value === q.pairs.find(p => p[0] === sel.dataset.left)[1]);
+      selects.forEach(sel => { sel.disabled = true; const correctVal = q.pairs.find(p => p[0] === sel.dataset.left)[1]; sel.classList.add(sel.value === correctVal ? 'good' : 'bad'); });
+    } else if (q.type === 'order') {
+      ok = arraysEqual(orderList, q.items);
+      const rows = [...$('answers').querySelectorAll('.order-item')];
+      rows.forEach((row, i) => { row.querySelectorAll('.order-btn').forEach(b => b.disabled = true); row.classList.add(orderList[i] === q.items[i] ? 'good' : 'bad'); });
+      if (!ok) {
+        const correction = document.createElement('div'); correction.className = 'order-correction';
+        correction.innerHTML = `<strong>Ordre attendu :</strong>`;
+        const ol = document.createElement('ol');
+        q.items.forEach(item => { const li = document.createElement('li'); li.textContent = item; ol.appendChild(li); });
+        correction.appendChild(ol);
+        $('answers').querySelector('.order-list').insertAdjacentElement('afterend', correction);
+      }
+    } else {
+      ok = false;
+    }
+    recordStat(q.theme, ok); if (ok) score++;
+    showFeedback(ok, q.explanation);
+  }
+
+  function answer(choice, button) {
+    if (locked) return; locked = true;
+    const q = session[index], correct = choice === q.answer; if (correct) score++;
+    recordStat(q.theme, correct);
+    [...$('answers').children].forEach(b => { b.disabled = true; if (b.querySelector('span:last-child').textContent === q.answer) b.classList.add('good'); });
+    if (!correct) button.classList.add('bad');
+    showFeedback(correct, q.explanation);
+  }
+
+  $('next').onclick = () => { index++; if (index < session.length) render(); else finish(); };
+  $('verify').onclick = verify;
+
+  function finish() {
+    $('quiz').style.display = 'none'; $('result').classList.add('show');
+    const rate = Math.round(score / session.length * 100);
+    $('resultTitle').textContent = currentTopic ? `Résultat - Révision ciblée : ${currentTopic}` : `Résultat - ${currentModule.name}`;
+    $('finalScore').textContent = `${rate} %`;
+    const assessment = rate >= 90 ? 'Très bon niveau.' : rate >= 70 ? 'Bon niveau : quelques points sont à consolider.' : 'Révision recommandée avant une nouvelle session.';
+    $('finalText').textContent = `Réussite du module : ${score} bonne${score > 1 ? 's' : ''} réponse${score > 1 ? 's' : ''} sur ${session.length}. ${assessment}`;
+    const weaknesses = Object.entries(themeStats).map(([theme, stat]) => ({ theme, ...stat, wrong: stat.total - stat.correct })).filter(s => s.wrong > 0).sort((a, b) => (b.wrong / b.total) - (a.wrong / a.total) || b.wrong - a.wrong);
+    $('reviewList').replaceChildren();
+    if (!weaknesses.length) {
+      $('reviewIntro').textContent = 'Aucun thème faible sur cette session.';
+      const message = document.createElement('div'); message.className = 'review-empty'; message.textContent = 'Parfait : tu n’as commis aucune erreur. Lance une nouvelle session pour varier les questions.'; $('reviewList').append(message);
+    } else {
+      $('reviewIntro').textContent = 'Choisis un thème où une erreur a été repérée :';
+      weaknesses.forEach(({ theme, total, wrong }) => {
+        const b = document.createElement('button'); b.className = 'review-item'; b.innerHTML = `<strong>${theme}</strong><span>${wrong} erreur${wrong > 1 ? 's' : ''} sur ${total}</span>`; b.onclick = () => startTopic(theme); $('reviewList').append(b);
+      });
+    }
+  }
+  $('restart').onclick = () => currentTopic ? startTopic(currentTopic) : startModule(currentModule);
+  function goHome() { $('quiz').style.display = 'none'; $('result').classList.remove('show'); $('home').style.display = 'block'; }
+  $('homeButton').onclick = goHome;
+  $('backToHome').onclick = goHome;
+  renderHome();
+  </script>
+</body>
+</html>
